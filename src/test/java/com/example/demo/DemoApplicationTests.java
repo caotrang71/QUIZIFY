@@ -9,5 +9,7 @@ class DemoApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
+	public void test(){
+		
+	}
 }
