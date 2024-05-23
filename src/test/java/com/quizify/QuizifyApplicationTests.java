@@ -1,15 +1,13 @@
-package com.quizify;
+package com.example.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class QuizifyApplicationTests {
+class DemoApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-	public void test(){
-		
-	}
+    @Test
+    void contextLoads() {
+    }
+
 }
