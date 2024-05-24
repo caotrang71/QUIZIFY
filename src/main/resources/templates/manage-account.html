@@ -1,154 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Shoppers &mdash; Colorlib e-Commerce Template</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Mukta:300,400,700">
-
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/magnific-popup.css">
-    <link rel="stylesheet" href="/static/css/jquery-ui.css">
-    <link rel="stylesheet" href="/static/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="/static/css/owl.theme.default.min.css">
-
-
-    <link rel="stylesheet" href="/static/css/aos.css">
-
-    <link rel="stylesheet" href="/static/css/style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizify Admin Dashboard</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #DEA26EFF;
+            color: #333333;
+        }
+        .navbar, footer {
+            background-color: #333333;
+        }
+        .navbar .nav-link, .navbar-brand, footer {
+            color: #FFFFFF;
+        }
+        .btn-outline-success {
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+        }
+        .btn-outline-success:hover {
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+        footer {
+            padding: 20px 0;
+        }
+        .footer-detail {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .footer-detail li {
+            padding: 5px 0;
+        }
+        .table th {
+            background-color: #333333;
+            color: #FFFFFF;
+        }
+        .btn-warning {
+            background-color: #FF5733;
+            border-color: #FF5733;
+        }
+        .btn-danger {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+    </style>
 </head>
 <body>
-
-<div class="site-wrap">
-    <header class="site-navbar" role="banner">
-        <div class="site-navbar-top">
-            <div class="container">
-                <div class="row align-items-center">
-
-                    <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
-                        <form action="" class="site-block-top-search">
-                            <span class="icon icon-search2"></span>
-                            <input  style="" type="text" class="form-control border-0" placeholder="Search">
-                        </form>
-                    </div>
-
-                    <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
-                        <div class="site-logo">
-                            <a href="#" class="js-logo-clone">quizfy</a>
-                        </div>
-                    </div>
-
-                    <div class="col-6 col-md-4 order-3 order-md-3 text-right">
-                        <div class="site-top-icons">
-                            <ul>
-                                <li><a href="#"> <img src="/static/images/trend-avatar-1.jpg" alt="" style="width: 75px; height: 55px;" > </a></li><br>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="bg-light py-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 mb-0"><a href="#">Home</a></div>
-            </div>
-        </div>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#">Quizify</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Quiz Banks List</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Category</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Accounts List</a>
+            </li>
+        </ul>
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
     </div>
+</nav>
 
-    <div class="site-section">
-        <div class="container">
-            <div class="row mb-5">
-                <form class="col-md-12" method="post">
-                    <div class="site-blocks-table">
-                        <table class="table table-bordered">
-                            <thead>
-                            <tr>
-
-                                <th class="product-thumbnail">Image</th>
-                                <th class="product-name">full name</th>
-                                <th class="product-price">role</th>
-                                <th class="product-quantity">phone number</th>
-
-                                <th class="product-remove">Remove</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="product-thumbnail">
-                                    <img src="images/cloth_1.jpg" alt="Image" class="img-fluid">
-                                </td>
-                                <td class="name">
-                                    <h2 class="h5 text-black">nguyen thai minh</h2>
-                                </td>
-
-                                <td>
-                                    user
-                                </td>
-                                <td>0966530524</td>
-                                <td><a href="#" class="btn btn-primary btn-sm">X</a></td>
-                            </tr>
-
-                            <tr>
-                                <td class="product-thumbnail">
-                                    <img src="images/cloth_2.jpg" alt="Image" class="img-fluid">
-                                </td>
-                                <td class="product-name">
-                                    <h2 class="h5 text-black">pham van nam</h2>
-                                </td>
-                                <td>
-                                    teacher
-                                </td>
-                                <td>0966530524</td>
-                                <td><a href="#" class="btn btn-primary btn-sm">X</a></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </form>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="row mb-5">
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            <button class="btn btn-primary btn-sm btn-block">SAVE</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-outline-primary btn-sm btn-block">Continue quizfy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- <footer class="site-footer border-top">
-      <div class="container">
-
-        <div class="row pt-5 mt-5 text-center">
-          <div class="col-md-12">
-
-          </div>
-
-        </div>
-      </div>
-    </footer> -->
+<!-- Main Content -->
+<div class="container mt-5">
+    <h2>Accounts List</h2>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="accountsTable">
+        <!-- JavaScript will dynamically insert rows here -->
+        </tbody>
+    </table>
 </div>
 
-<script src="/static/js/jquery-3.3.1.min.js"></script>
-<script src="/static/js/jquery-ui.js"></script>
-<script src="/static/js/popper.min.js"></script>
-<script src="/static/js/bootstrap.min.js"></script>
-<script src="/static/js/owl.carousel.min.js"></script>
-<script src="/static/js/jquery.magnific-popup.min.js"></script>
-<script src="/static/js/aos.js"></script>
+<!-- Footer -->
+<footer class="text-center">
+    <div class="container">
+        <ul class="footer-detail">
+            <li>Address: 123 Quizify Lane, Knowledge City</li>
+            <li>Contact: support@quizify.com</li>
+            <li>Phone: (123) 456-7890</li>
+        </ul>
+        <p>&copy; 2024 Quizify. All rights reserved.</p>
+    </div>
+</footer>
 
-<script src="/static/js/main.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Sample user data
+    const users = [
+        { id: 1, username: 'user1', email: 'user1@example.com' },
+        { id: 2, username: 'user2', email: 'user2@example.com' },
+        { id: 3, username: 'user3', email: 'user3@example.com' }
+    ];
 
+    // Function to render user rows
+    function renderUsers() {
+        const accountsTable = document.getElementById('accountsTable');
+        accountsTable.innerHTML = '';
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+          <td>${user.id}</td>
+          <td>${user.username}</td>
+          <td>${user.email}</td>
+          <td>
+            <button class="btn btn-warning btn-sm" onclick="editUser(${user.id})">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
+          </td>
+        `;
+            accountsTable.appendChild(row);
+        });
+    }
+
+    // Function to delete a user
+    function deleteUser(id) {
+        const index = users.findIndex(user => user.id === id);
+        if (index !== -1) {
+            users.splice(index, 1);
+            renderUsers();
+        }
+    }
+
+    // Function to edit a user
+    function editUser(id) {
+        const user = users.find(user => user.id === id);
+        if (user) {
+            const newUsername = prompt('Enter new username', user.username);
+            const newEmail = prompt('Enter new email', user.email);
+            if (newUsername && newEmail) {
+                user.username = newUsername;
+                user.email = newEmail;
+                renderUsers();
+            }
+        }
+    }
+
+    // Initial render
+    renderUsers();
+</script>
 </body>
 </html>
