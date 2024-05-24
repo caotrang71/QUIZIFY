@@ -1,0 +1,26 @@
+body {
+    background-color: #F5F5F5;
+}
+
+.card-img-top {
+    object-fit: cover;
+    height: 150px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    flex-grow: 1;
+}
+
+.footer {
+    background-color: #DEA26EFF;
+}
