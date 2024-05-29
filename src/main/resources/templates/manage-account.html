@@ -47,6 +47,10 @@
             background-color: #4CAF50;
             border-color: #4CAF50;
         }
+        .btn-ban {
+            background-color: brown;
+            border-color: #4CAF50;
+        }
     </style>
 </head>
 <body>
@@ -85,9 +89,10 @@
         <thead>
         <tr>
             <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Actions</th>
+            <th>ROLE</th>
+            <th>CHANGE ROLE</th>
+            <th>ACTIONS</th>
+            <th>BANS</th>
         </tr>
         </thead>
         <tbody id="accountsTable">
@@ -95,8 +100,15 @@
             <tr th:each="role : ${roles}">
                 <td th:text="${role.role_id}"></td>
                 <td th:text="${role.type_of_role}"></td>
-                <td>edit</td>
-                <td>delete</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editUser(${roles.type_of_role})">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${roles.role_id})">Delete</button>
+                </td>
+                <td>
+                    <button class="btn btn-ban btn-danger btn-sm" onclick="deleteUser(${roles.role_id})">BAN</button>
+                </td>
             </tr>
         </tbody>
 
@@ -109,35 +121,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-    // Sample user data
-    // const users = [
-    //     { id: 1, username: 'user1', email: 'user1@example.com' },
-    //     { id: 2, username: 'user2', email: 'user2@example.com' },
-    //     { id: 3, username: 'user3', email: 'user3@example.com' }
-    // ];
-
-    // Function to render user rows
-    function renderUsers() {
-        const accountsTable = document.getElementById('accountsTable');
-        accountsTable.innerHTML = '';
-        users.forEach(user => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-          <td>${user.id}</td>
-          <td>${user.username}</td>
-          <td>${user.email}</td>
-          <td>
-            <button class="btn btn-warning btn-sm" onclick="editUser(${user.id})">Edit</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
-          </td>
-        `;
-            accountsTable.appendChild(row);
-        });
-    }
-
     // Function to delete a user
     function deleteUser(id) {
-        const index = users.findIndex(user => user.id === id);
+        const index = users.findIndex(roles => roles.id === id);
         if (index !== -1) {
             users.splice(index, 1);
             renderUsers();
@@ -146,13 +132,13 @@
 
     // Function to edit a user
     function editUser(id) {
-        const user = users.find(user => user.id === id);
-        if (user) {
-            const newUsername = prompt('Enter new username', user.username);
-            const newEmail = prompt('Enter new email', user.email);
-            if (newUsername && newEmail) {
-                user.username = newUsername;
-                user.email = newEmail;
+        const role = roles.find(roles => roles.id === id);
+        if (role) {
+            const newRole = prompt('Enter new Role', role.type_of_role);
+
+            if (newRole) {
+                newRole.type_of_role = newRole;
+
                 renderUsers();
             }
         }
