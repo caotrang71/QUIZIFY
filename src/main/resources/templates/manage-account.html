@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +7,11 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #DEA26EFF;
+            background-color: #FFFFFF;
             color: #333333;
         }
         .navbar, footer {
-            background-color: #333333;
+            background-color: cornflowerblue;
         }
         .navbar .nav-link, .navbar-brand, footer {
             color: #FFFFFF;
@@ -36,7 +36,7 @@
             padding: 5px 0;
         }
         .table th {
-            background-color: #333333;
+            background-color: cornflowerblue;
             color: #FFFFFF;
         }
         .btn-warning {
@@ -92,7 +92,14 @@
         </thead>
         <tbody id="accountsTable">
         <!-- JavaScript will dynamically insert rows here -->
+            <tr th:each="role : ${roles}">
+                <td th:text="${role.role_id}"></td>
+                <td th:text="${role.type_of_role}"></td>
+                <td>edit</td>
+                <td>delete</td>
+            </tr>
         </tbody>
+
     </table>
 </div>
 
@@ -103,11 +110,11 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     // Sample user data
-    const users = [
-        { id: 1, username: 'user1', email: 'user1@example.com' },
-        { id: 2, username: 'user2', email: 'user2@example.com' },
-        { id: 3, username: 'user3', email: 'user3@example.com' }
-    ];
+    // const users = [
+    //     { id: 1, username: 'user1', email: 'user1@example.com' },
+    //     { id: 2, username: 'user2', email: 'user2@example.com' },
+    //     { id: 3, username: 'user3', email: 'user3@example.com' }
+    // ];
 
     // Function to render user rows
     function renderUsers() {
