@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quizify Admin Dashboard</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             background-color: #FFFFFF;
@@ -49,7 +50,7 @@
         }
         .btn-ban {
             background-color: brown;
-            border-color: #4CAF50;
+            border-color: brown;
         }
     </style>
 </head>
@@ -91,25 +92,29 @@
             <th>ID</th>
             <th>ROLE</th>
             <th>CHANGE ROLE</th>
-            <th>ACTIONS</th>
+            <th>DELETE</th>
             <th>BANS</th>
         </tr>
         </thead>
         <tbody id="accountsTable">
-        <!-- JavaScript will dynamically insert rows here -->
-            <tr th:each="role : ${roles}">
-                <td th:text="${role.role_id}"></td>
-                <td th:text="${role.type_of_role}"></td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editUser(${roles.type_of_role})">Edit</button>
-                </td>
-                <td>
-                    <button class="btn btn-danger btn-sm" onclick="deleteUser(${roles.role_id})">Delete</button>
-                </td>
-                <td>
-                    <button class="btn btn-ban btn-danger btn-sm" onclick="deleteUser(${roles.role_id})">BAN</button>
-                </td>
-            </tr>
+        <!-- JavaScript sẽ chèn các hàng động -->
+        <select id="roleInput">
+            <option value="User">User</option>
+            <option value="Staff">Staff</option>
+        </select>
+        <tr th:each="role : ${roles}">
+            <td th:text="${role.role_id}"></td>
+            <td th:text="${role.type_of_role}"></td>
+            <td>
+                <button class="btn btn-warning btn-sm" th:onclick="'editRole('+${role.role_id}+')'" >Save</button>
+            </td>
+            <td>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser(${role.role_id})">Delete</button>
+            </td>
+            <td>
+                <button class="btn btn-ban btn-danger btn-sm" onclick="deleteUser(${role.role_id})">BAN</button>
+            </td>
+        </tr>
         </tbody>
 
     </table>
@@ -130,22 +135,33 @@
         }
     }
 
-    // Function to edit a user
-    function editUser(id) {
-        const role = roles.find(roles => roles.id === id);
-        if (role) {
-            const newRole = prompt('Enter new Role', role.type_of_role);
+    // Function to edit a roles
+    function editRole(id) {
+        //get new role
+        var newRole = document.getElementById('roleInput').value;
+        //URL API
+        const url = `http://localhost:8080/manage-account/${id}`;
 
-            if (newRole) {
-                newRole.type_of_role = newRole;
-
-                renderUsers();
-            }
-        }
+        //gui yeu cau PUT
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'content-type' : 'application/json'
+            },
+            body:JSON.stringify({type_of_role : newRole})
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success: ', data);
+                alert('Role update successfully!');
+                window.location.href='/manage-account';
+            })
+            .catch((erro) =>{
+                console.error('Erro: ', erro);
+                alert('Failed to update role');
+            });
     }
 
-    // Initial render
-    renderUsers();
 </script>
 </body>
 </html>
