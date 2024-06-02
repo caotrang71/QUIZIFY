@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//post
-@Controller
 
-//get
+@Controller
 @RequestMapping("/manage-account")
+
 public class rolesController {
     @Autowired
     private rolesService roleService;
@@ -32,5 +31,10 @@ public class rolesController {
         return roleService.updateRole(id, newRole);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public void deleteRole(@PathVariable int id)  {
+        roleService.deleteRole(id);
+    }
 
 }

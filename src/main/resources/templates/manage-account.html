@@ -109,7 +109,7 @@
                 <button class="btn btn-warning btn-sm" th:onclick="'editRole('+${role.role_id}+')'" >Save</button>
             </td>
             <td>
-                <button class="btn btn-danger btn-sm" onclick="deleteUser(${role.role_id})">Delete</button>
+                <button class="btn btn-danger btn-sm" th:onclick=" 'deleteAccount(' +${role.role_id}+')' " >Delete</button>
             </td>
             <td>
                 <button class="btn btn-ban btn-danger btn-sm" onclick="deleteUser(${role.role_id})">BAN</button>
@@ -127,11 +127,28 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     // Function to delete a user
-    function deleteUser(id) {
-        const index = users.findIndex(roles => roles.id === id);
-        if (index !== -1) {
-            users.splice(index, 1);
-            renderUsers();
+    function deleteAccount(id) {
+        if (confirm("Are you sure delete this account?")) {
+            const url = `http://localhost:8080/manage-account/${id}`;
+            fetch(url, {
+                method: 'DELETE',
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            })
+                .then(response=>{
+                    if (response.ok){
+                        alert('account delete  successfully.');
+
+                        location.reload();
+                    }else{
+                        alert('failed  to delete account!');
+                    }
+                })
+                .catch(error=> {
+                    console.error('Error:' ,error);
+                    alert('failed to delete user')
+                })
         }
     }
 

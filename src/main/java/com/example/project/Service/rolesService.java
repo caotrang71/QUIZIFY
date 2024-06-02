@@ -26,4 +26,8 @@ public class rolesService {
             return null;
         }
     }
+
+    public void deleteRole(int id) {
+        rolesRepository.deleteById(id);
+    }
 }
