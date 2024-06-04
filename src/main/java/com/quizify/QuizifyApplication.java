@@ -7,9 +7,9 @@ import org.springframework.context.ApplicationContext;
 @SpringBootApplication
 public class QuizifyApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		ApplicationContext context =SpringApplication.run(QuizifyApplication.class, args);
-	}
+        ApplicationContext context =SpringApplication.run(QuizifyApplication.class, args);
+    }
 
 }
