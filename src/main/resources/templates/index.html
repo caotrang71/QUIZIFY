@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizify Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #DEA26EFF;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark  bg-dark">
+    <a class="navbar-brand" href="#">Quizify Admin</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Quiz Banks List</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Category</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Accounts List</a>
+            </li>
+        </ul>
+        <form class="form-inline ml-auto">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-4">
+    <h2>User Accounts</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="userList">
+        <!-- JavaScript will inject user rows here -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Footer -->
+<footer class="text-center">
+    <div class="container">
+        <p>© 2024 Quizify. All rights reserved.</p>
+        <p>
+            <a href="#">Privacy Policy</a> |
+            <a href="#">Terms of Service</a> |
+            <a href="#">Support</a>
+        </p>
+    </div>
+</footer>
+
+<!-- JavaScript and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Sample data
+    const users = [
+        {id: 1, username: 'user1', email: 'user1@example.com'},
+        {id: 2, username: 'user2', email: 'user2@example.com'},
+        {id: 3, username: 'user3', email: 'user3@example.com'}
+    ];
+
+    function loadUsers() {
+        const userList = document.getElementById('userList');
+        userList.innerHTML = '';
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="updateUser(${user.id})">Update</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">Delete</button>
+                    </td>
+                `;
+            userList.appendChild(row);
+        });
+    }
+
+    function updateUser(id) {
+        const user = users.find(user => user.id === id);
+        if (user) {
+            const newUsername = prompt('Enter new username:', user.username);
+            const newEmail = prompt('Enter new email:', user.email);
+            if (newUsername && newEmail) {
+                user.username = newUsername;
+                user.email = newEmail;
+                loadUsers();
+            }
+        }
+    }
+
+    function deleteUser(id) {
+        const userIndex = users.findIndex(user => user.id === id);
+        if (userIndex !== -1) {
+            users.splice(userIndex, 1);
+            loadUsers();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadUsers);
+</script>
+</body>
+</html>
