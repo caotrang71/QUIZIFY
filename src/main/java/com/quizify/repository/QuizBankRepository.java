@@ -9,8 +9,7 @@ import java.util.List;
 
 @Repository
 public interface QuizBankRepository extends JpaRepository<QuizBank, Long> {
-
-    List<QuizBank> findByCreatedBy(User user);
-    List<QuizBank> findByEditableTrueAndCreatedByNot(User user);
+//    void saveQuizBank(QuizBank quizBank);
+//    QuizBank getQuizBankById(long id);
 }
 

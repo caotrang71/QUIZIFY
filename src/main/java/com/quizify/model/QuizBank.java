@@ -9,6 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "quiz_banks")
 public class QuizBank {
     @Id

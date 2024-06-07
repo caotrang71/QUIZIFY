@@ -13,7 +13,7 @@ public class SubcategoryService {
     @Autowired
     private SubcategoryRepository subcategoryRepository;
 
-    public List<Subcategory> getAllSubcategories() {
+    public List<Subcategory> getAllSubcategoy() {
         return subcategoryRepository.findAll();
     }
 
