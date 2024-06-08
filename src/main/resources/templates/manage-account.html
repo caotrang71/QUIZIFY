@@ -116,7 +116,7 @@
             <td style="color: red;" th:if="${user.status == 0 }" th:text="Inactive"></td>
             <td th:text="${#temporals.format(user.created_at, 'dd/mm/yyyy HH:mm:ss')}"></td>
             <td>
-                <button class="btn btn-warning btn-sm" th:onclick="details_account.html">view</button>
+                <a class="btn btn-warning btn-sm" th:href="@{/manage-account/view_account/{id}(id=${user.user_id}) } ">view</a>
             </td>
             <td>
                 <button class="btn btn-warning btn-sm" th:onclick=" 'editRole('+${user.user_id}+','+${user.roles.role_id}+')' ">Update Role</button>
@@ -125,7 +125,7 @@
                 <button class="btn btn-danger btn-sm" th:onclick=" 'deleteAccount(' +${user.user_id}+')' " >Delete</button>
             </td>
             <td>
-                <button class="btn btn-ban btn-danger btn-sm" onclick="deleteUser(${role.role_id})">BAN</button>
+                <button class="btn btn-ban btn-danger btn-sm" onclick="">BAN</button>
             </td>
 
         </tr>

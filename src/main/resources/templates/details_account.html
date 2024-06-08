@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
 
-    <link rel="stylesheet" href="/static/css/profile.css">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
     <title>Profile</title>
 </head>
 <body>
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
         <div class="col-md-4 border-right">
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="/static/images/avatar.jpg" alt=""><span class="font-weight-bold">Edogaru</span><span class="text-black-50">edogaru@mail.com.my</span><span> </span></div>
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" th:src="@{/images/avatar.jpg}" alt=""><span class="font-weight-bold" th:text="${user.fullname}"></span><span class="text-black-50" th:text="${user.email}"></span><span> </span></div>
         </div>
         <div class="col-md-8 border-right">
             <div class="p-3 py-5">
@@ -22,15 +22,19 @@
                     <h4 class="text-right">Profile Settings</h4>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="Full name" value=""></div>
-                    <div class="col-md-6"><label class="labels">Gender</label><input type="text" class="form-control" value="" placeholder="Male/Female"></div>
+                    <div class="col-md-6"><label class="labels">fullname</label><input type="text" class="form-control" placeholder="Full name" th:value="${user.fullname}" readonly></div>
+                    <div class="col-md-6"><label class="labels">Gender</label><input type="text" class="form-control" th:value="${user.gender ==1 ? 'Male':'Female'}" placeholder="Male/Female" readonly></div>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-12"><label class="labels">Mobile Number</label><input type="text" class="form-control" placeholder="Enter phone number" value=""></div>
-                    <div class="col-md-12"><label class="labels">Address </label><input type="text" class="form-control" placeholder="Enter address " value=""></div>
-                    <div class="col-md-12"><label class="labels">Birthday</label><input type="text" class="form-control" placeholder="dd/mm/yyyy" value=""></div>
-                    <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" placeholder="Email" value=""></div>
-                    <div class="col-md-12"><label class="labels">Username</label><input type="text" class="form-control" placeholder="Username" value=""></div>
+                    <div class="col-md-12"><label class="labels">user_id</label><input type="text" class="form-control" placeholder="Enter phone number" th:value="${user.user_id}" readonly></div>
+                    <div class="col-md-12"><label class="labels">email </label><input type="text" class="form-control" placeholder="email" th:value="${user.email}" readonly></div>
+                    <div class="col-md-12"><label class="labels">Birthday</label><input type="text" class="form-control" placeholder="dd/mm/yyyy" th:value="${user.birthdate}" readonly></div>
+                    <div class="col-md-12"><label class="labels">username</label><input type="text" class="form-control" placeholder="username" th:value="${user.username}" readonly></div>
+                    <div class="col-md-12"><label class="labels">password</label><input type="text" class="form-control" placeholder="password" th:value="${user.password}" readonly></div>
+                    <div class="col-md-12"><label class="labels">created_at</label><input type="text" class="form-control" placeholder="created_at" th:value="${#temporals.format(user.created_at, 'dd/MM/yyyy HH:mm:ss')}" readonly></div>
+                    <div class="col-md-12"><label class="labels">modified_at</label><input type="text" class="form-control" placeholder="modified_at" th:value="${#temporals.format(user.modified_at, 'dd/MM/yyyy HH:mm:ss')}" readonly></div>
+                    <div class="col-md-12"><label class="labels " ></label><input type="text" class="form-control" placeholder="status" th:if="${user.status == 1}" th:value="Active"  style="color: green" readonly></div>
+                    <div class="col-md-12"><label class="labels "  ></label><input type="text" class="form-control" placeholder="status" th:if="${user.status==0}" th:value="Inactive" style="color: red" readonly></div>
 
                 </div>
                 <div class="row mt-2">

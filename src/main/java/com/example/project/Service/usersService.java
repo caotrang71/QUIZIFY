@@ -31,6 +31,7 @@ public class usersService {
     public void deleteUsers(int id) {
         repo.deleteById(id);
     }
+
     public roles changeRoles(int id,int roleId, roles newRoles) {
         Optional<roles> optionalRole = roleRepo.findById(roleId);
 
