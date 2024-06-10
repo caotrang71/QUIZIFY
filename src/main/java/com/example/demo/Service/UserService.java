@@ -3,12 +3,15 @@ package com.example.demo.Service;
 import com.example.demo.Entity.Users;
 import com.example.demo.Repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     @Autowired
     private UsersRepository UsersRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public boolean changePassword(String username,String oldPassword, String newPassword, String comfirmpass) {
         // Kiểm tra mật khẩu cũ
@@ -34,5 +37,9 @@ public class UserService {
 
     public void save(Users user) {
         UsersRepository.save(user);
+    }
+
+    public boolean checkPasswordEncoder(String password, String encoderpassword) {
+        return passwordEncoder.matches(password, encoderpassword);
     }
 }

@@ -93,5 +93,23 @@ public class UsersController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user");
         }
     }
+    @GetMapping("show_page_login")
+    public String showLoginForm(Model model) {
+        return "login";
+    }
+    @PostMapping("/login")
+    public String login(@RequestParam String email, @RequestParam String password, Model model) {
+        // Kiểm tra xem người dùng có tồn tại không
+        Users user = userService.findByEmail(email);
+        if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
+            // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
+            model.addAttribute("user", user);
+            return "landing-page";
+        } else {
+            // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
+            model.addAttribute("error", "Invalid email or password");
+            return "login";
+        }
+    }
 
 }
