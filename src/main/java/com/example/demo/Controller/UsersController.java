@@ -4,6 +4,10 @@ import com.example.demo.Entity.Users;
 import com.example.demo.Repository.UsersRepository;
 import com.example.demo.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +23,8 @@ public class UsersController {
     private UsersRepository usersRepository;
     @Autowired
     private UserService userService;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping("/profile/{id}")
     public String profile(@PathVariable int id, Model model) {
@@ -47,6 +53,44 @@ public class UsersController {
         } else {
             model.addAttribute("mess", "Change password failed!");
             return "redirect:/change_pass?error"; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi
+        }
+    }
+    @GetMapping("/show_page_register")
+    public String showRegisterForm(Model model) {
+        model.addAttribute("user", new Users());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestParam String fullname, @RequestParam String birthdate,
+                                           @RequestParam int gender, @RequestParam String email,
+                                           @RequestParam String username, @RequestParam String password) {
+        // Kiểm tra xem email đã tồn tại chưa
+        Users existingUser = userService.findByEmail(email);
+        if (existingUser != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+        }
+
+        // Mã hoá mật khẩu trước khi lưu vào cơ sở dữ liệu
+        String encodedPassword = passwordEncoder.encode(password);
+
+        // Tạo một đối tượng User mới và lưu vào cơ sở dữ liệu
+        Users newUser = new Users();
+        newUser.setFullname(fullname);
+        newUser.setBirthdate(birthdate);
+        newUser.setGender(gender);
+        newUser.setEmail(email);
+        newUser.setUsername(username);
+        newUser.setPassword(encodedPassword); // Lưu mật khẩu đã mã hoá
+        newUser.setRole_id(3); // Mặc định là role user
+
+        try {
+            // Thực hiện lưu mới người dùng vào cơ sở dữ liệu
+            userService.save(newUser);
+            return ResponseEntity.ok("Registration successful");
+        } catch (DataIntegrityViolationException e) {
+            // Xử lý nếu có lỗi xảy ra khi lưu vào cơ sở dữ liệu
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user");
         }
     }
 

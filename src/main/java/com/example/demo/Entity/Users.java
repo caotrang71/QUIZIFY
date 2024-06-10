@@ -1,9 +1,6 @@
 package com.example.demo.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +19,14 @@ public class Users {
     private LocalDateTime modified_at;
     private int status;
     private int role_id;
+    @PrePersist
+    protected void onCreate() {
+        created_at = LocalDateTime.now();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        modified_at = LocalDateTime.now();
+    }
 
     public Users() {
     }
