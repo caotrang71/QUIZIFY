@@ -35,6 +35,15 @@ public class users {
         this.roles = roles;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        this.created_at = LocalDateTime.now();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        this.modified_at = LocalDateTime.now();
+    }
+
     public users(int user_id, String fullname, String birthdate, int gender, String email, String username, String password, LocalDateTime created_at, LocalDateTime modified_at, int status, int role_id, com.example.project.entity.roles roles) {
         this.user_id = user_id;
         this.fullname = fullname;

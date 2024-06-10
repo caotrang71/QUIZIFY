@@ -116,7 +116,7 @@
             <td style="color: red;" th:if="${user.status == 0 }" th:text="Inactive"></td>
             <td th:text="${#temporals.format(user.created_at, 'dd/mm/yyyy HH:mm:ss')}"></td>
             <td>
-                <a class="btn btn-warning btn-sm" th:href="@{/manage-account/view_account/{id}(id=${user.user_id}) } ">view</a>
+                <a class="btn btn-warning btn-sm" th:href="@{/view_account/{id}(id=${user.user_id}) } ">view</a>
             </td>
             <td>
                 <button class="btn btn-warning btn-sm" th:onclick=" 'editRole('+${user.user_id}+','+${user.roles.role_id}+')' ">Update Role</button>
@@ -168,7 +168,7 @@
         //get new role
         var newRole = document.getElementById('roleInput').value;
         //URL API
-        const url = `http://localhost:8081/manage-account/${id}/${role_id}`;
+        const url = `http://localhost:8081/${id}/${role_id}`;
 
         //gui yeu cau PUT
         fetch(url, {

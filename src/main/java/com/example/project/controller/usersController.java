@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/manage-account")
+
 public class usersController {
     @Autowired
     private usersService Uservice;
@@ -24,7 +24,7 @@ public class usersController {
     @Autowired
     private usersRepository userRepository;
 
-    @GetMapping
+    @GetMapping("/manage-account")
     public String getListUsers(Model model) {
         List<users> users = Uservice.getAllUsers();
         model.addAttribute("users", users);
@@ -36,7 +36,7 @@ public class usersController {
         return Uservice.changeRoles(id,role_id,newRole);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/manage-account/{id}")
     @ResponseBody
     public void deleteUser(@PathVariable int id) {
         Uservice.deleteUsers(id);
@@ -51,7 +51,21 @@ public class usersController {
         }else {
             return "redirect:/ERROR";
         }
-
     }
+
+    @GetMapping("/create_account")
+    public String showPageCreateUser(Model model) {
+        model.addAttribute("user", new users());
+        return "CreateAccount";
+    }
+
+    @PostMapping("/user")
+    public String createUser(@ModelAttribute users users, Model model) {
+        userRepository.save(users);
+        model.addAttribute("users", users);
+        model.addAttribute("message","Create Account Successfully!");
+        return "redirect:/create_account";
+    }
+
 
 }
