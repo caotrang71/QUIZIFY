@@ -28,11 +28,6 @@
         footer {
             padding: 20px 0;
         }
-        .footer-detail {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
         .footer-detail li {
             padding: 5px 0;
         }
@@ -76,8 +71,8 @@
                 <a class="nav-link" href="#">Accounts List</a>
             </li>
         </ul>
-        <form class="form-inline">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <form th:action="@{/search}" method="get" class="form-inline">
+            <input class="form-control mr-sm-2" type="search" name="fullname" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>
@@ -86,6 +81,7 @@
 <!-- Main Content -->
 <div class="container mt-5">
     <h2>Accounts List</h2>
+
 
     <table class="table table-bordered table-hover">
         <thead>
@@ -99,16 +95,15 @@
             <th>CHANGE ROLE</th>
             <th>DELETE</th>
             <th>BANS</th>
-
         </tr>
         </thead>
+
         <tbody id="accountsTable">
-        <!-- JavaScript sẽ chèn các hàng động -->
         <select id="roleInput">
             <option value="User">User</option>
             <option value="Staff">Staff</option>
         </select>
-        <tr th:each="user : ${users}">
+        <tr th:each="user : ${ searchUser == null ? users : searchUser }">
             <td th:text="${user.user_id}"></td>
             <td th:text="${user.fullname}"></td>
             <td th:text="${user.roles.type_of_role}"></td>
@@ -127,11 +122,10 @@
             <td>
                 <button class="btn btn-ban btn-danger btn-sm" onclick="">BAN</button>
             </td>
-
         </tr>
         </tbody>
-
     </table>
+
 
 
 </div>

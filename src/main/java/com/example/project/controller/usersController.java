@@ -62,9 +62,22 @@ public class usersController {
     @PostMapping("/user")
     public String createUser(@ModelAttribute users users, Model model) {
         userRepository.save(users);
-        model.addAttribute("users", users);
+        //model.addAttribute("users", users);
         model.addAttribute("message","Create Account Successfully!");
         return "redirect:/create_account";
+    }
+
+    @GetMapping("/search")
+    public String searchUser(@RequestParam("fullname") String name, Model model) {
+        List<users> users = userRepository.findByUsername(name);
+        List<users> usersF = userRepository.findByFullname(name);
+        if (!users.isEmpty()) {
+            model.addAttribute("searchUser", users);
+        }
+        else if (!usersF.isEmpty()) {
+            model.addAttribute("searchUser", usersF);
+        }
+        return "manage-account";
     }
 
 
