@@ -6,6 +6,7 @@ import com.example.project.Service.usersService;
 import com.example.project.entity.roles;
 import com.example.project.entity.users;
 import jakarta.annotation.Nullable;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,11 +61,19 @@ public class usersController {
     }
 
     @PostMapping("/user")
-    public String createUser(@ModelAttribute users users, Model model) {
-        userRepository.save(users);
-        //model.addAttribute("users", users);
-        model.addAttribute("message","Create Account Successfully!");
-        return "redirect:/create_account";
+    public String createUser(@ModelAttribute users user, @RequestParam String password, Model model) {
+        if (Uservice.checkAccount(user.getEmail())){
+            String encodePass = Uservice.encodePassword(password);
+            user.setPassword(encodePass);
+            userRepository.save(user);
+            model.addAttribute("mess","Create Account Successfully!");
+            return "redirect:/create_account";
+        }else {
+            model.addAttribute("message","Email is existed!");
+            return "redirect:/create_account";
+        }
+
+
     }
 
     @GetMapping("/search")

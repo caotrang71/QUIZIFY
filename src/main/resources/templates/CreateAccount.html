@@ -22,7 +22,7 @@
     </div>
     <div class="form-group">
       <label for="password">Password:</label>
-      <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Enter password" />
+      <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" />
     </div>
     <div class="form-group">
       <label for="status">Status:</label>
@@ -39,8 +39,8 @@
       </select>
     </div>
     <button type="submit" class="btn btn-primary">Create User</button>
-    <!--/*@thymesVar id="message" type="message"*/-->
-    <div th:if="${message != null}" th:text="${message}" class="alert alert-success"></div>
+
+    <div th:if="${mess != null}" th:text="${mess}" id="message" class="alert alert-success"></div>
   </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
