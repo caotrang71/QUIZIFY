@@ -14,7 +14,7 @@
     Welcom to QUIZIFY!
     <p th:if="${error != null}" style="color: red; font-size: 14px">Error: <span th:text="${error}"></span></p>
   </div>
-  <form action="/login" method="post" class="p-3 mt-3">
+  <form th:action="@{/login}" method="post" class="p-3 mt-3">
     <div class="form-field d-flex align-items-center">
       <span class="far fa-user"></span>
       <label for="email"></label><label for="email"></label><input type="text" name="email" id="email" placeholder="email">

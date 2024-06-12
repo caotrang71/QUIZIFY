@@ -30,20 +30,20 @@ public class UsersController {
         return "profile";
     }
 
-    @GetMapping("/change_pass/{username}")
-    public String showChangePasswordForm(@PathVariable String username, Model model) {
-        Users user = usersRepository.findByUsername(username);
+    @GetMapping("/change_pass/{email}")
+    public String showChangePasswordForm(@PathVariable String email, Model model) {
+        Users user = usersRepository.findByEmail(email);
         model.addAttribute("user", user);
         return "ChangePassword";
     }
 
-    @PostMapping("/changepassword/{username}")
-    public String changePassword(@PathVariable String username,
+    @PostMapping("/changepassword/{email}")
+    public String changePassword(@PathVariable String email,
                                  @RequestParam("oldPassword") String oldPassword,
                                  @RequestParam("newPassword") String newPassword,
                                  @RequestParam("confirmPassword") String ConfirmPassword,
                                  Model model) {
-        if (userService.changePassword(username, oldPassword, newPassword, ConfirmPassword)) {
+        if (userService.changePassword(email, oldPassword, newPassword, ConfirmPassword)) {
             model.addAttribute("mess", "Change password successfully!");
 
             return "redirect:/profile/1"; // Chuyển hướng đến trang profile nếu thay đổi thành công
@@ -101,11 +101,11 @@ public class UsersController {
         if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
             // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
             model.addAttribute("user", user);
-            return "landing-page";
+            return "redirect:/profile/1";
         } else {
             // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
             model.addAttribute("error", "Invalid email or password");
-            return "login";
+            return "redirect:/login?error";
         }
     }
 

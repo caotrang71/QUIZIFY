@@ -15,9 +15,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public boolean changePassword(String username,String oldPassword, String newPassword, String comfirmpass) {
+    public boolean changePassword(String email,String oldPassword, String newPassword, String comfirmpass) {
         // Kiểm tra mật khẩu cũ
-        Users user = UsersRepository.findByUsername(username);
+        Users user = UsersRepository.findByEmail(email);
         if (user == null || !user.getPassword().equals(oldPassword)) {
             return false; // Mật khẩu cũ không đúng
         }
