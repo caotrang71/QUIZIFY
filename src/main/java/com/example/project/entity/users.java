@@ -18,23 +18,7 @@ public class users {
     private LocalDateTime created_at;
     private LocalDateTime modified_at;
     private int status;
-
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private roles roles;
-
-    public users(com.example.project.entity.roles roles) {
-        this.roles = roles;
-    }
-
-    public com.example.project.entity.roles getRoles() {
-        return roles;
-    }
-
-    public void setRoles(com.example.project.entity.roles roles) {
-        this.roles = roles;
-    }
-
+    private int role_id;
     @PrePersist
     protected void onCreate() {
         this.created_at = LocalDateTime.now();
@@ -44,7 +28,7 @@ public class users {
         this.modified_at = LocalDateTime.now();
     }
 
-    public users(int user_id, String fullname, String birthdate, int gender, String email, String username, String password, LocalDateTime created_at, LocalDateTime modified_at, int status, int role_id, com.example.project.entity.roles roles) {
+    public users(int user_id, String fullname, String birthdate, int gender, String email, String username, String password, LocalDateTime created_at, LocalDateTime modified_at, int status, int role_id) {
         this.user_id = user_id;
         this.fullname = fullname;
         this.birthdate = birthdate;
@@ -55,7 +39,7 @@ public class users {
         this.created_at = created_at;
         this.modified_at = modified_at;
         this.status = status;
-        this.roles = roles;
+        this.role_id = role_id;
     }
 
 
@@ -143,6 +127,13 @@ public class users {
         this.status = status;
     }
 
+    public int getRole_id() {
+        return role_id;
+    }
+
+    public void setRole_id(int role_id) {
+        this.role_id = role_id;
+    }
 
     @Override
     public String toString() {
@@ -157,7 +148,7 @@ public class users {
                 ", created_at=" + created_at +
                 ", modified_at=" + modified_at +
                 ", status=" + status +
+                ", role_id=" + role_id +
                 '}';
     }
-
 }

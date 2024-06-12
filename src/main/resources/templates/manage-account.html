@@ -12,7 +12,7 @@
             color: #333333;
         }
         .navbar, footer {
-            background-color: cornflowerblue;
+            background-color: #DEA26EFF;
         }
         .navbar .nav-link, .navbar-brand, footer {
             color: #FFFFFF;
@@ -32,27 +32,27 @@
             padding: 5px 0;
         }
         .table th {
-            background-color: cornflowerblue;
+            background-color: #DEA26EFF;
             color: #FFFFFF;
         }
         .btn-warning {
-            background-color: yellowgreen;
-            border-color: yellowgreen;
+            background-color: #DEA26EFF;
+            border-color: #DEA26EFF;
         }
         .btn-danger {
-            background-color: #842029;
-            border-color: #842029;
+            background-color: #DEA26EFF;
+            border-color: #DEA26EFF;
         }
         .btn-ban {
-            background-color: indianred;
-            border-color: indianred;
+            background-color: #DEA26EFF;
+            border-color: #DEA26EFF;
         }
     </style>
 </head>
 <body>
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg">
-    <a class="navbar-brand" href="#">Quizify</a>
+    <a class="navbar-brand" th:href="@{/manage-account}">Quizify</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -72,7 +72,7 @@
             </li>
         </ul>
         <form th:action="@{/search}" method="get" class="form-inline">
-            <input class="form-control mr-sm-2" type="search" name="fullname" placeholder="Search" aria-label="Search">
+            <input class="form-control mr-sm-2" type="search" name="key" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>
@@ -99,14 +99,11 @@
         </thead>
 
         <tbody id="accountsTable">
-        <select id="roleInput">
-            <option value="User">User</option>
-            <option value="Staff">Staff</option>
-        </select>
+
         <tr th:each="user : ${ searchUser == null ? users : searchUser }">
             <td th:text="${user.user_id}"></td>
             <td th:text="${user.fullname}"></td>
-            <td th:text="${user.roles.type_of_role}"></td>
+            <td th:text="${user.role_id == 2 ? 'Staff' : 'User' }"></td>
             <td style="color: Green;" th:if="${user.status == 1}" th:text="Active"></td>
             <td style="color: red;" th:if="${user.status == 0 }" th:text="Inactive"></td>
             <td th:text="${#temporals.format(user.created_at, 'dd/mm/yyyy HH:mm:ss')}"></td>
@@ -114,7 +111,13 @@
                 <a class="btn btn-warning btn-sm" th:href="@{/view_account/{id}(id=${user.user_id}) } ">view</a>
             </td>
             <td>
-                <button class="btn btn-warning btn-sm" th:onclick=" 'editRole('+${user.user_id}+','+${user.roles.role_id}+')' ">Update Role</button>
+                <form th:action="@{/changeRole/{id}(id=${user.user_id})}" th:method="post" >
+                        <select name="roleID">
+                            <option value="2">Staff</option>
+                            <option value="3">User</option>
+                        </select>
+                    <button class="btn btn-warning btn-sm" type="submit">Update Role</button>
+                </form>
             </td>
             <td>
                 <button class="btn btn-danger btn-sm" th:onclick=" 'deleteAccount(' +${user.user_id}+')' " >Delete</button>
@@ -155,33 +158,6 @@
                     alert('failed to delete user')
                 })
         }
-    }
-
-    // Function to edit a roles
-    function editRole(id,role_id) {
-        //get new role
-        var newRole = document.getElementById('roleInput').value;
-        //URL API
-        const url = `http://localhost:8081/${id}/${role_id}`;
-
-        //gui yeu cau PUT
-        fetch(url, {
-            method: 'PUT',
-            headers: {
-                'content-type' : 'application/json'
-            },
-            body:JSON.stringify({type_of_role : newRole})
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success: ', data);
-                alert('Role update successfully!');
-                location.reload();
-            })
-            .catch((erro) =>{
-                console.error('Erro: ', erro);
-                alert('Failed to update role');
-            });
     }
 
 </script>

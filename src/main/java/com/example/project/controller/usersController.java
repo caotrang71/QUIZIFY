@@ -32,9 +32,11 @@ public class usersController {
         return "manage-account";
     }
 
-    @PutMapping("/{id}/{role_id}")
-    public roles ChangeRolesPage(@PathVariable int id,@PathVariable int role_id,@RequestBody roles newRole) {
-        return Uservice.changeRoles(id,role_id,newRole);
+    @PostMapping("/changeRole/{id}")
+    public String ChangeRolesPage(@PathVariable int id, @RequestParam int roleID,Model model) {
+         Uservice.updateRole(id,roleID);
+         model.addAttribute("mess", "update Role successfully");
+         return "redirect:/manage-account";
     }
 
     @DeleteMapping("/manage-account/{id}")
@@ -66,7 +68,7 @@ public class usersController {
             String encodePass = Uservice.encodePassword(password);
             user.setPassword(encodePass);
             userRepository.save(user);
-            model.addAttribute("mess","Create Account Successfully!");
+            model.addAttribute("message","Create Account Successfully!");
             return "redirect:/create_account";
         }else {
             model.addAttribute("message","Email is existed!");
@@ -77,9 +79,9 @@ public class usersController {
     }
 
     @GetMapping("/search")
-    public String searchUser(@RequestParam("fullname") String name, Model model) {
-        List<users> users = userRepository.findByUsername(name);
-        List<users> usersF = userRepository.findByFullname(name);
+    public String searchUser(@RequestParam("key") String key, Model model) {
+        List<users> users = userRepository.findByEmail(key);
+        List<users> usersF = userRepository.findByFullname(key);
         if (!users.isEmpty()) {
             model.addAttribute("searchUser", users);
         }

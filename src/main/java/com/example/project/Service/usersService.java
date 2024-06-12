@@ -4,6 +4,7 @@ import com.example.project.Repository.rolesRepository;
 import com.example.project.Repository.usersRepository;
 import com.example.project.entity.roles;
 import com.example.project.entity.users;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,25 +27,16 @@ public class usersService {
         return usersList;
     }
 
-    public List<users> getUserByName(String userName) {
-        List<users> usersList = repo.findByUsername(userName);
-        return usersList;
-    }
-
     public void deleteUsers(int id) {
         repo.deleteById(id);
     }
 
-    public roles changeRoles(int id,int roleId, roles newRoles) {
-        Optional<roles> optionalRole = roleRepo.findById(roleId);
+    public void updateRole(int id,int roleID) {
+        users user = repo.findById(id).orElse(null);
 
-        if (optionalRole.isPresent()) {
-            roles changeRole = optionalRole.get();
-            changeRole.setType_of_role(newRoles.getType_of_role());
-            return roleRepo.save(changeRole);
-
-        } else {
-            return null;
+        if (user != null) {
+            user.setRole_id(roleID);
+            repo.save(user);
         }
     }
 
@@ -60,5 +52,6 @@ public class usersService {
             return false;
         }
     }
+
 
 }
