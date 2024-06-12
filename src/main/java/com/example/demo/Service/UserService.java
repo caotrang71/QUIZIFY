@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     @Autowired
@@ -41,5 +43,16 @@ public class UserService {
 
     public boolean checkPasswordEncoder(String password, String encoderpassword) {
         return passwordEncoder.matches(password, encoderpassword);
+    }
+    public void updateProfile(int id,String fullname, String birthdate, int gender, String username) {
+        Users userExists = UsersRepository.findById(id).orElseThrow(null);
+        if (userExists != null) {
+            userExists.setFullname(fullname);
+            userExists.setBirthdate(birthdate);
+            userExists.setGender(gender);
+            userExists.setUsername(username);
+            UsersRepository.save(userExists);
+        }
+
     }
 }

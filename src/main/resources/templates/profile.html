@@ -21,33 +21,42 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="text-right">Profile Settings</h4>
                 </div>
+                <form th:action="@{/update_profile}" method="post" th:object="${user}" >
                 <div class="row mt-2">
-                    <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="Full name" th:value="${user.get().getFullname()}" ></div>
-                    <div class="col-md-6"><label class="labels">Gender</label><input type="text" class="form-control" th:value="${user.get().getGender() == 1 ? 'Male' : 'Female'}" placeholder="Male/Female"></div>
+                    <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="Full name" th:value="${user.get().getFullname()}" name="fullname" ></div>
+                    <br><br>
+                    <div class="col-md-6"><label for="gender" class="labels">Gender</label>
+                        <select class="form-control" id="gender" name="gender">
+                            <option th:selected="${user.get().getGender() == 1  }"  >Male</option>
+                            <option th:selected="${user.get().getGender() == 0  }"  >Female</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-12"><label class="labels">user ID</label><input type="text" class="form-control" placeholder="user id" th:value="${user.get().getUser_id()}"></div>
-                    <div class="col-md-12"><label class="labels">BirthDate</label><input type="text" class="form-control" placeholder="dd/mm/yyyy " th:value="${user.get().getBirthdate()}"></div>
-                    <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" placeholder="Email" th:value="${user.get().getEmail()}"></div>
-                    <div class="col-md-12"><label class="labels">Userame</label><input type="text" class="form-control" placeholder="username" th:value="${user.get().getUsername()}"></div>
-                    <div class="col-md-12"><label class="labels">Password</label><input type="text" class="form-control" placeholder="password" th:value="${user.get().getPassword()}"></div>
-                    <div class="col-md-12"><label class="labels">Create at</label><input type="text" class="form-control" placeholder="Create at " th:value="${user.get().getCreated_at()}"></div>
-                    <div class="col-md-12"><label class="labels">Modifile at</label><input type="text" class="form-control" placeholder="Modified at" th:value="${user.get().getModified_at()}"></div>
-                    <div class="col-md-12"><label class="labels">Status</label><input type="text" class="form-control" placeholder="status" th:value="${user.get().getStatus() == 1 ? 'Actice' : 'Inactive' }"></div>
-                    <div class="col-md-12"><label class="labels">Role ID</label><input type="text" class="form-control" placeholder="role_id" th:value="${user.get().getRole_id()}"></div>
+                    <div class="col-md-12"><label class="labels">user ID</label><input type="text" class="form-control" placeholder="user id" th:value="${user.get().getUser_id()}" name="id" readonly></div>
+                    <div class="col-md-12"><label class="labels">BirthDate</label><input type="text" class="form-control" placeholder="dd/mm/yyyy " th:value="${user.get().getBirthdate()}" name="birthdate"></div>
+                    <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" placeholder="Email" th:value="${user.get().getEmail()}" name="email" readonly></div>
+                    <div class="col-md-12"><label class="labels">Userame</label><input type="text" class="form-control" placeholder="username" th:value="${user.get().getUsername()}" name="username"></div>
+                    <div class="col-md-12"><label class="labels">Password</label><input type="text" class="form-control" placeholder="password" th:value="${user.get().getPassword()}" name="password"></div>
+                    <div class="col-md-12"><label class="labels">Create at</label><input type="text" class="form-control" placeholder="Create at " th:value="${user.get().getCreated_at()}" name="created_at" readonly></div>
+                    <div class="col-md-12"><label class="labels">Modifile at</label><input type="text" class="form-control" placeholder="Modified at" th:value="${user.get().getModified_at()}" name="modified_at" readonly></div>
+                    <div class="col-md-12"><label class="labels">Status</label><input type="text" class="form-control" placeholder="status" th:value="${user.get().getStatus() == 1 ? 'Actice' : 'Inactive' }" name="status" readonly></div>
+                    <div class="col-md-12"><label class="labels">Role ID</label><input type="text" class="form-control" placeholder="role_id" th:value="${user.get().getRole_id()}" name="role_id" readonly></div>
 
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-6 mt-6 text-center"><a class="btn btn-primary profile-button" th:href="@{/change_pass/{username}(username=${user.get().getUsername()})}" >Change Password</a></div>
-                    <div class="col-md-6 mt-6 text-center"><button class="btn btn-primary profile-button" type="button">Save Profile</button></div>
+                    <div class="col-md-6 mt-6 text-center"><button class="btn btn-primary profile-button" name="Save" type="submit">Save Profile</button></div>
                 </div>
                 <div class="row mt-2">
 
                     <div class="col-md-12 mt-12 text-center"><!--/*@thymesVar id="mess" type="mess"*/-->
                     <p class="btn btn-primary profile-button" th:if="${mess}" th:text="${mess}" ></p></div>
+                    <div class="col-md-12 mt-12 text-center">
+                        <p class="btn btn-primary profile-button" th:if="${message != null}" th:text="${message}" ></p></div>
                 </div>
 
-
+                </form>
 
             </div>
         </div>

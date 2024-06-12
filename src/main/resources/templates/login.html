@@ -12,7 +12,7 @@
   </div>
   <div class="text-center mt-4 name">
     Welcom to QUIZIFY!
-    <p th:if="${error}" style="color: red; font-size: 14px">Error: <span th:text="${error}"></span></p>
+    <p th:if="${error != null}" style="color: red; font-size: 14px">Error: <span th:text="${error}"></span></p>
   </div>
   <form action="/login" method="post" class="p-3 mt-3">
     <div class="form-field d-flex align-items-center">
@@ -30,7 +30,7 @@
       <a href="#">Forget password?</a>
     </div>
     <div class="float-right">
-      <a href="#">Sign up</a>
+      <a th:href="@{/show_page_register}">Sign up</a>
     </div>
     <div style="clear: both;"></div>
   </div>

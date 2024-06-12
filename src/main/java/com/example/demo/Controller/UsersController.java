@@ -10,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -110,6 +107,24 @@ public class UsersController {
             model.addAttribute("error", "Invalid email or password");
             return "login";
         }
+    }
+
+    @PostMapping("/update_profile")
+    public String updateProfile(@RequestParam int id,
+                                @RequestParam String fullname,
+                                @RequestParam String birthdate,
+                                @RequestParam String  gender,
+                                @RequestParam String username
+            , Model model) {
+        int gen;
+        if (gender.equals("Female")){
+             gen = 0;
+        }else{
+             gen = 1;
+        }
+        userService.updateProfile(id,fullname,birthdate,gen,username);
+        model.addAttribute("message", "Profile updated successfully!");
+        return "redirect:/profile/1";
     }
 
 }
