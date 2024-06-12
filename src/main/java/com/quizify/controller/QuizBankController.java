@@ -1,19 +1,19 @@
 package com.quizify.controller;
 
+import com.quizify.model.Question;
+import com.quizify.model.QuestionChoice;
 import com.quizify.model.QuizBank;
-import com.quizify.model.User;
-import com.quizify.service.SubcategoryService;
-import com.quizify.service.UserService;
-import com.quizify.service.QuizBankService;
+import com.quizify.service.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.validation.BindingResult;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/quiz-banks")
@@ -26,20 +26,46 @@ public class QuizBankController {
 
     @Autowired
     private SubcategoryService subcategoryService;
+    @Autowired
+    private QuestionService questionService;
+    @Autowired
+    private QuestionChoiceService questionChoiceService;
 
-
+    //view list of quiz banks
     @GetMapping("/quiz-banks-list")
     public String quizBankList(Model model) {
         List<QuizBank> quizBanksList = quizBankService.getAllQuizBanks();
         model.addAttribute("quizBanksList", quizBanksList);
         return "quiz-bank-list";
     }
+
+    @GetMapping("/quiz-bank-detail/{id}")
+    public String getDetailQuizBank(@PathVariable(value="id") long id, Model model){
+        QuizBank quizBank = quizBankService.getQuizBankById(id);
+        List<Question> questions = questionService.getQuestionsByQuizBank(quizBank);
+        Map<Question, List<QuestionChoice>> questionChoicesMap = new HashMap<>();
+        for(Question question : questions) {
+            List<QuestionChoice> questionChoices = questionChoiceService.getQuestionChoiceByQuestion(question);
+            questionChoicesMap.put(question, questionChoices);
+        }
+        model.addAttribute("quizBank", quizBank);
+        model.addAttribute("questions", questions);
+        model.addAttribute("questionChoicesMap", questionChoicesMap);
+        return "quiz-bank-detail";
+    }
+
     @GetMapping("/")
-    public String viewQuizBankListPage(Model model) {
+    public String viewQuizUserHomePage(Model model) {
         model.addAttribute("quizBanksList", quizBankService.getAllQuizBanks());
         return "quiz-bank-list";
     }
 
+//    @GetMapping("/")
+//    public String viewQuizBankListPage(Model model) {
+//        return findPaginated(1, "bankName", "asc", model);
+//    }
+
+    //form to create quiz bank
     @GetMapping("/create-quiz-bank")
     public String createQuizBank(Model model) {
         model.addAttribute("quizBank", new QuizBank());
@@ -47,96 +73,121 @@ public class QuizBankController {
     }
 
     @PostMapping("/created")
-    public String create(@ModelAttribute("quizBank") QuizBank quizBank, Model model) {
-        // save quiz bank to db
+    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "create-quiz-bank";
+        }
+
+        // Ensure there's at least one question
+        if (quizBank.getQuestions() == null || quizBank.getQuestions().isEmpty()) {
+            model.addAttribute("error", "You must add at least one question!");
+            return "create-quiz-bank";
+        }
+
+        // Ensure each question has exactly 4 choices
+        for (Question question : quizBank.getQuestions()) {
+            if (question.getQuestionChoices() == null || question.getQuestionChoices().size() != 4) {
+                model.addAttribute("error", "Each question must have exactly 4 choices.");
+                return "create-quiz-bank";
+            }
+            for (QuestionChoice choice : question.getQuestionChoices()) {
+                System.out.println(choice.getCorrectOrNot());
+                choice.setQuestion(question);  // Set the parent question reference
+            }
+        }
+
+        // Save the QuizBank, Questions, and Choices
         quizBankService.createQuizBank(quizBank);
 
-        // Add success message to the model
         model.addAttribute("success", true);
-
         return "redirect:/quiz-banks/";
     }
 
-//    @GetMapping("/")
-//    public String home(Model model, @RequestParam(value = "success", required = false) String success) {
-//        if (success != null) {
-//            model.addAttribute("message", "Quiz bank created successfully!");
-//        }
-//        return "quiz-bank-list";
-//    }
-//
-//    @PostMapping("/saveQuizBank")
-//    public String saveQuizBank(@ModelAttribute("quizBank") QuizBank quizBank) {
-//        // save quiz bank to db
-//        quizBankService.saveQuizBank(quizBank);
-//        return "redirect:/";
-//    }
-//
-//    @GetMapping("/update-quiz-bank/{id}")
-//    public String updateQuizBank(@PathVariable(value="id") long id, Model model) {
-//        QuizBank quizBank = quizBankService.getQuizBankById(id);
-//        model.addAttribute("quizBank", new QuizBank());
-//        return "update-quiz-bank";
-//    }
-//
-//    @GetMapping("/test")
-//    public String test() {
-//        return "test";
-//    }
-//
-//
-//    @PostMapping("/view")
-//    public List<QuizBank> view() {
-//        return quizBankService.getAllQuizBank();
-//
+    //form to update quiz bank
+    @GetMapping("/update-quiz-bank/{id}")
+    public String updateQuizBank(@PathVariable(value="id") long id, Model model) {
+        QuizBank quizBank = quizBankService.getQuizBankById(id);
+        List<Question> questions = questionService.getQuestionsByQuizBank(quizBank);
+        Map<Question, List<QuestionChoice>> questionChoicesMap = new HashMap<>();
+        for(Question question : questions) {
+            List<QuestionChoice> questionChoices = questionChoiceService.getQuestionChoiceByQuestion(question);
+            questionChoicesMap.put(question, questionChoices);
+        }
+        model.addAttribute("quizBank", quizBank);
+        model.addAttribute("questions", questions);
+        model.addAttribute("questionChoicesMap", questionChoicesMap);
+        return "update-quiz-bank";
+    }
 
-//    public QuizBankController(QuizBankService quizBankService) {
-//        this.quizBankService = quizBankService;
+    //back to list after saved updating successfully
+    @PostMapping("/saved")
+    public String saveQuizBank(@ModelAttribute("quizBank") QuizBank quizBank, BindingResult result, Model model) {
+        // Save quiz bank to db
+        if (result.hasErrors()) {
+            return "update-quiz-bank";
+        }
+
+        // Ensure there's at least one question
+        if (quizBank.getQuestions() == null || quizBank.getQuestions().isEmpty()) {
+            model.addAttribute("error", "You must add at least one question!");
+            return "update-quiz-bank";
+        }
+
+        // Ensure each question has exactly 4 choices
+        for (Question question : quizBank.getQuestions()) {
+            if (question.getQuestionChoices() == null || question.getQuestionChoices().size() != 4) {
+                model.addAttribute("error", "Each question must have exactly 4 choices.");
+                return "update-quiz-bank";
+            }
+            // Clear the ID of the question to ensure it's treated as a new question when saving
+            question.setId(null);
+            for (QuestionChoice choice : question.getQuestionChoices()) {
+                // Clear the ID of the choice to ensure it's treated as a new choice when saving
+                choice.setId(null);
+                choice.setQuestion(question);  // Set the parent question reference
+            }
+        }
+
+        // Save the QuizBank, Questions, and Choices
+        quizBankService.updateQuizBank(quizBank);
+
+        model.addAttribute("success", true);
+        return "redirect:/quiz-banks/";
+    }
+
+
+//    @GetMapping("/delete-quiz-bank/{id}")
+//    public String deleteQuizBank(@PathVariable(value="id") long id, Model model) {
+//        this.quizBankService.deleteQuizBankById(id);
+//        return "redirect:/quiz-banks/";
 //    }
-//
-//    @GetMapping("/homePage")
-//    public String homePage(Model model) {
-//        return "quiz-banks/home-page";
-//    }
-//    @GetMapping("/quizList")
-//    public String listUserQuizBanks(Model model) {
-//        User currentUser = userService.getCurrentUser();
-//        model.addAttribute("createdQuizBanks", quizBankService.getUserCreatedQuizBanks(currentUser));
-//        model.addAttribute("joinedQuizBanks", quizBankService.getPublicQuizBanks(currentUser));
-//        return "quiz-banks/quiz-banks-list";
-//    }
-//
-//    @GetMapping
-//    public ModelAndView listQuizBanks(Model model) {
-//        List<QuizBank> list = quizBankService.getAllQuizBank();
-//        return new ModelAndView("quiz-banks/quiz-banks-list","bank",list);
-//    }
-//
-//    @GetMapping("/create")
-//    public String createQuizBankForm(Model model) {
-//        model.addAttribute("quizBank", new QuizBank());
-//        model.addAttribute("subcategories", subcategoryService.getAllSubcategories());
-//        return "quiz-banks/create";
-//    }
-//
-//    @PostMapping("/create")
-//    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result, Model model) {
-//        User currentUser = userService.getCurrentUser();
-//        quizBank.setCreatedBy(currentUser);
-//        try {
-//            quizBankService.createQuizBank(quizBank);
-//            return "redirect:/quiz-banks";
-//        } catch (IllegalArgumentException e) {
-//            result.rejectValue("questions", "error.quizBank", e.getMessage());
-//            return "quiz-banks/create";
-//        }
-//    }
-//
-//    @GetMapping("/delete/{id}")
-//    public String deleteQuizBank(@PathVariable Long id) {
-//        quizBankService.deleteQuizBank(id);
-//        return "redirect:/quiz-banks";
-//    }
+
+    @GetMapping("/delete-quiz-bank/{id}")
+    public String deleteQuizBank(@PathVariable("id") Long id, Model model) {
+        quizBankService.deleteQuizBankById(id);
+        return "redirect:/quiz-banks/";
+    }
+
+    @GetMapping("/page/{pageNo}")
+    public String findPaginated(@PathVariable(value="pageNo") int pageNo, @RequestParam("sortField") String sortField,
+                                @RequestParam("sortDir") String sortDir, Model model) {
+
+        int pageSize = 5;
+
+        Page<QuizBank> page = quizBankService.findPaginated(pageNo,pageSize, sortField, sortDir);
+        List<QuizBank> quizBanksList = page.getContent();
+
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("quizBanksList", quizBanksList);
+
+        return "quiz-bank-list";
+    }
+
 
 }
 

@@ -16,7 +16,7 @@ public class QuizBank {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "quiz_banks_id")
-    private Long quizBanksId;
+    private Long id;
 
     @Column(name = "bank_name")
     private String bankName;
@@ -30,9 +30,6 @@ public class QuizBank {
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
 
-    @Column(name = "image")
-    private String image;
-
     @Column(name = "editable")
     private Boolean editable;
 
@@ -44,7 +41,7 @@ public class QuizBank {
     @JoinColumn(name = "subcategory_id", nullable = false)
     private Subcategory subcategory;
 
-    @OneToMany(mappedBy = "quizBank", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "quizBank", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
 
 }
