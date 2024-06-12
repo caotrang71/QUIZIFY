@@ -3,10 +3,11 @@ package com.quizify.service;
 import com.quizify.model.User;
 import com.quizify.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-public interface UserService {
+@Service
+public class UserService {
 //    @Autowired
 //    private UserRepository userRepository;
 //

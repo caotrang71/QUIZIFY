@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
   	<title>Sidebar 01</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <link rel="shortcut icon" href="/static/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png" type="image/x-icon">
+      <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png} type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
-		
+
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="/static/side/css/style.css">
+		<link rel="stylesheet" th:href="@{/side/css/style.css}">
   </head>
   <body>
-		
+
 		<div class="wrapper d-flex align-items-stretch">
 			<nav id="sidebar">
 				<div class="p-4 pt-5">
@@ -113,9 +113,9 @@
       </div>
 		</div>
 
-    <script src="/static/side/js/jquery.min.js"></script>
-    <script src="/static/side/js/popper.js"></script>
-    <script src="/static/side/js/bootstrap.min.js"></script>
-    <script src="/static/side/js/main.js"></script>
+    <script th:src="@{/side/js/jquery.min.js}"></script>
+    <script th:src="@{/side/js/popper.js}"></script>
+    <script th:src="@{/side/js/bootstrap.min.js}"></script>
+    <script th:src="@{/side/js/main.js}"></script>
   </body>
 </html>

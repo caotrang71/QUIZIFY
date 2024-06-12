@@ -12,7 +12,7 @@ public class QuestionChoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "choice_id")
-    private Long choiceId;
+    private Long id;
 
     @Column(name = "correct_or_not")
     private Boolean correctOrNot;
@@ -20,8 +20,13 @@ public class QuestionChoice {
     @Column(name = "content")
     private String content;
 
+
+    @Column(name = "image")
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
+
 
 }

@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "subcategory")
+@Table(name = "subcategories")
 public class Subcategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subcategory_id")
-    private Integer subcategoryId;
+    private Integer id;
 
     @Column(name = "subcategory_name")
     private String subcategoryName;
