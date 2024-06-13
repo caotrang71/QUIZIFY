@@ -25,7 +25,12 @@ public class usersController {
     @Autowired
     private usersRepository userRepository;
 
-    @GetMapping("/manage-account")
+    @GetMapping("/Home")
+    public String ShowHomepage(Model model) {
+        return "HomePage";
+    }
+
+    @GetMapping("/manage_account")
     public String getListUsers(Model model) {
         List<users> users = Uservice.getAllUsers();
         model.addAttribute("users", users);
@@ -36,7 +41,7 @@ public class usersController {
     public String ChangeRolesPage(@PathVariable int id, @RequestParam int roleID,Model model) {
          Uservice.updateRole(id,roleID);
          model.addAttribute("mess", "update Role successfully");
-         return "redirect:/manage-account";
+         return "redirect:/manage_account";
     }
 
     @DeleteMapping("/manage-account/{id}")
@@ -81,7 +86,7 @@ public class usersController {
     @GetMapping("/search")
     public String searchUser(@RequestParam("key") String key, Model model) {
         List<users> users = userRepository.findByEmail(key);
-        List<users> usersF = userRepository.findByFullname(key);
+        List<users> usersF = userRepository.findByFullnameContainingIgnoreCase(key);
         if (!users.isEmpty()) {
             model.addAttribute("searchUser", users);
         }

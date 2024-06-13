@@ -52,7 +52,7 @@
 <body>
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-lg">
-    <a class="navbar-brand" th:href="@{/manage-account}">Quizify</a>
+    <a class="navbar-brand" th:href="@{/manage_account}">Quizify</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -80,14 +80,16 @@
 
 <!-- Main Content -->
 <div class="container mt-5">
-    <h2>Accounts List</h2>
-
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Accounts List</h2>
+        <a class="btn btn-primary" th:href="@{/create_account}">Create Account</a>
+    </div>
 
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
             <th>ID</th>
-            <th>USER NAME</th>
+            <th>FULL NAME</th>
             <th>ROLE</th>
             <th>STATUS</th>
             <th>CREATE AT</th>
@@ -112,11 +114,13 @@
             </td>
             <td>
                 <form th:action="@{/changeRole/{id}(id=${user.user_id})}" th:method="post" >
-                        <select name="roleID">
+<!--                    th:disabled="${user.role_id != 1}"-->
+                        <select name="roleID" >
                             <option value="2">Staff</option>
                             <option value="3">User</option>
                         </select>
-                    <button class="btn btn-warning btn-sm" type="submit">Update Role</button>
+                    <button class="btn btn-warning btn-sm" type="submit" >Update Role</button>
+<!--                    th:if="${user.role_id != 1}" disabled-->
                 </form>
             </td>
             <td>

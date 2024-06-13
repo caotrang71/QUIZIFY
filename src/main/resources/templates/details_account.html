@@ -27,10 +27,10 @@
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12"><label class="labels">user_id</label><input type="text" class="form-control" placeholder="Enter phone number" th:value="${user.user_id}" readonly></div>
-                    <div class="col-md-12"><label class="labels">email </label><input type="text" class="form-control" placeholder="email" th:value="${user.email}" readonly></div>
+                    <div class="col-md-12"><label class="labels">email </label><input type="email" class="form-control" placeholder="email" th:value="${user.email}" readonly></div>
                     <div class="col-md-12"><label class="labels">Birthday</label><input type="text" class="form-control" placeholder="dd/mm/yyyy" th:value="${user.birthdate}" readonly></div>
                     <div class="col-md-12"><label class="labels">username</label><input type="text" class="form-control" placeholder="username" th:value="${user.username}" readonly></div>
-                    <div class="col-md-12"><label class="labels">password</label><input type="text" class="form-control" placeholder="password" th:value="${user.password}" readonly></div>
+                    <div class="col-md-12"><label class="labels">password</label><input type="password" class="form-control" placeholder="password" th:value="${user.password}" readonly></div>
                     <div class="col-md-12"><label class="labels">created_at</label><input type="text" class="form-control" placeholder="created_at" th:value="${#temporals.format(user.created_at, 'dd/MM/yyyy HH:mm:ss')}" readonly></div>
                     <div class="col-md-12"><label class="labels">modified_at</label><input type="text" class="form-control" placeholder="modified_at" th:value="${#temporals.format(user.modified_at, 'dd/MM/yyyy HH:mm:ss')}" readonly></div>
                     <div class="col-md-12"><label class="labels " ></label><input type="text" class="form-control" placeholder="status" th:if="${user.status == 1}" th:value="Active"  style="color: green" readonly></div>
@@ -40,7 +40,7 @@
                 <div class="row mt-2">
 
                     <div class="col-md-12 mt-12 text-center">
-                        <a class="btn btn-primary profile-button" href="/manage-account">Back To Accout List</a>
+                        <a class="btn btn-primary profile-button" href="/manage_account">Back To Accout List</a>
                     </div>
                 </div>
 
