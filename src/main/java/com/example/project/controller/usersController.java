@@ -2,11 +2,8 @@ package com.example.project.controller;
 
 import com.example.project.Repository.rolesRepository;
 import com.example.project.Repository.usersRepository;
-import com.example.project.Service.usersService;
-import com.example.project.entity.roles;
+import com.example.project.Service.AccountService;
 import com.example.project.entity.users;
-import jakarta.annotation.Nullable;
-import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +16,7 @@ import java.util.Optional;
 
 public class usersController {
     @Autowired
-    private usersService Uservice;
+    private AccountService Uservice;
     @Autowired
     private rolesRepository rolesRepository;
     @Autowired

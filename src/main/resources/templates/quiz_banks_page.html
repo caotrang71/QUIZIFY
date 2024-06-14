@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizify Admin Dashboard</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-Fv43rsO1tu/JkzTAg+A+nm1d1U4FXk7+M7LRuI0cxa+OEagKZZltUqmJ5EXEw5eV+9aBUX+qhKtGs2eaVZGmMw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+        .navbar, footer {
+            background-color: #DEA26EFF;
+        }
+        .navbar .nav-link, .navbar-brand, footer {
+            color: #FFFFFF;
+        }
+        .btn-outline-success {
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+        }
+        .btn-outline-success:hover {
+            background-color: #FFFFFF;
+            color: #333333;
+        }
+        footer {
+            padding: 20px 0;
+        }
+        .footer-detail li {
+            padding: 5px 0;
+        }
+        .table th {
+            background-color: #DEA26EFF;
+            color: #FFFFFF;
+        }
+        .btn-warning {
+            background-color: #DEA26EFF;
+            border-color: #DEA26EFF;
+        }
+        .btn-danger {
+            background-color: #DEA26EFF;
+            border-color: #DEA26EFF;
+        }
+        .btn-ban {
+            background-color: #DEA26EFF;
+            border-color: #DEA26EFF;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" th:href="@{/HomePage}">Quizify</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Quiz Banks List</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Category</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Accounts List</a>
+            </li>
+        </ul>
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" name="key" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Quiz Banks List</h2>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>QUIZ BANKS ID</th>
+            <th>BANK NAME</th>
+            <th>CREATE AT</th>
+            <th>MODIFIED_AT</th>
+            <th>DESCRIPTION</th>
+            <th>IMAGE</th>
+            <th>EDITABLE</th>
+            <th>ACTION</th>
+
+        </tr>
+        </thead>
+
+        <tbody id="accountsTable">
+
+        <tr th:each="ListQ : ${ListQuiz}">
+            <td th:text="${ListQ.quiz_banks_id}"></td>
+            <td th:text="${ListQ.bank_name}"></td>
+            <td th:text="${ListQ.description}"></td>
+            <td th:text="${#temporals.format(ListQ.create_at, 'dd/mm/yyyy HH:mm:ss')}"></td>
+            <td th:text="${#temporals.format(ListQ.modified_at, 'dd/mm/yyyy HH:mm:ss')}"></td>
+            <td th:text="${ListQ.image}"></td>
+            <td style="color: Green;" th:if="${ListQ.editable == 1}" th:text="enable"></td>
+            <td style="color: red;" th:if="${ListQ.editable == 0 }" th:text="disable"></td>
+            <td>
+                <a href="#" class="btn btn-danger btn-sm" th:onclick=" 'deleteQuizBanks('+${ListQ.quiz_banks_id}+')' " title="Delete">DELETE</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+<script>
+    //delete quizbank
+    function deleteQuizBanks(id){
+        if (confirm('are you sure DELETE this QUIZ BANK?')){
+            var url =`http://localhost:8081/show/deleteQuiz_banks/${id}`;
+            fetch(url,{
+                method: 'DELETE',
+                headers: {
+                    'content-Type' : 'application/jon'
+                    }
+                })
+                .then(response=>{
+                    if (response.ok){
+                        alert('delete quiz banks SUCCESSFULLY.');
+                        location.reload();
+                    }else{
+                        alert('delete quiz banks FAIL!');
+                    }
+                })
+                .catch(error=>{
+                    console.error('ERROR:', error)
+                    alert('delete ERROR')
+                })
+        }
+
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
