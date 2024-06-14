@@ -1,5 +1,6 @@
 package com.quizify.service;
 
+import com.quizify.model.Category;
 import com.quizify.model.QuizBank;
 import com.quizify.model.Subcategory;
 import com.quizify.repository.SubcategoryRepository;
@@ -29,6 +30,10 @@ public class SubcategoryService {
         }
         return subcategory;
    //     return this.subcategoryRepository.getReferenceById(id);
+    }
+
+    public List<Subcategory> getSubcategoriesByCategory(Category category) {
+        return subcategoryRepository.getSubcategoriesByCategory(category);
     }
 
 
