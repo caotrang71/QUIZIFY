@@ -1,8 +1,9 @@
 package com.example.project.controller;
 
 import com.example.project.Repository.rolesRepository;
-import com.example.project.Repository.usersRepository;
+import com.example.project.Repository.accountRepository;
 import com.example.project.Service.AccountService;
+import com.example.project.Service.EmailService;
 import com.example.project.entity.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,15 @@ import java.util.Optional;
 
 @Controller
 
-public class usersController {
+public class accountController {
     @Autowired
     private AccountService Uservice;
     @Autowired
     private rolesRepository rolesRepository;
     @Autowired
-    private usersRepository userRepository;
+    private accountRepository userRepository;
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/Home")
     public String ShowHomepage(Model model) {
@@ -69,15 +72,13 @@ public class usersController {
         if (Uservice.checkAccount(user.getEmail())){
             String encodePass = Uservice.encodePassword(password);
             user.setPassword(encodePass);
+            emailService.sendMail(user.getEmail());
             userRepository.save(user);
-            model.addAttribute("message","Create Account Successfully!");
-            return "redirect:/create_account";
+            return "redirect:/manage_account";
         }else {
             model.addAttribute("message","Email is existed!");
             return "redirect:/create_account";
         }
-
-
     }
 
     @GetMapping("/search")

@@ -1,7 +1,7 @@
 package com.example.project.Service;
 
 import com.example.project.Repository.rolesRepository;
-import com.example.project.Repository.usersRepository;
+import com.example.project.Repository.accountRepository;
 import com.example.project.entity.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,19 +12,21 @@ import java.util.List;
 @Service
 public class AccountService {
     @Autowired
-    private usersRepository repo;
+    private accountRepository repo;
     @Autowired
     private rolesRepository roleRepo;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public List<users> getAllUsers() {
-        List<users> usersList = repo.findAll();
-        return usersList;
+        return repo.findAll();
     }
 
     public void deleteUsers(int id) {
-        repo.deleteById(id);
+        users user = repo.findById(id).orElse(null);
+        if (user != null) {
+            repo.deleteById(id);
+        }
     }
 
     public void updateRole(int id,int roleID) {
