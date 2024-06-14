@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link th:href="@{/side/css/style.css}" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body>
 
@@ -115,47 +118,39 @@
         <div class="container mt-5">
             <h2>Create Quiz Bank</h2>
             <form th:action="@{/quiz-banks/created}" th:object="${quizBank}" method="POST" id="quizBankForm">
-                <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control mb-4 col-4" required>
-                <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4" required>
+                Title: <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control mb-4 col-4" required>
+                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4" required>
+                Topic:
 
-                <!-- Question Section -->
+
+                <select th:field="*{subcategory}" class="form-control mb-4 col-4 js-example-basic-single" name="state" required>
+
+                    <th:block th:each="category : ${categoryList}">
+                        <optgroup th:label="${category.categoryName}">
+                            <th:block th:each="sub : ${category.subcategories}">
+                                <option th:value="${sub.id}" th:text="${sub.subcategoryName}" th:selected="${sub == quizBank.subcategory}"></option>
+                            </th:block>
+                        </optgroup>
+                    </th:block>
+
+                </select>
+
                 <div id="questionsSection">
-<!--                    <div class="card mb-4 question" th:each="question, questionStat : *{questions}">-->
-<!--                        <div class="card-body">-->
-<!--                            &lt;!&ndash; Dynamically generate question label with order number &ndash;&gt;-->
-<!--                            <label th:text="'Question ' + (${questionStat.index} + 1)"></label>-->
-<!--                            <input type="text" th:field="*{questions[__${questionStat.index}__].content}" class="form-control mb-2" required>-->
-<!--                            <button type="button" class="btn btn-danger btn-sm remove-question"><i class="fa fa-trash"></i> Remove</button>-->
 
-<!--                            &lt;!&ndash; Choices Section &ndash;&gt;-->
-<!--                            <div class="choices">-->
-<!--                                <div class="form-group" th:each="choice, choiceStat : *{questions[__${questionStat.index}__].questionChoices}">-->
-<!--                                    <label th:text="'Choice ' + (${choiceStat.index} + 1)"></label>-->
-<!--                                    <div class="form-check">-->
-<!--                                        <input type="text" th:field="*{questions[__${questionStat.index}__].questionChoices[__${choiceStat.index}__].correctOrNot}" class="form-check-input" th:value="${choice.content}" required>-->
-<!--                                        <input type="text" th:field="*{questions[__${questionStat.index}__].questionChoices[__${choiceStat.index}__].content}" class="form-control mb-2" required>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
                 </div>
-                <!-- Add Question Button -->
+
                 <button type="button" class="btn btn-sm btn-success add-question"><i class="fa fa-plus"></i> Question</button>
                 <button type="submit" class="btn btn-sm btn-success">Save</button>
             </form>
 
-            <!-- Success and Error Messages -->
+
             <div th:if="${error}" class="alert alert-danger mt-4" id="errorAlert">
                 <p th:text="${error}"></p>
             </div>
-<!--            <div th:if="${success}" class="alert alert-success mt-4" id="successAlert">-->
-<!--                Quiz bank created successfully!-->
-<!--                <a th:href="@{/quiz-banks/}" class="btn btn-link">Go back to quiz list</a>-->
-<!--            </div>-->
+
         </div>
     </div>
-        <!-- JavaScript to dynamically add new questions -->
+        <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const addQuestionButton = document.querySelector('.add-question');
@@ -179,11 +174,10 @@
                     ${[...Array(4)].map((_, index) => `
                         <div class="form-check">
                             <label>
-                                <!-- Radio button for selection with the same name for all choices of the same question -->
+
                                 <input type="radio" name="questions[${questionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCount}, ${index})" required>
-                                <!-- Hidden input to bind the correctOrNot value to the model -->
+
                                 <input type="hidden" name="questions[${questionCount}].questionChoices[${index}].correctOrNot" value="false">
-                                <!-- The text input for the choice content -->
                                 <input type="text" name="questions[${questionCount}].questionChoices[${index}].content" class="form-control mb-2" required>
                             </label>
                         </div>
@@ -228,7 +222,7 @@
             }
         });
 
-        // Function to update the correct choice
+
         function updateCorrectChoice(questionCount, index) {
             const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
 
@@ -245,31 +239,37 @@
 
     </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+    });
+</script>
+<script>
+    $(document).ready(function() {
+
         $('form').submit(function() {
             $('input[type="radio"]').attr('correctOrNot', 'true');
             $('input[type!="radio"]').attr('correctOrNot', 'false');
+
         });
+
     });
     function handleRadioSelection(radioButton) {
-        // Get the parent element of the clicked radio button
+
         var parentElement = radioButton.parentElement;
 
-        // Find all radio buttons within the parent element
         var radioButtons = parentElement.getElementsByTagName('input');
 
-        // Uncheck all other radio buttons
         for (var i = 0; i < radioButtons.length; i++) {
             if (radioButtons[i].type === 'radio') {
                 radioButtons[i].checked = false;
             }
         }
 
-        // Check the selected radio button
         radioButton.checked = true;
     }
+
+
 
 </script>
 

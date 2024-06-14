@@ -30,8 +30,8 @@ public class QuizBank {
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
 
-    @Column(name = "editable")
-    private Boolean editable;
+    @Column(name = "status")
+    private Boolean status;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)

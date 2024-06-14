@@ -55,11 +55,12 @@ public class QuizBankService {
         QuizBank newQuizBank = new QuizBank();
         newQuizBank.setBankName(quizBank.getBankName());
         newQuizBank.setDescription(quizBank.getDescription());
-        newQuizBank.setEditable(true);
+        newQuizBank.setStatus(true);
         newQuizBank.setCreatedAt(LocalDateTime.now());
         newQuizBank.setModifiedAt(LocalDateTime.now());
-        newQuizBank.setCreatedBy(userRepository.getReferenceById(3L)); // Ensure this user ID exists in your database
-        newQuizBank.setSubcategory(subcategoryRepository.getReferenceById(32)); // Ensure this subcategory ID exists in your database
+        newQuizBank.setCreatedBy(userRepository.getReferenceById(3L));
+        newQuizBank.setSubcategory(quizBank.getSubcategory());// Ensure this user ID exists in your database
+      //  newQuizBank.setSubcategory(subcategoryRepository.getReferenceById(32)); // Ensure this subcategory ID exists in your database
         quizBankRepository.save(newQuizBank);
 
         // Save each question and its choices
@@ -97,10 +98,6 @@ public class QuizBankService {
         return quizBank;
     }
 
-//    public void loadQuestions(QuizBank quizBank) {
-//        List<Question> questions = questionRepository.getQuestionsByQuizBank(quizBank);
-//        quizBank.setQuestions(questions);
-//    }
 @Transactional
 public QuizBank updateQuizBank(QuizBank quizBank) {
     // Fetch the existing quiz bank from the database
@@ -110,6 +107,8 @@ public QuizBank updateQuizBank(QuizBank quizBank) {
     // Update quiz bank details
     existingQuizBank.setBankName(quizBank.getBankName());
     existingQuizBank.setDescription(quizBank.getDescription());
+    existingQuizBank.setSubcategory(quizBank.getSubcategory());
+    existingQuizBank.setModifiedAt(LocalDateTime.now());
 
     // Save or update the quiz bank
     existingQuizBank = quizBankRepository.save(existingQuizBank);
@@ -202,71 +201,53 @@ public QuizBank updateQuizBank(QuizBank quizBank) {
         return quizBank;
     }
 
-//    @Transactional
-//    public void deleteQuizBank(Long quizBankId) {
-//        QuizBank quizBank = quizBankRepository.findById(quizBankId)
-//                .orElseThrow(() -> new RuntimeException("QuizBank not found"));
-//
-//        quizBankRepository.delete(quizBank);
-//    }
-
 
     public void deleteQuizBankById(Long id) {
         this.quizBankRepository.deleteById(id);
     }
 
 
-
-//    public Subcategory getSubcategoryByQuizBank(QuizBank quizBank) {
-//        return
+//    public Page<QuizBank> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection){
+//        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending():
+//        Sort.by(sortField).descending();
+//
+//        Pageable pageable = PageRequest.of(pageNo -1, pageSize);
+//        return this.quizBankRepository.findAll(pageable);
+//    }
+//
+//    public Page<QuizBank> searchPaginated(String keyword, int pageNo, int pageSize, String sortField, String sortDirection) {
+//        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+//        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
+//        return this.quizBankRepository.findByKeyword(keyword, pageable);
 //    }
 
-//    public List<Question> getQuestions(QuizBank quizBank) {
-//        return this.quizBankRepository.getQuestions(quizBank);
-//    }
 
-    public Page<QuizBank> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection){
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending():
-        Sort.by(sortField).descending();
+    public List<QuizBank> searchQuizBank(String keyword) {
+        // Trim the keyword and remove spaces
+        System.out.println(keyword);
+        String trimmedKeyword = keyword.trim().replaceAll("\\s+", "");
 
-        Pageable pageable = PageRequest.of(pageNo -1, pageSize);
-        return this.quizBankRepository.findAll(pageable);
+        List<QuizBank> filteredQuizBanks = new ArrayList<>();
+
+        // Iterate over each QuizBank object
+        for (QuizBank quizBank : getAllQuizBanks()) {
+            // Check if the quizBank contains the keyword in any relevant fields
+            String bankName = quizBank.getBankName().toLowerCase().replaceAll("\\s+", "");
+     //       String subcategoryName = quizBank.getSubcategory().getSubcategoryName().toLowerCase().replaceAll("\\s+", "");
+
+            if (bankName.contains(trimmedKeyword.toLowerCase())
+        //            || subcategoryName.contains(trimmedKeyword.toLowerCase())
+                        ) {
+                // Add the quizBank to the filtered list if it matches the keyword
+                filteredQuizBanks.add(quizBank);
+            }
+        }
+        System.out.println(filteredQuizBanks);
+
+
+
+        return filteredQuizBanks;
     }
 
-//    public List<QuizBank> getUserCreatedQuizBanks(User user) {
-//        return quizBankRepository.findByCreatedBy(user);
-//    }
-//
-//    public List<QuizBank> getPublicQuizBanks(User user) {
-//        return quizBankRepository.findByEditableTrueAndCreatedByNot(user);
-//    }
-//
-//    public QuizBank createQuizBank(QuizBank quizBank) {
-//        if (quizBank.getQuestions() == null || quizBank.getQuestions().size() < 2) {
-//            throw new IllegalArgumentException("A quiz bank must contain at least 2 questions.");
-//        }
-//        // Save the quiz bank and its questions
-//        QuizBank savedQuizBank = quizBankRepository.save(quizBank);
-//        for (Question question : quizBank.getQuestions()) {
-//            question.setQuizBank(savedQuizBank);
-//            questionRepository.save(question);
-//        }
-//        return savedQuizBank;
-//    }
-//
-//    public void deleteQuizBank(Long id) {
-//        quizBankRepository.deleteById(id);
-//    }
-//
-//    // Other service methods
-//    public void save(QuizBank quizBank){
-//        quizBankRepository.save(quizBank);
-//    }
-//    public List<QuizBank> getAllQuizBank() {
-//        return quizBankRepository.findAll();
-//    }
-//    public QuizBank getQuizBankById(long id) {
-//        return quizBankRepository.getReferenceById(id);
-//    }
 }
 

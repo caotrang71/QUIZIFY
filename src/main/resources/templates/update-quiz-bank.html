@@ -112,11 +112,23 @@
             <h2>Update Quiz Bank</h2>
             <form th:action="@{/quiz-banks/saved}" th:object="${quizBank}" method="POST" id="quizBankForm">
                 <input type="hidden" th:field="*{id}">
-                <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control mb-4 col-4" required>
-                <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4" required>
+                Title: <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control mb-4 col-4" required>
+                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4" required>
+                Topic:
+
+                <select th:field="*{subcategory}" class="form-control mb-4 col-4 selectpicker" required>
+
+                    <th:block th:each="category : ${categoryList}">
+                        <optgroup th:label="${category.categoryName}">
+                            <th:block th:each="sub : ${category.subcategories}">
+                                <option th:value="${sub.id}" th:text="${sub.subcategoryName}" th:selected="${sub == quizBank.subcategory}"></option>
+                            </th:block>
+                        </optgroup>
+                    </th:block>
+
+                </select>
                 <input type="hidden" th:field="*{createdAt}" >
                 <input type="hidden" id="modifiedAt" th:field="*{modifiedAt}">
-                <input type="hidden" th:field="*{subcategory}" >
                 <input type="hidden" th:field="*{createdBy}" />
 
                 <!-- Question Section -->
