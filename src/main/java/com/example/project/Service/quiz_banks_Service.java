@@ -14,4 +14,10 @@ public class quiz_banks_Service {
     public List<quiz_banks> getAllListQuizBanks(){
         return quizBankRepository.findAll();
     }
+    public void deleteQuizBanks(int id){
+        quiz_banks quizBanks = quizBankRepository.findById(id).orElse(null);
+        if (quizBanks != null){
+            quizBankRepository.deleteById(id);
+        }
+    }
 }

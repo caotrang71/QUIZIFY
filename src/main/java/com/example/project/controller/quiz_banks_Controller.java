@@ -27,6 +27,6 @@ public class quiz_banks_Controller {
     @DeleteMapping("/deleteQuiz_banks/{id}")
     @ResponseBody
     public void DeleteQuiz_Banks(@PathVariable int id){
-        quizBankRepository.deleteById(id);
+        quizBanksService.deleteQuizBanks(id);
     }
 }
