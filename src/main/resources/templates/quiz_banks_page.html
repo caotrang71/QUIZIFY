@@ -72,7 +72,7 @@
                 <a class="nav-link" href="#">Accounts List</a>
             </li>
         </ul>
-        <form class="form-inline">
+        <form th:action="@{/show/search/quizBanks}" method="get" class="form-inline">
             <input class="form-control mr-sm-2" type="search" name="key" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
@@ -81,9 +81,18 @@
 
 <!-- Main Content -->
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center">
-        <h2>Quiz Banks List</h2>
-    </div>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Quiz Banks List</h2>
+            <div>
+                <select id="sortOptions" class="btn btn-warning">
+                    <option>Sort option</option>
+                    <option value="nameAsc" th:selected="${currentSort == 'nameAsc'}">Sort by Name up</option>
+                    <option value="nameDesc" th:selected="${currentSort == 'nameDesc'}">Sort by Name down</option>
+                    <option value="createdAsc" th:selected="${currentSort == 'createdAsc'}">Sort by Create new</option>
+                    <option value="createdDesc" th:selected="${currentSort == 'createdDesc'}">Sort by Create old</option>
+                </select>
+            </div>
+        </div>
 
     <table class="table table-bordered table-hover">
         <thead>
@@ -102,11 +111,11 @@
 
         <tbody id="accountsTable">
 
-        <tr th:each="ListQ : ${ListQuiz}">
+        <tr th:each="ListQ : ${ListQuiz == null ? searchQuiz : ListQuiz}">
             <td th:text="${ListQ.quiz_banks_id}"></td>
-            <td th:text="${ListQ.bank_name}"></td>
+            <td th:text="${ListQ.bankName}"></td>
             <td th:text="${ListQ.description}"></td>
-            <td th:text="${#temporals.format(ListQ.create_at, 'dd/mm/yyyy HH:mm:ss')}"></td>
+            <td th:text="${#temporals.format(ListQ.createAt, 'dd/mm/yyyy HH:mm:ss')}"></td>
             <td th:text="${#temporals.format(ListQ.modified_at, 'dd/mm/yyyy HH:mm:ss')}"></td>
             <td th:text="${ListQ.image}"></td>
             <td style="color: Green;" th:if="${ListQ.editable == 1}" th:text="enable"></td>
@@ -115,6 +124,7 @@
                 <a href="#" class="btn btn-danger btn-sm" th:onclick=" 'deleteQuizBanks('+${ListQ.quiz_banks_id}+')' " title="Delete">DELETE</a>
             </td>
         </tr>
+
         </tbody>
     </table>
 
@@ -147,6 +157,24 @@
         }
 
     }
+
+    //function sort
+    document.getElementById('sortOptions').addEventListener('change', function () {//thêm hàm xử lý sự kiện nếu có thay đổi thì hàm ẩn danh được thực thi
+        var selectedOption = this.value;
+        var url = '/show/quiz_banks';
+        if (selectedOption === 'nameAsc') {
+            url += '?sort=nameAsc';
+        } else if (selectedOption === 'nameDesc') {
+            url += '?sort=nameDesc';
+        } else if (selectedOption === 'createdAsc') {
+            url += '?sort=createdAsc';
+        } else if (selectedOption === 'createdDesc') {
+            url += '?sort=createdDesc';
+        }
+        window.location.href = url;
+    });
+
+
 </script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
