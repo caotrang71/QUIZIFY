@@ -34,9 +34,12 @@ public class QuestionService {
     public Question saveQuestion(Question question) {
         return questionRepository.save(question);
     }
+
     public Question getQuestion(Long id) {
         return questionRepository.findById(id).orElse(null);
     }
+
+
 
 //    public List<QuestionChoice> getQuestionChoices(Question question) {
 //        return questionRepository.getQuestionChoices(question);

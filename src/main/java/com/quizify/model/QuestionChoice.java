@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -28,5 +30,7 @@ public class QuestionChoice {
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
+    @OneToMany(mappedBy = "questionChoice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TestHistory> testHistories;
 
 }

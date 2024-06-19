@@ -29,6 +29,8 @@ public class Question {
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionChoice> questionChoices;
 
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TestHistory> testHistories;
 
     @Override
     public boolean equals(Object o) {

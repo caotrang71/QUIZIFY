@@ -44,4 +44,7 @@ public class QuizBank {
     @OneToMany(mappedBy = "quizBank", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
 
+    @OneToMany(mappedBy = "quizBank", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Test> tests;
+
 }

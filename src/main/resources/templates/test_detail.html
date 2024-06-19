@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test Detail</title>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Test Detail</h1>
+    <div th:each="history : ${testHistories}">
+        <p th:text="${history.question.content}"></p>
+        <div th:each="choice : ${history.question.questionChoices}">
+            <p>
+                <span th:text="${choice.content}"></span>
+                <span th:if="${choice.correctOrNot}"> (Correct)</span>
+                <span th:if="${!choice.correctOrNot}"> (Incorrect)</span>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

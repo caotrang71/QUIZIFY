@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public class UserService {
-//    @Autowired
-//    private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 //
 //    // This method should get the current logged-in user
 //    @Override
@@ -20,9 +20,9 @@ public class UserService {
 //    }
 //
 //    @Override
-//    public User findById(Long id) {
-//        return userRepository.findById(id).orElse(null);
-//    }
+    public User findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
 //
 //    @Override
 //    public List<User> findAll() {
