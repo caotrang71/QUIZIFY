@@ -44,6 +44,25 @@ public class UsersController {
     public String showhome() {
         return "HomePage";
     }
+    @GetMapping("show_page_login")
+    public String showLoginForm() {
+        return "login";
+    }
+    @PostMapping("/login")
+    public String login(@RequestParam String email, @RequestParam String password,
+                        Model model,HttpSession session) {
+        // Kiểm tra xem người dùng có tồn tại không
+        Users user = userService.findByEmail(email);
+        if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
+            // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
+            session.setAttribute("user", user);
+            return "redirect:/home";
+        } else {
+            // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
+            model.addAttribute("error", "Invalid email or password");
+            return "redirect:/show_page_login";
+        }
+    }
     @GetMapping("/profile/{id}")
     public String profile(@PathVariable int id, Model model) {
         Optional<Users> user = usersRepository.findById(id);
@@ -71,25 +90,6 @@ public class UsersController {
         } else {
             model.addAttribute("mess", "Change password failed!");
             return "redirect:/change_pass?error"; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi
-        }
-    }
-
-    @GetMapping("show_page_login")
-    public String showLoginForm() {
-        return "login";
-    }
-    @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, Model model) {
-        // Kiểm tra xem người dùng có tồn tại không
-        Users user = userService.findByEmail(email);
-        if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
-            // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
-            model.addAttribute("user", user);
-            return "redirect:/profile/4";
-        } else {
-            // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
-            model.addAttribute("error", "Invalid email or password");
-            return "redirect:/login?error";
         }
     }
 
@@ -162,7 +162,7 @@ public class UsersController {
         OTP otpObject = otpObjectOptional.get();
 
         // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
-        if (otpObject.getAttempts() >= 3 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 60) {
+        if (otpObject.getAttempts() >= 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
             otpService.deleteOTP(email);
             model.addAttribute("error", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
             return "redirect:/show_page_register"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử

@@ -32,10 +32,6 @@ public class OTPService {
     public Optional<OTP> getObjectOTP(String email) {
         return otpRepository.findFirstByEmail(email);
     }
-//    public void incrementAttempts(OTP otp) {
-//        otp.setAttempts(otp.getAttempts() + 1);
-//        otpRepository.save(otp);
-//    }
     public void deleteOTP(String email) {
         Optional<OTP> otp = otpRepository.findFirstByEmail(email);
         if (otp.isPresent()) {
