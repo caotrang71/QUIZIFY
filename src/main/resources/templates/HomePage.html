@@ -4,11 +4,11 @@
     <title>Sidebar 01</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" th:href="/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" th:href="/side/css/style.css">
+    <link rel="stylesheet" th:href="@{/side/css/style.css}">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
             <h1>Quizify</h1>
             <ul class="list-unstyled components mb-5">
                 <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                    <a href="#" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
                             <a href="#">Home 1</a>
@@ -55,7 +55,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a th:href="@{/profile/{id}(id=${user.user_id})}">My Profile</a>
+                    <a href="">My Profile</a>
                 </li>
                 <li>
                     <a href="#">About</a>
@@ -94,10 +94,10 @@
                             <a class="nav-link" href="#">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/profile/{id}(id=${user.user_id})}">Notification</a>
+                            <a class="nav-link" >Notification</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:href="@{/profile/{id}(id=${user.user_id})}">Myprofile</a>
+                            <a class="nav-link" href="#">Myprofile</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>

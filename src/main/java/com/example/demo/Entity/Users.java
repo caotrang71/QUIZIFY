@@ -12,6 +12,7 @@ public class Users {
     private String fullname;
     private String birthdate;
     private int gender;
+    @Column(unique = true)
     private String email;
     private String username;
     private String password;

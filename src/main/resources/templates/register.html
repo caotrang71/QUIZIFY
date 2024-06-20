@@ -82,50 +82,21 @@
 <body>
 <div class="container">
 <h2>Registration</h2>
-<form id="registrationForm" th:action="@{/register}" method="post">
+<form id="registrationForm" th:action="@{/register}" method="post" th:object="${user}">
     <label for="fullname">Full Name:</label><br>
-    <input type="text" id="fullname" name="fullname" required><br>
-    <label for="birthdate">Birthdate:</label><br>
-    <input type="date" id="birthdate" name="birthdate" required><br>
-    <label for="gender">Gender:</label><br>
-    <select id="gender" name="gender" required>
-        <option value="0">Male</option>
-        <option value="1">Female</option>
-    </select><br>
+    <input type="text" id="fullname" th:field="*{fullname}" required><br>
     <label for="email">Email:</label><br>
-    <input type="email" id="email" name="email" required><br>
-    <label for="username">Username:</label><br>
-    <input type="text" id="username" name="username" required><br>
+    <input type="email" id="email" th:field="*{email}" required><br>
     <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br><br>
+    <input type="password" id="password" th:field="*{password}" required><br><br>
+
     <input type="submit" value="Register">
 </form>
+    <div th:if="${message != null}">
+        <p th:text="${message}"></p>
+    </div>
 </div>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    document.getElementById("registrationForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Ngăn chặn gửi form mặc định
-        var email = document.getElementById("email").value;
 
-        // Gửi yêu cầu kiểm tra email đến endpoint /check-email
-        fetch("/check-email?email=" + encodeURIComponent(email))
-            .then(response => response.text())
-            .then(data => {
-                if (data === "true") {
-                    // Nếu email đã tồn tại, hiển thị thông báo và không gửi form
-                    alert("Email already exists. Please use a different email.");
-                } else {
-                    // Nếu email chưa tồn tại, tiếp tục gửi form
-                    document.getElementById("registrationForm").submit();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("An error occurred. Please try again later.");
-            });
-    });
-    /*]]>*/
-</script>
 </body>
 </html>
