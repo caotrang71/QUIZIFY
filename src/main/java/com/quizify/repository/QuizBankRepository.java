@@ -30,5 +30,10 @@ public interface QuizBankRepository extends JpaRepository<QuizBank, Long> {
 //    List<QuizBank> searchQuizBank(String keyword);
 //    @Query("SELECT q FROM QuizBank q WHERE q.bankName LIKE %:keyword%")
 //    Page<QuizBank> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    List<QuizBank> findByBankNameContainingIgnoreCase(String bankName);
+    List<QuizBank> findAllByOrderByBankNameAsc();
+    List<QuizBank> findAllByOrderByBankNameDesc();
+    List<QuizBank> findAllByOrderByCreatedAtDesc();//moi nhat
+    List<QuizBank> findAllByOrderByCreatedAtAsc();
 }
 
