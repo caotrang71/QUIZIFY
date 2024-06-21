@@ -72,6 +72,20 @@ public class UserController {
         return "ChangePassword";
     }
 
+    @PostMapping("/update_profile")
+    public String updateProfile(@RequestParam long id,
+                                @RequestParam String fullName,
+                                @RequestParam String birthdate,
+                                @RequestParam Boolean gender,
+                                @RequestParam String username
+            ,Model model) {
+
+        userService.updateProfile(id,fullName,birthdate,gender,username);
+        model.addAttribute("message", "Profile updated successfully!");
+        return "redirect:/profile/"+id;
+    }
+
+
     @PostMapping("/changepassword/{email}")
     public String changePassword(@PathVariable String email,
                                  @RequestParam("oldPassword") String oldPassword,
@@ -87,24 +101,6 @@ public class UserController {
             model.addAttribute("mess", "Change password failed!");
             return "redirect:/change_pass?error"; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi
         }
-    }
-
-    @PostMapping("/update_profile")
-    public String updateProfile(@RequestParam int id,
-                                @RequestParam String fullName,
-                                @RequestParam String birthdate,
-                                @RequestParam Boolean gender,
-                                @RequestParam String username
-                                ,Model model) {
-        Boolean gen;
-        if (gender.equals("Female")){
-             gen = false;
-        }else{
-             gen = true;
-        }
-        userService.updateProfile(id,fullName,birthdate,gen,username);
-        model.addAttribute("message", "Profile updated successfully!");
-        return "redirect:/profile/4";
     }
 
     @GetMapping("/show_page_register")
