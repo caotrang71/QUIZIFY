@@ -76,8 +76,7 @@ public class UserService {
         User user = new User();
         user.setEmail(email);
         user.setFullName(fullname);
-        String encodedPassword = passwordEncoder.encode(password);
-        user.setPassword(encodedPassword);
+        user.setPassword(password);
         user.setStatus(status);
         user.setRole(role);
         userRepository.save(user);

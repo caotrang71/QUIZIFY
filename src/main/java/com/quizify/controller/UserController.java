@@ -64,27 +64,29 @@ public class UserController {
         model.addAttribute("user", user);
         return "profile";
     }
-
+    @PostMapping("/update_profile")
+    public String updateProfile(@RequestParam long id,
+                                @RequestParam String fullName,
+                                @RequestParam String birthdate,
+                                @RequestParam String gender,
+                                @RequestParam String username
+            ,Model model) {
+        Boolean genderValue;
+        if ("Male".equals(gender)) {
+            genderValue = true;
+        } else {
+            genderValue = false;
+        }
+        userService.updateProfile(id,fullName,birthdate,genderValue,username);
+        model.addAttribute("message", "Profile updated successfully!");
+        return "redirect:/profile/"+id;
+    }
     @GetMapping("/change_pass/{email}")
     public String showChangePasswordForm(@PathVariable String email, Model model) {
         User user = userRepository.findByEmail(email);
         model.addAttribute("user", user);
         return "ChangePassword";
     }
-
-    @PostMapping("/update_profile")
-    public String updateProfile(@RequestParam long id,
-                                @RequestParam String fullName,
-                                @RequestParam String birthdate,
-                                @RequestParam Boolean gender,
-                                @RequestParam String username
-            ,Model model) {
-
-        userService.updateProfile(id,fullName,birthdate,gender,username);
-        model.addAttribute("message", "Profile updated successfully!");
-        return "redirect:/profile/"+id;
-    }
-
 
     @PostMapping("/changepassword/{email}")
     public String changePassword(@PathVariable String email,
@@ -123,7 +125,7 @@ public class UserController {
         OTP otp = otpService.createOTP(user.getEmail());
         emailService.sendOTPEmail(user.getEmail(), otp.getOtp());
         String email = user.getEmail();
-        String password = user.getPassword();
+        String password = passwordEncoder.encode(user.getPassword());
         String fullname = user.getFullName();
         return "redirect:/showVerifyOTP?email=" + email + "&password=" + password + "&fullname=" + fullname;
     }
@@ -154,7 +156,7 @@ public class UserController {
         OTP otpObject = otpObjectOptional.get();
 
         // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
-        if (otpObject.getAttempts() >= 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
+        if (otpObject.getAttempts() > 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
             otpService.deleteOTP(email);
             model.addAttribute("error", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
             return "redirect:/show_page_register"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
@@ -174,10 +176,82 @@ public class UserController {
             return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + fullname; // Redirect để nhập lại OTP
         }
     }
+    @GetMapping("/show_page_forgetPassword")
+    public String showpageForgetPassword(Model model) {
+        model.addAttribute("user", new User());
+        return "forgetPass";
+    }
+    @PostMapping("/forget_password")
+    public String forgetPassword(@RequestParam String email, Model model) {
+        User user = userService.findByEmail(email);
+        if (user != null) {
+            //tạo otp và gửi otp
+            OTP otpObject = otpService.createOTP(email);
+            emailService.sendOTPEmail(email, otpObject.getOtp());
+            return "redirect:/show_verifyOTP_forget?email="+email;
+        }else {
+            model.addAttribute("error", "Email does not exist");
+            return "redirect:/show_page_login";
+        }
+    }
+    @GetMapping("show_verifyOTP_forget")
+    public String showverifyOTP(@RequestParam String email, Model model) {
+        model.addAttribute("email", email);
+        return "verifyForgetPassOTP";
+    }
+    @PostMapping("/verifyOTP_resetPass")
+    public String verifyOTPResetPass(@RequestParam String email,@RequestParam String otp,
+                                     Model model) {
 
+        Optional<OTP> otpObjectOptional = otpService.getObjectOTP(email);
 
+        if (otpObjectOptional.isEmpty()) {
+            model.addAttribute("error", "OTP không tồn tại hoặc đã hết hạn.");
+            return "redirect:/show_page_login";
+        }
 
+        OTP otpObject = otpObjectOptional.get();
 
+        // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
+        if (otpObject.getAttempts() > 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
+            otpService.deleteOTP(email);
+            model.addAttribute("error", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
+            return "redirect:/show_page_login"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
+        }
+
+        // Kiểm tra nếu OTP nhập vào đúng
+        if (otpObject.getOtp().equals(otp)) {
+            otpService.deleteOTP(email);
+            return "redirect:/show_reset_Password?email="+email; // Redirect đến trang chủ nếu OTP đúng
+        } else {
+            // Tăng số lần thử nếu OTP sai
+            otpObject.setAttempts(otpObject.getAttempts() + 1);
+            otpRepository.save(otpObject);
+            model.addAttribute("error", "OTP không chính xác.");
+            return "redirect:/show_verifyOTP_forget?email=" + email; // Redirect để nhập lại OTP
+        }
+    }
+    @GetMapping("/show_reset_Password")
+    public String showresetPassword(@RequestParam String email, Model model) {
+        model.addAttribute("email", email);
+        return "resetPassword";
+    }
+    @PostMapping("/reset_password")
+    public String resetPassword(@RequestParam String email,
+                                @RequestParam String newPassword,
+                                @RequestParam String confirmPassword ,Model model) {
+        User user = userService.findByEmail(email);
+        if (user != null && newPassword.equals(confirmPassword)) {
+            String encodepass = passwordEncoder.encode(newPassword);
+            user.setPassword(encodepass);
+            userRepository.save(user);
+            return "redirect:/show_page_login";
+        }else {
+            model.addAttribute("mess","password doesn't match");
+            return "redirect:/show_reset_Password?email=" + email;
+        }
+
+    }
 
 
 }

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>forget password Page</title>
+  <link rel="stylesheet" th:href="@{/css/register.css}">
+</head>
+<body>
+<div class="container">
+  <h2>Registration</h2>
+  <form id="registrationForm" th:action="@{/forget_password}" method="post" th:object="${user}">
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" th:field="*{email}" required><br>
+
+    <input type="submit" value="send OTP mail">
+  </form>
+  <div th:if="${message != null}">
+    <p th:text="${message}"></p>
+  </div>
+</div>
+
+
+</body>
+</html>
