@@ -4,17 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @Entity
-@Table(name = "subcategories")
+@Table(name = "subcategory")
 public class Subcategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subcategory_id")
-    private Integer id;
+    private Integer subcategoryId;
 
     @Column(name = "subcategory_name")
     private String subcategoryName;
@@ -23,7 +21,11 @@ public class Subcategory {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuizBank> quizBanks;
-
+    @Override
+    public String toString() {
+        return "Subcategory{" +
+                "subcategoryId=" + subcategoryId +
+                ", subcategoryName='" + subcategoryName + ", category='" + category + '\'' +
+                '}';
+    }
 }
