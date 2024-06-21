@@ -22,12 +22,12 @@ public class User {
     private String fullName;
 
     @Column(name = "birthdate")
-    private Date birthdate;
+    private String birthdate;
 
     @Column(name = "gender")
     private boolean gender;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "username")
@@ -36,14 +36,23 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "status")
+    private Boolean status;
+
     @Column(name = "create_at")
     private LocalDateTime createdAt;
 
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
 
-    @Column(name = "status")
-    private boolean status;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+    @PreUpdate
+    protected void onUpdate() {
+        modifiedAt = LocalDateTime.now();
+    }
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuizBank> quizBanks;

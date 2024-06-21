@@ -1,4 +1,4 @@
-package com.example.demo.Securyconfig;
+package com.quizify.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

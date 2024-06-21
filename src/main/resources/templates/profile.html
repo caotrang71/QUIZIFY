@@ -14,7 +14,7 @@
 <div class="container rounded bg-white mt-5 mb-5">
     <div class="row">
         <div class="col-md-4 border-right">
-            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="/static/images/avatar-trang-4.jpg"><span class="font-weight-bold" th:text="${user.get().fullname}"> </span><span class="text-black-50" th:text="${user.get().getEmail()}"></span><span></span></div>
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="/static/images/avatar-trang-4.jpg"><span class="font-weight-bold" th:text="${user.get().fullName}"> </span><span class="text-black-50" th:text="${user.get().getEmail()}"></span><span></span></div>
         </div>
         <div class="col-md-8 border-right">
             <div class="p-3 py-5">
@@ -23,25 +23,25 @@
                 </div>
                 <form th:action="@{/update_profile}" method="post" th:object="${user}" >
                 <div class="row mt-2">
-                    <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="Full name" th:value="${user.get().getFullname()}" name="fullname" ></div>
+                    <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="Full Name" th:value="${user.get().getFullName()}" name="fullName" ></div>
                     <br><br>
                     <div class="col-md-6"><label for="gender" class="labels">Gender</label>
                         <select class="form-control" id="gender" name="gender">
-                            <option th:selected="${user.get().getGender() == 1  }"  >Male</option>
-                            <option th:selected="${user.get().getGender() == 0  }"  >Female</option>
+                            <option th:selected="${user.get().isGender() == true  }"  >Male</option>
+                            <option th:selected="${user.get().isGender() == false  }"  >Female</option>
                         </select>
                     </div>
                 </div>
                 <div class="row mt-2">
-                    <div class="col-md-12"><label class="labels">user ID</label><input type="text" class="form-control" placeholder="user id" th:value="${user.get().getUser_id()}" name="id" readonly></div>
+                    <div class="col-md-12"><label class="labels">user ID</label><input type="text" class="form-control" placeholder="user id" th:value="${user.get().id}" name="id" readonly></div>
                     <div class="col-md-12"><label class="labels">BirthDate</label><input type="text" class="form-control" placeholder="dd/mm/yyyy " th:value="${user.get().getBirthdate()}" name="birthdate"></div>
                     <div class="col-md-12"><label class="labels">Email</label><input type="text" class="form-control" placeholder="Email" th:value="${user.get().getEmail()}" name="email" readonly></div>
                     <div class="col-md-12"><label class="labels">Userame</label><input type="text" class="form-control" placeholder="username" th:value="${user.get().getUsername()}" name="username"></div>
                     <div class="col-md-12"><label class="labels">Password</label><input type="text" class="form-control" placeholder="password" th:value="${user.get().getPassword()}" name="password"></div>
-                    <div class="col-md-12"><label class="labels">Create at</label><input type="text" class="form-control" placeholder="Create at " th:value="${user.get().getCreated_at()}" name="created_at" readonly></div>
-                    <div class="col-md-12"><label class="labels">Modifile at</label><input type="text" class="form-control" placeholder="Modified at" th:value="${user.get().getModified_at()}" name="modified_at" readonly></div>
+                    <div class="col-md-12"><label class="labels">Create at</label><input type="hidden" class="form-control" placeholder="Create at " th:value="${user.get().getCreatedAt()}" name="created_at" readonly></div>
+                    <div class="col-md-12"><label class="labels">Modified at</label><input type="hidden" class="form-control" placeholder="Modified at" th:value="${user.get().getModifiedAt()}" name="modified_at" readonly></div>
                     <div class="col-md-12"><label class="labels">Status</label><input type="text" class="form-control" placeholder="status" th:value="${user.get().getStatus() == 1 ? 'Actice' : 'Inactive' }" name="status" readonly></div>
-                    <div class="col-md-12"><label class="labels">Role ID</label><input type="text" class="form-control" placeholder="role_id" th:value="${user.get().getRole_id()}" name="role_id" readonly></div>
+                    <div class="col-md-12"><label class="labels">Role ID</label><input type="hidden" class="form-control" placeholder="role_id" th:value="${user.get().getRole().id}" name="role_id" readonly></div>
 
                 </div>
                 <div class="row mt-2">

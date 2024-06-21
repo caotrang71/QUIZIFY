@@ -1,7 +1,7 @@
-package com.example.demo.Service;
+package com.quizify.service;
 
-import com.example.demo.Entity.OTP;
-import com.example.demo.Repository.OTPRepository;
+import com.quizify.model.OTP;
+import com.quizify.repository.OTPRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -12,7 +12,7 @@ public class HomeUserController {
 
     @GetMapping("/userHome")
     public String viewHomeUser(Model model) {
-        return "index";
+        return "HomePage";
     }
 
     @GetMapping("/")

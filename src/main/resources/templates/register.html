@@ -83,8 +83,8 @@
 <div class="container">
 <h2>Registration</h2>
 <form id="registrationForm" th:action="@{/register}" method="post" th:object="${user}">
-    <label for="fullname">Full Name:</label><br>
-    <input type="text" id="fullname" th:field="*{fullname}" required><br>
+    <label for="fullName">Full Name:</label><br>
+    <input type="text" id="fullName" th:field="*{fullName}" required><br>
     <label for="email">Email:</label><br>
     <input type="email" id="email" th:field="*{email}" required><br>
     <label for="password">Password:</label><br>

@@ -1,6 +1,6 @@
-package com.example.demo.Repository;
+package com.quizify.repository;
 
-import com.example.demo.Entity.OTP;
+import com.quizify.model.OTP;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

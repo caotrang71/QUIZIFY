@@ -1,4 +1,4 @@
-package com.example.demo.Service;
+package com.quizify.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

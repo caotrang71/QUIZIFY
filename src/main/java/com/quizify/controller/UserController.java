@@ -1,32 +1,25 @@
-package com.example.demo.Controller;
+package com.quizify.controller;
 
-import com.example.demo.Entity.OTP;
-import com.example.demo.Entity.Users;
-import com.example.demo.Repository.OTPRepository;
-import com.example.demo.Repository.UsersRepository;
-import com.example.demo.Service.EmailService;
-import com.example.demo.Service.OTPService;
-import com.example.demo.Service.UserService;
+import com.quizify.model.*;
+import com.quizify.repository.*;
+import com.quizify.service.*;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
 
 @Controller
-public class UsersController {
+public class UserController {
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
     @Autowired
     private UserService userService;
     @Autowired
@@ -39,6 +32,8 @@ public class UsersController {
     private EmailService emailService;
     @Autowired
     private HttpServletRequest httpServletRequest;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @GetMapping("/home")
     public String showhome() {
@@ -52,11 +47,11 @@ public class UsersController {
     public String login(@RequestParam String email, @RequestParam String password,
                         Model model,HttpSession session) {
         // Kiểm tra xem người dùng có tồn tại không
-        Users user = userService.findByEmail(email);
+        User user = userService.findByEmail(email);
         if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
             // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
             session.setAttribute("user", user);
-            return "redirect:/home";
+            return "redirect:/userHome";
         } else {
             // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
             model.addAttribute("error", "Invalid email or password");
@@ -64,15 +59,15 @@ public class UsersController {
         }
     }
     @GetMapping("/profile/{id}")
-    public String profile(@PathVariable int id, Model model) {
-        Optional<Users> user = usersRepository.findById(id);
+    public String profile(@PathVariable long id, Model model) {
+        Optional<User> user = userRepository.findById(id);
         model.addAttribute("user", user);
         return "profile";
     }
 
     @GetMapping("/change_pass/{email}")
     public String showChangePasswordForm(@PathVariable String email, Model model) {
-        Users user = usersRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
         model.addAttribute("user", user);
         return "ChangePassword";
     }
@@ -95,30 +90,30 @@ public class UsersController {
 
     @PostMapping("/update_profile")
     public String updateProfile(@RequestParam int id,
-                                @RequestParam String fullname,
+                                @RequestParam String fullName,
                                 @RequestParam String birthdate,
-                                @RequestParam String  gender,
+                                @RequestParam Boolean gender,
                                 @RequestParam String username
                                 ,Model model) {
-        int gen;
+        Boolean gen;
         if (gender.equals("Female")){
-             gen = 0;
+             gen = false;
         }else{
-             gen = 1;
+             gen = true;
         }
-        userService.updateProfile(id,fullname,birthdate,gen,username);
+        userService.updateProfile(id,fullName,birthdate,gen,username);
         model.addAttribute("message", "Profile updated successfully!");
         return "redirect:/profile/4";
     }
 
     @GetMapping("/show_page_register")
     public String showRegisterForm(Model model) {
-        model.addAttribute("user", new Users());
+        model.addAttribute("user", new User());
         return "register";
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") Users user
+    public String register(@ModelAttribute("user") User user
                                                     ,Model model) {
 
         // Kiểm tra xem email đã tồn tại chưa
@@ -132,7 +127,7 @@ public class UsersController {
         emailService.sendOTPEmail(user.getEmail(), otp.getOtp());
         String email = user.getEmail();
         String password = user.getPassword();
-        String fullname = user.getFullname();
+        String fullname = user.getFullName();
         return "redirect:/showVerifyOTP?email=" + email + "&password=" + password + "&fullname=" + fullname;
     }
 
@@ -170,7 +165,7 @@ public class UsersController {
 
         // Kiểm tra nếu OTP nhập vào đúng
         if (otpObject.getOtp().equals(otp)) {
-            userService.registerUser(email, fullname, pass, 1, 3);
+            userService.registerUser(email, fullname, pass, true, roleRepository.getReferenceById(3));
             otpService.deleteOTP(email);
 
             return "redirect:/show_page_login"; // Redirect đến trang chủ nếu OTP đúng
