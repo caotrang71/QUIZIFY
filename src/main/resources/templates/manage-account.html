@@ -93,7 +93,7 @@
             <th>ROLE</th>
             <th>STATUS</th>
             <th>CREATE AT</th>
-            <th>ACOUNT DETAILS</th>
+            <th>ACCOUNT DETAILS</th>
             <th>CHANGE ROLE</th>
             <th>DELETE</th>
             <th>BANS</th>
@@ -103,17 +103,17 @@
         <tbody id="accountsTable">
 
         <tr th:each="user : ${ searchUser == null ? users : searchUser }">
-            <td th:text="${user.user_id}"></td>
-            <td th:text="${user.fullname}"></td>
-            <td th:text="${user.role_id == 2 ? 'Staff' : 'User' }"></td>
-            <td style="color: Green;" th:if="${user.status == 1}" th:text="Active"></td>
-            <td style="color: red;" th:if="${user.status == 0 }" th:text="Inactive"></td>
-            <td th:text="${#temporals.format(user.created_at, 'dd/mm/yyyy HH:mm:ss')}"></td>
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.fullName}"></td>
+            <td th:text="${user.getRole().id == 2 ? 'Staff' : 'User' }"></td>
+            <td style="color: Green;" th:if="${user.status == true}" th:text="Active"></td>
+            <td style="color: red;" th:if="${user.status == false }" th:text="Inactive"></td>
+            <td th:text="${#temporals.format(user.createdAt, 'dd/mm/yyyy HH:mm:ss')}"></td>
             <td>
-                <a class="btn btn-warning btn-sm" th:href="@{/view_account/{id}(id=${user.user_id}) } ">view</a>
+                <a class="btn btn-warning btn-sm" th:href="@{/view_account/{id}(id=${user.id}) } ">view</a>
             </td>
             <td>
-                <form th:action="@{/changeRole/{id}(id=${user.user_id})}" th:method="post" >
+                <form th:action="@{/changeRole/{id}(id=${user.id})}" th:method="post" >
 <!--                    th:disabled="${user.role_id != 1}"-->
                         <select name="roleID" >
                             <option value="2">Staff</option>
@@ -124,7 +124,7 @@
                 </form>
             </td>
             <td>
-                <button class="btn btn-danger btn-sm" th:onclick=" 'deleteAccount(' +${user.user_id}+')' " >Delete</button>
+                <button class="btn btn-danger btn-sm" th:onclick=" 'deleteAccount(' +${user.id}+')' " >Delete</button>
             </td>
             <td>
                 <button class="btn btn-ban btn-danger btn-sm" onclick="">BAN</button>

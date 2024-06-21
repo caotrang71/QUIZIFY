@@ -39,7 +39,7 @@ public class UserController {
     public String showhome() {
         return "HomePage";
     }
-    @GetMapping("show_page_login")
+    @GetMapping("/show_page_login")
     public String showLoginForm() {
         return "login";
     }
@@ -78,10 +78,11 @@ public class UserController {
                                  @RequestParam("newPassword") String newPassword,
                                  @RequestParam("confirmPassword") String ConfirmPassword,
                                  Model model) {
+        User user = userRepository.findByEmail(email);
         if (userService.changePassword(email, oldPassword, newPassword, ConfirmPassword)) {
             model.addAttribute("mess", "Change password successfully!");
 
-            return "redirect:/profile/4"; // Chuyển hướng đến trang profile nếu thay đổi thành công
+            return "redirect:/profile/"+user.getId(); // Chuyển hướng đến trang profile nếu thay đổi thành công
         } else {
             model.addAttribute("mess", "Change password failed!");
             return "redirect:/change_pass?error"; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi

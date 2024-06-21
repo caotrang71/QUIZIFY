@@ -35,7 +35,7 @@ public class AccountController {
     }
 
     @PostMapping("/changeRole/{id}")
-    public String ChangeRolesPage(@PathVariable int id, @RequestParam int roleID, Model model) {
+    public String ChangeRolesPage(@PathVariable long id, @RequestParam int roleID, Model model) {
         Role role = roleRepository.getReferenceById(roleID);
         accountService.updateRole(id,role);
         model.addAttribute("mess", "update Role successfully");
@@ -70,7 +70,7 @@ public class AccountController {
         if (accountService.checkAccount(user.getEmail())){
             String encodePass = accountService.encodePassword(password);
             user.setPassword(encodePass);
-//            emailService.sendMail(user.getEmail());
+            emailService.sendMail(user.getEmail());
             userService.save(user);
             return "redirect:/manage_account";
         }else {
@@ -91,6 +91,8 @@ public class AccountController {
         }
         return "manage-account";
     }
+
+
 
 
 }
