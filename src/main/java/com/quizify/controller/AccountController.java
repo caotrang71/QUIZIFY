@@ -22,10 +22,6 @@ public class AccountController {
     @Autowired
     private EmailService emailService;
 
-    @GetMapping("/Home")
-    public String ShowHomepage(Model model) {
-        return "HomePage";
-    }
 
     @GetMapping("/manage_account")
     public String getListUsers(Model model) {
@@ -35,7 +31,7 @@ public class AccountController {
     }
 
     @PostMapping("/changeRole/{id}")
-    public String ChangeRolesPage(@PathVariable int id, @RequestParam int roleID, Model model) {
+    public String ChangeRolesPage(@PathVariable long id, @RequestParam int roleID, Model model) {
         Role role = roleRepository.getReferenceById(roleID);
         accountService.updateRole(id,role);
         model.addAttribute("mess", "update Role successfully");
@@ -44,15 +40,15 @@ public class AccountController {
 
     @DeleteMapping("/manage-account/{id}")
     @ResponseBody
-    public void deleteUser(@PathVariable int id) {
+    public void deleteUser(@PathVariable long id) {
         accountService.deleteUsers(id);
     }
 
     @GetMapping("/view_account/{id}")
     public String viewAccount(@PathVariable long id, Model model) {
-        Optional<User> users = Optional.ofNullable(userService.findById(id));
-        if (users.isPresent()) {
-            model.addAttribute("user", users.get());
+        User users = userService.findById(id);
+        if (users != null) {
+            model.addAttribute("user", users);
             return "details_account";
         }else {
             return "redirect:/ERROR";
@@ -60,18 +56,19 @@ public class AccountController {
     }
 
     @GetMapping("/create_account")
-    public String showPageCreateUser(Model model) {
-        model.addAttribute("user", new User());
+    public String showPageCreateUser() {
         return "CreateAccount";
     }
 
     @PostMapping("/user")
-    public String createUser(@ModelAttribute User user, @RequestParam String password, Model model) {
-        if (accountService.checkAccount(user.getEmail())){
-            String encodePass = accountService.encodePassword(password);
-            user.setPassword(encodePass);
-//            emailService.sendMail(user.getEmail());
-            userService.save(user);
+    public String createAccount(@RequestParam String fullName,
+                                @RequestParam String email,
+                                @RequestParam String username,
+                                @RequestParam String password,
+                                @RequestParam("roleID") int roleSelect,Model model) {
+        if (accountService.checkAccount(email)){
+            accountService.saveAccount(fullName,email,username,password,true,roleSelect);
+            emailService.sendMail(email);
             return "redirect:/manage_account";
         }else {
             model.addAttribute("message","Email is existed!");

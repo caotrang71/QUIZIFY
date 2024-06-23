@@ -17,4 +17,12 @@ public class EmailService {
         mailSender.send(message);
 
     }
+
+    public void sendMail(String to){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("notification register success");
+        message.setText("your account register successfully");
+        mailSender.send(message);
+    }
 }

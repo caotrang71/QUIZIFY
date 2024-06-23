@@ -19,9 +19,6 @@ public class QuizBankController {
     @Autowired
     private QuizBankService quizBankService;
 
-//    @Autowired
-//    private UserService userService;
-
     @Autowired
     private SubcategoryService subcategoryService;
     @Autowired

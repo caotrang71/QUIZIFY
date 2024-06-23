@@ -61,4 +61,21 @@ public class AccountService {
         return accountRepository.findByEmail(email);
     }
 
+    public void saveAccount(String fullName,String email,String userName,
+                            String password,boolean status, int roleID){
+        Role roleSelect = roleRepository.findById(roleID).orElse(null);
+        if (roleSelect != null) {
+            User user = new User();
+            user.setFullName(fullName);
+            user.setEmail(email);
+            user.setUsername(userName);
+            String enPass = passwordEncoder.encode(password);
+            user.setPassword(enPass);
+            user.setStatus(status);
+            user.setRole(roleSelect);
+            userRepository.save(user);
+        }
+
+    }
+
 }

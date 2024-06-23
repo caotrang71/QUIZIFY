@@ -1,11 +1,13 @@
 package com.quizify.repository;
 
 import com.quizify.model.User;
-import org.hibernate.type.descriptor.converter.spi.JpaAttributeConverter;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface AccountRepository extends JpaAttributeConverter<User, Long> {
+@Repository
+public interface AccountRepository extends JpaRepository<User, Long> {
     List<User> findByFullNameContainingIgnoreCase(String fullName);
     List<User> findByEmail(String email);
 }

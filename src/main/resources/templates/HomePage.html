@@ -44,7 +44,7 @@
                     <a href="#">Favorite Quiz Bank</a>
                 </li>
                 <li>
-                    <a th:href="@{/show/quiz_banks}">Quiz Banks</a>
+                    <a th:href="@{/quiz-banks/quiz-banks-list}">Quiz Banks</a>
                 </li>
                 <li>
                     <a href="#">Recently</a>
@@ -76,7 +76,7 @@
                     <a href="#">Contact</a>
                 </li>
                 <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
-                    <a href="#">Manager Account</a>
+                    <a th:href="@{/manage_account}">Manager Account</a>
                 </li>
             </ul>
 
