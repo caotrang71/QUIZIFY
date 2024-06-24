@@ -21,7 +21,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="text-right">Profile Settings</h4>
                 </div>
-                <form th:action="@{/update_profile}" method="post" th:object="${user}" >
+                <form th:action="@{/update_profile}" th:method="post" th:object="${user}" >
                 <div class="row mt-2">
                     <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control" placeholder="Full Name" th:value="${user.get().getFullName()}" name="fullName" ></div>
                     <br><br>
@@ -49,11 +49,6 @@
                     <div class="col-md-6 mt-6 text-center"><button class="btn btn-primary profile-button" name="Save" type="submit">Save Profile</button></div>
                 </div>
                 <div class="row mt-2">
-
-                    <div class="col-md-12 mt-12 text-center"><!--/*@thymesVar id="mess" type="mess"*/-->
-                    <p class="btn btn-primary profile-button" th:if="${mess}" th:text="${mess}" ></p></div>
-                    <div class="col-md-12 mt-12 text-center">
-                        <p class="btn btn-primary profile-button" th:if="${message != null}" th:text="${message}" ></p></div>
                 </div>
 
                 </form>
