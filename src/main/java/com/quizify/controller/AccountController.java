@@ -30,8 +30,11 @@ public class AccountController {
         if (userLogin.getRole().getId() == 1 || userLogin.getRole().getId()==2) {
             List<User> users = accountService.getAllUsers();
             model.addAttribute("users", users);
+            return "manage-account";
+        }else {
+            return "error";
         }
-        return "manage-account";
+
     }
 
     @PostMapping("/changeRole/{id}")
