@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class AccountController {
@@ -86,7 +85,7 @@ public class AccountController {
         else if (!usersF.isEmpty()) {
             model.addAttribute("searchUser", usersF);
         }
-        return "manage-account";
+        return "old-manage-account";
     }
 
 
