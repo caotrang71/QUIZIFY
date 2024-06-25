@@ -3,6 +3,7 @@ package com.quizify.controller;
 import com.quizify.model.*;
 import com.quizify.repository.*;
 import com.quizify.service.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,9 +25,12 @@ public class AccountController {
 
 
     @GetMapping("/manage_account")
-    public String getListUsers(Model model) {
-        List<User> users = accountService.getAllUsers();
-        model.addAttribute("users", users);
+    public String getListUsers(Model model, HttpSession session) {
+        User userLogin = (User) session.getAttribute("user");
+        if (userLogin.getRole().getId() == 1 || userLogin.getRole().getId()==2) {
+            List<User> users = accountService.getAllUsers();
+            model.addAttribute("users", users);
+        }
         return "manage-account";
     }
 
