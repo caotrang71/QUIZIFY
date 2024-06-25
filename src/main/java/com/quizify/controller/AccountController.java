@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -30,10 +31,15 @@ public class AccountController {
     }
 
     @PostMapping("/changeRole/{id}")
-    public String ChangeRolesPage(@PathVariable long id, @RequestParam int roleID, Model model) {
+    public String ChangeRolesPage(@PathVariable long id, @RequestParam int roleID,
+                                  RedirectAttributes redirectAttributes) {
+
         Role role = roleRepository.getReferenceById(roleID);
         accountService.updateRole(id,role);
-        model.addAttribute("mess", "update Role successfully");
+
+        String mess = "update role successfully";
+        redirectAttributes.addFlashAttribute("mess", mess);
+
         return "redirect:/manage_account";
     }
 
@@ -64,28 +70,16 @@ public class AccountController {
                                 @RequestParam String email,
                                 @RequestParam String username,
                                 @RequestParam String password,
-                                @RequestParam("roleID") int roleSelect,Model model) {
+                                @RequestParam("roleID") int roleSelect,
+                                RedirectAttributes redirectAttributes) {
         if (accountService.checkAccount(email)){
             accountService.saveAccount(fullName,email,username,password,true,roleSelect);
             emailService.sendMail(email);
             return "redirect:/manage_account";
         }else {
-            model.addAttribute("message","Email is existed!");
+            redirectAttributes.addFlashAttribute("message","Email already existed!");
             return "redirect:/create_account";
         }
-    }
-
-    @GetMapping("/search")
-    public String searchUser(@RequestParam("key") String key, Model model) {
-        List<User> users = accountService.findByEmail(key);
-        List<User> usersF = accountService.findByFullNameContainingIgnoreCase(key);
-        if (!users.isEmpty()) {
-            model.addAttribute("searchUser", users);
-        }
-        else if (!usersF.isEmpty()) {
-            model.addAttribute("searchUser", usersF);
-        }
-        return "old-manage-account";
     }
 
 
