@@ -40,8 +40,9 @@ public class UserController {
         return "HomePage";
     }
     @GetMapping("/show_page_login")
-    public String showLoginForm() {
-        return "login";
+    public String showLoginForm(Model model) {
+        model.addAttribute("user", new User());
+        return "Login_page";
     }
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password,
@@ -105,12 +106,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/show_page_register")
-    public String showRegisterForm(Model model) {
-        model.addAttribute("user", new User());
-        return "register";
-    }
-
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user
                                                     ,Model model) {
@@ -119,7 +114,7 @@ public class UserController {
 
         if (userService.userExists(user.getEmail())) {
             model.addAttribute("error", "Email already exists");
-            return "redirect:/show_page_register";
+            return "redirect:/show_page_login";
         }
         // Tạo OTP và gửi email
         OTP otp = otpService.createOTP(user.getEmail());
@@ -150,16 +145,16 @@ public class UserController {
         }
         if (userService.findByEmail(email) != null){
             model.addAttribute("error", "Email already exists");
-            return "redirect:/show_page_register";
+            return "redirect:/show_page_login";
         }
 
         OTP otpObject = otpObjectOptional.get();
 
         // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
-        if (otpObject.getAttempts() > 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
+        if (otpObject.getAttempts() >= 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
             otpService.deleteOTP(email);
             model.addAttribute("error", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
-            return "redirect:/show_page_register"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
+            return "redirect:/show_page_login"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
         }
 
         // Kiểm tra nếu OTP nhập vào đúng
@@ -213,7 +208,7 @@ public class UserController {
         OTP otpObject = otpObjectOptional.get();
 
         // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
-        if (otpObject.getAttempts() > 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
+        if (otpObject.getAttempts() >= 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
             otpService.deleteOTP(email);
             model.addAttribute("error", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
             return "redirect:/show_page_login"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
