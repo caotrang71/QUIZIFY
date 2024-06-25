@@ -17,6 +17,7 @@
     <form id="registrationForm" th:action="@{/register}" method="post" th:object="${user}">
       <h1>Create Account</h1>
       <span>Please use your email for registeration</span>
+      <p style="color: red" th:if="${message != null}" th:text="${message}"></p>
       <input type="text" th:field="*{fullName}" placeholder="Full Name" required>
       <input type="email" th:field="*{email}" placeholder="Email" required>
       <input type="password" th:field="*{password}" placeholder="Password" required>
@@ -27,8 +28,9 @@
   <div class="form-container sign-in" >
     <form th:action="@{/login}" method="post">
       <h1>Sign In</h1>
-
       <span>Please use your email password</span>
+      <p style="color: red" th:if="${mess != null}" th:text="${mess}"></p>
+      <p style="color: green" th:if="${success != null}" th:text="${success}"></p>
       <input type="email" name="email" placeholder="Email">
       <input type="password" name="password" placeholder="Password">
       <a th:href="@{/show_page_forgetPassword}">Forget Your Password?</a >

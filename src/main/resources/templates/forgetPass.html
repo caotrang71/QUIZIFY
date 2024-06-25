@@ -3,21 +3,23 @@
 <head>
   <title>forget password Page</title>
   <link rel="stylesheet" th:href="@{/css/register.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 <div class="container">
-  <h2>Registration</h2>
+  <h2>forget password</h2>
   <form id="registrationForm" th:action="@{/forget_password}" method="post" th:object="${user}">
     <label for="email">Email:</label><br>
+    <p style="color: red" th:if="${error != null}" th:text="${error}"></p>
     <input type="email" id="email" th:field="*{email}" required><br>
-
     <input type="submit" value="send OTP mail">
   </form>
-  <div th:if="${message != null}">
-    <p th:text="${message}"></p>
+  <div style="text-align: center" class="btn btn-warning">
+    <a style="text-decoration: none" th:href="@{/show_page_login}">Come Back Login Page</a>
   </div>
-</div>
 
+
+</div>
 
 </body>
 </html>

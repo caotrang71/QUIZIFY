@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -46,7 +47,8 @@ public class UserController {
     }
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password,
-                        Model model,HttpSession session) {
+                        RedirectAttributes redirectAttributes
+                        , HttpSession session) {
         // Kiểm tra xem người dùng có tồn tại không
         User user = userService.findByEmail(email);
         if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
@@ -55,15 +57,21 @@ public class UserController {
             return "redirect:/userHome";
         } else {
             // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
-            model.addAttribute("error", "Invalid email or password");
+            redirectAttributes.addFlashAttribute("mess", "Invalid email or password");
             return "redirect:/show_page_login";
         }
     }
     @GetMapping("/profile/{id}")
-    public String profile(@PathVariable long id, Model model) {
-        Optional<User> user = userRepository.findById(id);
-        model.addAttribute("user", user);
-        return "profile";
+    public String profile(@PathVariable long id, Model model,HttpSession session) {
+        User userSession = (User) session.getAttribute("user");
+        if (userSession.getId() == id) {
+            Optional<User> user = userRepository.findById(id);
+            model.addAttribute("user", user);
+            return "profile";
+        }else {
+            return "error";
+        }
+
     }
     @PostMapping("/update_profile")
     public String updateProfile(@RequestParam long id,
@@ -83,10 +91,17 @@ public class UserController {
         return "redirect:/profile/"+id;
     }
     @GetMapping("/change_pass/{email}")
-    public String showChangePasswordForm(@PathVariable String email, Model model) {
-        User user = userRepository.findByEmail(email);
-        model.addAttribute("user", user);
-        return "ChangePassword";
+    public String showChangePasswordForm(@PathVariable String email,
+                                         Model model,HttpSession session) {
+
+        User userSession =(User) session.getAttribute("user");
+        if (userSession.getEmail().equals(email)) {
+            User user = userRepository.findByEmail(email);
+            model.addAttribute("user", user);
+            return "ChangePassword";
+        }else {
+            return "error";
+        }
     }
 
     @PostMapping("/changepassword/{email}")
@@ -108,12 +123,12 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user
-                                                    ,Model model) {
+                                                    ,RedirectAttributes redirectAttributes) {
 
         // Kiểm tra xem email đã tồn tại chưa
 
         if (userService.userExists(user.getEmail())) {
-            model.addAttribute("error", "Email already exists");
+            redirectAttributes.addFlashAttribute("message", "Email already exists");
             return "redirect:/show_page_login";
         }
         // Tạo OTP và gửi email
@@ -136,16 +151,13 @@ public class UserController {
 
     @PostMapping("/verifyOTP")
     public String verifyOTP(@RequestParam String email, @RequestParam String pass,
-                            @RequestParam String fullname, @RequestParam String otp, Model model) {
+                            @RequestParam String fullname, @RequestParam String otp,
+                            Model model,RedirectAttributes redirectAttributes) {
         Optional<OTP> otpObjectOptional = otpService.getObjectOTP(email);
 
         if (otpObjectOptional.isEmpty()) {
-            model.addAttribute("error", "OTP không tồn tại hoặc đã hết hạn.");
+            redirectAttributes.addFlashAttribute("mess", "OTP không tồn tại hoặc đã hết hạn.");
             return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + fullname;
-        }
-        if (userService.findByEmail(email) != null){
-            model.addAttribute("error", "Email already exists");
-            return "redirect:/show_page_login";
         }
 
         OTP otpObject = otpObjectOptional.get();
@@ -153,7 +165,7 @@ public class UserController {
         // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
         if (otpObject.getAttempts() >= 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
             otpService.deleteOTP(email);
-            model.addAttribute("error", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
+            redirectAttributes.addFlashAttribute("mess", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
             return "redirect:/show_page_login"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
         }
 
@@ -161,13 +173,13 @@ public class UserController {
         if (otpObject.getOtp().equals(otp)) {
             userService.registerUser(email, fullname, pass, true, roleRepository.getReferenceById(3));
             otpService.deleteOTP(email);
-
+            redirectAttributes.addFlashAttribute("success","register successfully!");
             return "redirect:/show_page_login"; // Redirect đến trang chủ nếu OTP đúng
         } else {
             // Tăng số lần thử nếu OTP sai
             otpObject.setAttempts(otpObject.getAttempts() + 1);
             otpRepository.save(otpObject);
-            model.addAttribute("error", "OTP không chính xác.");
+            redirectAttributes.addFlashAttribute("error", "OTP không chính xác.");
             return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + fullname; // Redirect để nhập lại OTP
         }
     }
@@ -177,7 +189,9 @@ public class UserController {
         return "forgetPass";
     }
     @PostMapping("/forget_password")
-    public String forgetPassword(@RequestParam String email, Model model) {
+    public String forgetPassword(@RequestParam String email,
+                                 RedirectAttributes redirectAttributes) {
+
         User user = userService.findByEmail(email);
         if (user != null) {
             //tạo otp và gửi otp
@@ -185,23 +199,23 @@ public class UserController {
             emailService.sendOTPEmail(email, otpObject.getOtp());
             return "redirect:/show_verifyOTP_forget?email="+email;
         }else {
-            model.addAttribute("error", "Email does not exist");
-            return "redirect:/show_page_login";
+            redirectAttributes.addFlashAttribute("error", "Email does not exist");
+            return "redirect:/show_page_forgetPassword";
         }
     }
-    @GetMapping("show_verifyOTP_forget")
+    @GetMapping("/show_verifyOTP_forget")
     public String showverifyOTP(@RequestParam String email, Model model) {
         model.addAttribute("email", email);
         return "verifyForgetPassOTP";
     }
     @PostMapping("/verifyOTP_resetPass")
     public String verifyOTPResetPass(@RequestParam String email,@RequestParam String otp,
-                                     Model model) {
+                                     Model model,RedirectAttributes redirectAttributes) {
 
         Optional<OTP> otpObjectOptional = otpService.getObjectOTP(email);
 
         if (otpObjectOptional.isEmpty()) {
-            model.addAttribute("error", "OTP không tồn tại hoặc đã hết hạn.");
+            redirectAttributes.addFlashAttribute("mess", "OTP không tồn tại hoặc đã hết hạn.");
             return "redirect:/show_page_login";
         }
 
@@ -210,19 +224,19 @@ public class UserController {
         // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
         if (otpObject.getAttempts() >= 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
             otpService.deleteOTP(email);
-            model.addAttribute("error", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
+            redirectAttributes.addFlashAttribute("mess", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
             return "redirect:/show_page_login"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
         }
 
         // Kiểm tra nếu OTP nhập vào đúng
         if (otpObject.getOtp().equals(otp)) {
             otpService.deleteOTP(email);
-            return "redirect:/show_reset_Password?email="+email; // Redirect đến trang chủ nếu OTP đúng
+            return "redirect:/show_reset_Password?email="+email; // Redirect đến trang reset nếu OTP đúng
         } else {
             // Tăng số lần thử nếu OTP sai
             otpObject.setAttempts(otpObject.getAttempts() + 1);
             otpRepository.save(otpObject);
-            model.addAttribute("error", "OTP không chính xác.");
+            redirectAttributes.addFlashAttribute("error", "OTP không chính xác.");
             return "redirect:/show_verifyOTP_forget?email=" + email; // Redirect để nhập lại OTP
         }
     }
