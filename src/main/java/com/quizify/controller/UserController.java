@@ -61,6 +61,17 @@ public class UserController {
             return "redirect:/show_page_login";
         }
     }
+    @PostMapping("/logout")
+    public String logout(HttpSession session,RedirectAttributes redirectAttributes) {
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            session.invalidate();
+            redirectAttributes.addFlashAttribute("mess", "You have been logged out");
+            return "redirect:/show_page_login";
+        }else {
+            return "error";
+        }
+    }
     @GetMapping("/profile/{id}")
     public String profile(@PathVariable long id, Model model,HttpSession session) {
         User userSession = (User) session.getAttribute("user");
