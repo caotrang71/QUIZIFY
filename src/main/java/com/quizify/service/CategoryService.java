@@ -20,4 +20,10 @@ public class CategoryService {
         return categoryRepository.findById(id).orElse(null);
     }
 
+    public void deleteCategory(int id) {
+        Category category = categoryRepository.findById(id).orElse(null);
+        if (category != null) {
+            categoryRepository.deleteById(id);
+        }
+    }
 }
