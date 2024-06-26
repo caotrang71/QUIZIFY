@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test List</title>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Test List</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Test ID</th>
+            <th>Number of Questions</th>
+            <th>Answered Questions</th>
+            <th>Progress</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="test : ${tests}">
+            <td th:text="${test.id}"></td>
+            <td th:text="${test.numberOfQuestions}"></td>
+            <td th:text="${#lists.size(test.testHistories)}"></td>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar"
+                         th:style="'width:' + (${#lists.size(test.testHistories)} * 100 / ${test.numberOfQuestions}) + '%'"
+                         th:text="${#lists.size(test.testHistories)} * 100 / ${test.numberOfQuestions} + '%'">
+                    </div>
+                </div>
+            </td>
+            <td>
+                <a th:href="@{/tests/take/{testId}(testId=${test.id})}" class="btn btn-primary">Continue</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

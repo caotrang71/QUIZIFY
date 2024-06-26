@@ -37,22 +37,22 @@ public class TestService {
     }
 
     public Test createTest(Long userId,Long quizBankId, int numberOfQuestions) throws Exception {
-        Optional<QuizBank> quizBankOpt = quizBankRepository.findById(quizBankId);
-        if (!quizBankOpt.isPresent()) {
+        QuizBank quizBank = quizBankRepository.getQuizBankById(quizBankId);
+        if (quizBank == null) {
             throw new Exception("QuizBank not found");
         }
-        QuizBank quizBank = quizBankOpt.get();
+//        QuizBank quizBank = quizBankOpt.get();
 
         if (numberOfQuestions < 1 || numberOfQuestions > quizBank.getQuestions().size()) {
             throw new Exception("Invalid number of questions");
         }
 
-        List<Question> questions = quizBank.getQuestions();
+        List<Question> questions = questionRepository.getQuestionsByQuizBank(quizBank);
         Collections.shuffle(questions);
         List<Question> selectedQuestions = questions.subList(0, numberOfQuestions);
 
         Test test = new Test();
-        test.setCreatedBy(userRepository.getReferenceById(userId)); // Assuming User class has a constructor that accepts ID
+        test.setCreatedBy(userRepository.getUserById(userId)); // Assuming User class has a constructor that accepts ID
         test.setQuizBank(quizBank);
         test.setNumberOfQuestions(numberOfQuestions);
         test.setStartedAt(LocalDateTime.now());
@@ -68,6 +68,26 @@ public class TestService {
         return test;
     }
 
+//    public Test submitTest(Long testId) throws Exception {
+//        Optional<Test> testOpt = Optional.ofNullable(testRepository.getTestById(testId));
+//        if (!testOpt.isPresent()) {
+//            throw new Exception("Test not found");
+//        }
+//        Test test = testOpt.get();
+//        int correctAnswers = 0;
+//
+//        for (TestHistory history : test.getTestHistories()) {
+//            QuestionChoice selectedChoice = questionChoiceRepository.findById(history.getQuestionChoice().getId()).orElse(null);
+//            if (selectedChoice != null && selectedChoice.getCorrectOrNot()) {
+//                correctAnswers++;
+//            }
+//        }
+//
+//        test.setResult(correctAnswers);
+//        test.setEndedAt(LocalDateTime.now());
+//        return testRepository.save(test);
+//    }
+
     public Test submitTest(Long testId, List<Long> selectedChoiceIds) throws Exception {
         Optional<Test> testOpt = Optional.ofNullable(testRepository.getTestById(testId));
         if (!testOpt.isPresent()) {
@@ -76,8 +96,11 @@ public class TestService {
         Test test = testOpt.get();
         int correctAnswers = 0;
 
-        for (TestHistory history : test.getTestHistories()) {
-            QuestionChoice selectedChoice = questionChoiceRepository.findById(history.getQuestionChoice().getId()).orElse(null);
+        List<TestHistory> testHistories = test.getTestHistories();
+        for (int i = 0; i < testHistories.size(); i++) {
+            TestHistory history = testHistories.get(i);
+            Long selectedChoiceId = selectedChoiceIds.get(i);
+            QuestionChoice selectedChoice = questionChoiceRepository.findById(selectedChoiceId).orElse(null);
             if (selectedChoice != null && selectedChoice.getCorrectOrNot()) {
                 correctAnswers++;
             }
@@ -87,6 +110,7 @@ public class TestService {
         test.setEndedAt(LocalDateTime.now());
         return testRepository.save(test);
     }
+
 
     public List<Test> getAllTests() {
         return testRepository.findAll();

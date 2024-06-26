@@ -20,7 +20,7 @@ public class UserService {
 //    }
 //
 //    @Override
-    public User findById(Long id) {
+    public User getUserById(Long id){
         return userRepository.findById(id).orElse(null);
     }
 //

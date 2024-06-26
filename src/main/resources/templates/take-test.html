@@ -13,7 +13,8 @@
             <div th:each="choice : ${history.question.questionChoices}">
                 <label>
                     <input type="radio" th:name="${'question-' + history.question.id}"
-                           th:value="${choice.id}"/>
+                           th:value="${choice.id}"
+                           th:checked="${choice.id == history.questionChoice?.id}"/>
                     <span th:text="${choice.content}"></span>
                 </label><br/>
             </div>

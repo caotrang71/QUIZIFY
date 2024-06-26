@@ -19,7 +19,7 @@ public class TestHistory {
     private Test test;
 
     @ManyToOne
-    @JoinColumn(name = "choice_id", nullable = false)
+    @JoinColumn(name = "choice_id", nullable = true)
     private QuestionChoice questionChoice;
 
     @ManyToOne
