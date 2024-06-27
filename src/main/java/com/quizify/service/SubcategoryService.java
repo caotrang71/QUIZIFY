@@ -35,7 +35,16 @@ public class SubcategoryService {
     public List<Subcategory> getSubcategoriesByCategory(Category category) {
         return subcategoryRepository.getSubcategoriesByCategory(category);
     }
+    public List<Subcategory> getSubcategoriesByCategoryId(int categoryID) {
+        return subcategoryRepository.getSubcategoriesByCategoryId(categoryID);
+    }
 
+    public void deleteSubCateogry(int id){
+        Subcategory subcategory = subcategoryRepository.findById(id).orElse(null);
+        if (subcategory != null){
+            subcategoryRepository.deleteById(id);
+        }
+    }
 
 
 }
