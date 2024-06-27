@@ -50,7 +50,7 @@ public class UserService {
         User usernew = new User();
 
         usernew.setEmail(user.getEmail());
-        usernew.setUsername(user.getFullName());
+        usernew.setFullName(user.getFullName());
         usernew.setUsername(user.getUsername());
         usernew.setPassword(passwordEncoder.encode(user.getPassword()));
         usernew.setGender(user.isGender());
