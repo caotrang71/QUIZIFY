@@ -62,6 +62,27 @@ body {
 [tabindex="-1"]:focus {
   outline: 0 !important; }
 
+.dropdown-menu-custom {
+  border-radius: 10px; /* Bo tròn các góc */
+  padding: 10px; /* Thêm khoảng cách bên trong */
+  min-width: 200px; /* Đặt kích thước nhỏ hơn */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng để tạo chiều sâu */
+  background-color: #fff; /* Màu nền */
+}
+.dropdown-item-custom {
+  padding: 10px 20px; /* Điều chỉnh khoảng cách bên trong các mục */
+  border-radius: 5px; /* Bo tròn các góc của các mục */
+  transition: background-color 0.3s; /* Hiệu ứng chuyển tiếp */
+  font-size: 16px; /* Tăng kích thước chữ */
+  color: #333; /* Màu chữ */
+}
+.dropdown-item-custom:hover {
+  background-color: #f1f1f1; /* Màu nền khi hover */
+}
+.nav-link.dropdown-toggle {
+  cursor: pointer; /* Thay đổi con trỏ chuột thành pointer */
+}
+
 hr {
   -webkit-box-sizing: content-box;
   box-sizing: content-box;

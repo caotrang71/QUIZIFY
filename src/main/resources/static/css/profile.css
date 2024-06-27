@@ -8,7 +8,7 @@ body {
 }
 
 .profile-button {
-    background: rgb(99, 39, 120);
+    background: rgb(236, 117, 45);
     box-shadow: none;
     border: none
 }
@@ -41,4 +41,8 @@ body {
     color: #fff;
     cursor: pointer;
     border: solid 1px #BA68C8
+}
+.boderbox{
+    border-radius: 30px;
+
 }
