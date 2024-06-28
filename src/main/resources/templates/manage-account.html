@@ -149,11 +149,13 @@
                 <td>
                     <form th:action="@{/changeRole/{id}(id=${user.id})}" th:method="post" >
                         <!--                    th:disabled="${user.role_id != 1}"-->
-                        <select name="roleID" th:disabled="${user.email == session.user.email}">
+
+                        <select name="roleID" th:disabled="${user.email == session.user.email || user.getRole().id == session.user.getRole().id || user.getRole().id==1}">
+                            <option th:selected="${user.getRole().id ==1}" disabled>Admin</option>
                             <option value="2" th:selected="${user.getRole().id ==2}">Staff</option>
                             <option value="3" th:selected="${user.getRole().id ==3}">User</option>
                         </select>
-                        <button type="submit" th:hidden="${user.email == session.user.email || user.getRole().id ==2}">
+                        <button type="submit" th:hidden="${user.email == session.user.email || user.getRole().id == session.user.getRole().id || user.getRole().id == 1}">
                             <i class="fa fa-pencil"></i>
                         </button>
 
@@ -163,11 +165,11 @@
                 <td style="color: red;" th:if="${user.status == false }" th:text="Inactive"></td>
                 <td th:text="${#temporals.format(user.createdAt, 'dd/mm/yyyy HH:mm:ss')}"></td>
 
-                <td><a th:href="@{/view_account/{id}(id=${user.id})}" th:hidden="${user.email == session.user.email}">
+                <td><a th:href="@{/view_account/{id}(id=${user.id})}" th:hidden="${user.email == session.user.email || user.getRole().id==1}">
                     <i class="fa fa-eye"></i>
                     </a>
                     &nbsp;&nbsp;&nbsp;
-                    <button th:onclick=" 'deleteAccount(' +${user.id}+')' " th:hidden="${user.email == session.user.email || user.getRole().id ==2}">
+                    <button th:onclick=" 'deleteAccount(' +${user.id}+')' " th:hidden="${user.email == session.user.email || user.getRole().id == session.user.getRole().id || user.getRole().id==1}">
                         <i class="fa fa-trash"></i>
                     </button>
 
