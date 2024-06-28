@@ -1,26 +1,101 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Take Test</title>
+    <title>Mock Test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 2rem;
+            color: #343a40;
+        }
+        .quiz-bank-name {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .choice {
+            margin-left: 20px;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
+<div class="container">
     <h1>Take Test</h1>
+    <p class="quiz-bank-name" th:text="${test.quizBank.bankName}"></p>
     <form th:action="@{/tests/submit}" method="post">
         <input type="hidden" name="testId" th:value="${test.id}"/>
-        <div th:each="history : ${test.testHistories}">
-            <p th:text="${history.question.content}"></p>
-            <div th:each="choice : ${history.question.questionChoices}">
-                <label>
-                    <input type="radio" th:name="${'question-' + history.question.id}"
-                           th:value="${choice.id}"
-                           th:checked="${choice.id == history.questionChoice?.id}"/>
+        <div th:each="history : ${test.testHistories}" class="question">
+            <p th:text="${history.question.content}" class="font-weight-bold"></p>
+            <div th:each="choice : ${history.question.questionChoices}" class="form-check choice">
+                <input type="radio" class="form-check-input" th:name="${'question-' + history.question.id}"
+                       th:value="${choice.id}" th:checked="${choice.id == history.questionChoice?.id}"
+                       th:onclick="|handleChoiceSelection(${history.question.id}, ${choice.id})|"/>
+                <label class="form-check-label">
                     <span th:text="${choice.content}"></span>
                 </label><br/>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Submit</button>
+        </div>
     </form>
+
+    <form id="exitForm" th:action="@{/tests/exit}" method="post" style="display: none;">
+        <input type="hidden" name="testId" th:value="${test.id}"/>
+    </form>
+
+    <div class="mt-2">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('exitForm').submit();">
+            <i class="fas fa-sign-out-alt"></i> Exit
+        </button>
+    </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function saveChoiceToLocalStorage(questionId, choiceId) {
+        const testId = document.querySelector('input[name="testId"]').value;
+        let choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
+        choices[questionId] = choiceId;
+        localStorage.setItem(`testChoices-${testId}`, JSON.stringify(choices));
+    }
+
+    function loadChoicesFromLocalStorage() {
+        const testId = document.querySelector('input[name="testId"]').value;
+        const choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
+        for (const questionId in choices) {
+            const choiceId = choices[questionId];
+            const input = document.querySelector(`input[name="question-${questionId}"][value="${choiceId}"]`);
+            if (input) {
+                input.checked = true;
+            }
+        }
+    }
+
+    function handleChoiceSelection(questionId, choiceId) {
+        saveChoiceToLocalStorage(questionId, choiceId);
+    }
+
+    window.onload = function() {
+        loadChoicesFromLocalStorage();
+    };
+</script>
 </body>
 </html>

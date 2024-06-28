@@ -148,7 +148,7 @@
 
         <!-- Modal -->
         <div class="modal fade" id="mockTestModal" tabindex="-1" aria-labelledby="mockTestModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <form th:action="@{/tests/create}" th:object="${test}" method="post">
                         <div class="modal-header">
@@ -159,7 +159,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="numberOfQuestions">Number of Questions: </label>
+                                <label for="numberOfQuestions">Number of Questions:</label>
                                 <input type="number" class="form-control" id="numberOfQuestions" name="numberOfQuestions" min="1" required>
                             </div>
                             <input type="hidden" name="quizBankId" th:value="${quizBank.id}">
@@ -172,6 +172,24 @@
                 </div>
             </div>
         </div>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const maxQuestions = /*[[${quizBank.questions.size()}]]*/;
+
+            document.getElementById('numberOfQuestions').addEventListener('input', function() {
+                let value = parseInt(this.value);
+
+                if (value > maxQuestions) {
+                    this.value = maxQuestions;
+                } else if (value < 1) {
+                    this.value = 1;
+                }
+            });
+            /*]]>*/
+        </script>
+
+
 
     </div>
 </div>

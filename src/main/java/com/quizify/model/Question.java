@@ -45,4 +45,15 @@ public class Question {
         return Objects.hash(id);
     }
 
+    public QuestionChoice getCorrectAnswer(){
+        QuestionChoice answer = new QuestionChoice();
+        for (QuestionChoice choice : questionChoices) {
+            if(choice.getCorrectOrNot()) {
+                answer = choice;
+            }
+
+        }
+        return answer;
+    }
+
 }

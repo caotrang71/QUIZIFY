@@ -2,15 +2,20 @@ package com.quizify.controller;
 
 import com.quizify.model.*;
 import com.quizify.service.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import java.util.stream.Collectors;
+
 
 @Controller
 @RequestMapping("/tests")
@@ -28,44 +33,31 @@ public class TestController {
     @Autowired
     private TestHistoryService testHistoryService;
 
-    @GetMapping("/tests-list")
-    public String listTests(Model model) {
+    @GetMapping("/my-practice")
+    public String myPractice(Model model) {
         List<Test> tests = testService.getAllTests();
         model.addAttribute("tests", tests);
-        return "test-list";
+        return "my-practice";
     }
 
     @PostMapping("/create")
-    public String createTest(@ModelAttribute("test") Test test,@RequestParam Long quizBankId, @RequestParam int numberOfQuestions, Model model) {
-        Long userId = 3L;
+    public String createTest(@RequestParam Long quizBankId, @RequestParam int numberOfQuestions, Model model) {
+        Long userId = 3L; // Replace with your actual user ID logic
         try {
-            test = testService.createTest(userId, quizBankId, numberOfQuestions);
-//            List<TestHistory> testHistory = test.getTestHistories();
-//            List<Question> questions = new ArrayList<>();
-//            for (TestHistory testHistoryItem : testHistory) {
-//                questions.add(testHistoryItem.getQuestion());
-//            }
-//            Map<Question, List<QuestionChoice>> questionChoicesMap = new HashMap<>();
-//            for(Question question : questions) {
-//                List<QuestionChoice> questionChoices = questionChoiceService.getQuestionChoiceByQuestion(question);
-//                questionChoicesMap.put(question, questionChoices);
-//            }
-//            model.addAttribute("questions", questions);
-//            model.addAttribute("questions", questions);
-//            model.addAttribute("questionChoicesMap", questionChoicesMap);
-            model.addAttribute("test", test);
-            System.out.println("Test created successfully with ID: {}"+ test.getId());
-
+            Test test = testService.createTest(userId, quizBankId, numberOfQuestions);
             return "redirect:/tests/take/" + test.getId();
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            System.out.println("Error creating test: {}"+ e.getMessage()+ e);
+            model.addAttribute("error", "Error creating test: " + e.getMessage());
             return "redirect:/quiz-banks/quiz-bank-detail/" + quizBankId;
         }
     }
 
     @GetMapping("/take/{testId}")
-    public String takeTest(@PathVariable(value="testId") Long testId, Model model) {
+    public String takeTest(@PathVariable Long testId, Model model, RedirectAttributes redirectAttributes) {
+        if (testService.isTestSubmitted(testId)) {
+            redirectAttributes.addFlashAttribute("message", "Test has already been submitted. You can retake the test.");
+            return "redirect:/tests/my-practice";
+        }
         Test test = testService.getTestById(testId);
         model.addAttribute("test", test);
         return "take-test";
@@ -82,25 +74,13 @@ public class TestController {
             }
             Test test = testService.submitTest(testId, selectedChoiceIds);
             model.addAttribute("test", test);
-            return "result";
+            return "redirect:/tests/my-practice";
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
+            model.addAttribute("error", "Error submitting test: " + e.getMessage());
             return "take-test";
         }
     }
 
-
-//    @PostMapping("/submit")
-//    public String submitTest(@RequestParam Long testId, Model model) {
-//        try {
-//            Test test = testService.submitTest(testId);
-//            model.addAttribute("test", test);
-//            return "result";
-//        } catch (Exception e) {
-//            model.addAttribute("error", e.getMessage());
-//            return "take-test";
-//        }
-//    }
 
     @GetMapping("/detail/{testId}")
     public String testDetail(@PathVariable Long testId, Model model) {
@@ -111,5 +91,16 @@ public class TestController {
         return "test-detail";
     }
 
+    @PostMapping("/exit")
+    public String exitTest(@RequestParam Long testId, RedirectAttributes redirectAttributes) {
+        try {
+            testService.markTestInProgress(testId);
+            redirectAttributes.addFlashAttribute("message", "Test has been saved. You can continue later.");
+            return "redirect:/tests/my-practice";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error exiting test: " + e.getMessage());
+            return "redirect:/tests/take/" + testId;
+        }
+    }
 
 }
