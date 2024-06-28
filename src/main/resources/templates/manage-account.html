@@ -166,14 +166,14 @@
                 <td><a th:href="@{/view_account/{id}(id=${user.id})}" th:hidden="${user.email == session.user.email}">
                     <i class="fa fa-eye"></i>
                     </a>
-
+                    &nbsp;&nbsp;&nbsp;
                     <button th:onclick=" 'deleteAccount(' +${user.id}+')' " th:hidden="${user.email == session.user.email}">
                         <i class="fa fa-trash"></i>
                     </button>
 
-                    <a onclick="" th:hidden="${user.email == session.user.email}">
-                        BAN
-                    </a>
+<!--                    <a onclick="" th:hidden="${user.email == session.user.email}">-->
+<!--                        BAN-->
+<!--                    </a>-->
                 </td>
             </tr>
             </tbody>
