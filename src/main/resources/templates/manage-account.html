@@ -153,7 +153,7 @@
                             <option value="2" th:selected="${user.getRole().id ==2}">Staff</option>
                             <option value="3" th:selected="${user.getRole().id ==3}">User</option>
                         </select>
-                        <button type="submit" th:hidden="${user.email == session.user.email}">
+                        <button type="submit" th:hidden="${user.email == session.user.email || user.getRole().id ==2}">
                             <i class="fa fa-pencil"></i>
                         </button>
 
@@ -167,7 +167,7 @@
                     <i class="fa fa-eye"></i>
                     </a>
                     &nbsp;&nbsp;&nbsp;
-                    <button th:onclick=" 'deleteAccount(' +${user.id}+')' " th:hidden="${user.email == session.user.email}">
+                    <button th:onclick=" 'deleteAccount(' +${user.id}+')' " th:hidden="${user.email == session.user.email || user.getRole().id ==2}">
                         <i class="fa fa-trash"></i>
                     </button>
 

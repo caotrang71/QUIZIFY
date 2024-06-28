@@ -36,10 +36,6 @@ public class UserController {
     @Autowired
     private RoleRepository roleRepository;
 
-    @GetMapping("/home")
-    public String showhome() {
-        return "HomePage";
-    }
     @GetMapping("/show_page_login")
     public String showLoginForm(Model model) {
         model.addAttribute("user", new User());
@@ -49,16 +45,22 @@ public class UserController {
     public String login(@RequestParam String email, @RequestParam String password,
                         RedirectAttributes redirectAttributes
                         , HttpSession session) {
-        // Kiểm tra xem người dùng có tồn tại không
-        User user = userService.findByEmail(email);
-        if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
-            // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
-            session.setAttribute("user", user);
+        //kiểm tra session có tồn tại user chưa
+        User userSessionExist = (User) session.getAttribute("user");
+        if (userSessionExist == null) {
+            // Kiểm tra xem người dùng có tồn tại không
+            User user = userService.findByEmail(email);
+            if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
+                // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
+                session.setAttribute("user", user);
+                return "redirect:/userHome";
+            } else {
+                // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
+                redirectAttributes.addFlashAttribute("mess", "Invalid email or password");
+                return "redirect:/show_page_login";
+            }
+        }else {
             return "redirect:/userHome";
-        } else {
-            // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
-            redirectAttributes.addFlashAttribute("mess", "Invalid email or password");
-            return "redirect:/show_page_login";
         }
     }
     @PostMapping("/logout")
