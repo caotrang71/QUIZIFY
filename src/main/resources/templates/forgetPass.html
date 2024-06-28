@@ -2,20 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>forget password Page</title>
-  <link rel="stylesheet" th:href="@{/css/register.css}">
-  <link rel="stylesheet" th:href="@{/css/style.css}">
+
+  <link rel="stylesheet" th:href="@{/css/forget.css}">
 </head>
 <body>
 <div class="container">
-  <h2>forget password</h2>
+  <h2>FORGOT PASSWORD</h2>
   <form id="registrationForm" th:action="@{/forget_password}" method="post" th:object="${user}">
-    <label for="email">Email:</label><br>
+    <label for="email">Please Enter Your Email:</label><br>
     <p style="color: red" th:if="${error != null}" th:text="${error}"></p>
     <input type="email" id="email" th:field="*{email}" required><br>
-    <input type="submit" value="send OTP mail">
+    <input type="submit" value="Send OTP ">
   </form>
   <div style="text-align: center" class="btn btn-warning">
-    <a style="text-decoration: none" th:href="@{/show_page_login}">Come Back Login Page</a>
+    <a style="text-decoration: none;color: #ec752d" th:href="@{/show_page_login}">Come Back Login Page</a>
   </div>
 
 
