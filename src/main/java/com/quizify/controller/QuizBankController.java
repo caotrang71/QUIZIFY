@@ -162,6 +162,11 @@ public class QuizBankController {
         return "redirect:/quiz-banks/quiz-banks-list";
     }
 
+    @GetMapping("/comment")
+    public String showPageComment(){
+        return "testBox-comment";
+    }
+
 
 }
 
