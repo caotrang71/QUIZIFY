@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test List</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            updateTestProgress();
+        });
+
+        function updateTestProgress() {
+            document.querySelectorAll('.test-row').forEach(testRow => {
+                const testId = testRow.getAttribute('data-test-id');
+                const totalQuestions = parseInt(testRow.getAttribute('data-total-questions'));
+                const answeredQuestions = getSavedChoices(testId);
+                const progressPercentage = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
+
+                // Update progress bar
+                const progressBar = testRow.querySelector('.progress-bar');
+                progressBar.style.width = `${progressPercentage}%`;
+                progressBar.textContent = `${Math.round(progressPercentage)}%`;
+
+                // Update answered questions count
+                const answeredQuestionsElement = testRow.querySelector('.answered-questions');
+                answeredQuestionsElement.textContent = answeredQuestions;
+            });
+        }
+
+        function getSavedChoices(testId) {
+            const testKey = 'testChoices-' + testId;
+            const choices = JSON.parse(localStorage.getItem(testKey) || '[]');
+            const answeredQuestions = choices.filter(choice => choice !== null).length;
+            console.log(`Test ID: ${testId}, Answered Questions: ${answeredQuestions}`);
+            return answeredQuestions;
+        }
+    </script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Test List</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Test ID</th>
+            <th>Number of Questions</th>
+            <th>Answered Questions</th>
+            <th>Progress</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="test : ${tests}" class="test-row"
+            th:attr="data-test-id=${test.id}, data-total-questions=${test.numberOfQuestions}">
+            <td th:text="${test.id}"></td>
+            <td th:text="${test.numberOfQuestions}"></td>
+            <td class="answered-questions">0</td>
+            <td>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 0%">
+                    </div>
+                </div>
+            </td>
+            <td>
+                <a th:href="@{/tests/take/{testId}(testId=${test.id})}" class="btn btn-primary">Continue</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

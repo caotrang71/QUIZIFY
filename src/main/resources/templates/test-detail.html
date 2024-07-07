@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test Detail</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: #343a40;
+        }
+        .question {
+            margin-bottom: 30px;
+        }
+        .choice {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        .correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .check-icon {
+            color: #28a745; /* Green color */
+            margin-left: 5px;
+        }
+        .times-icon {
+            color: #dc3545; /* Red color */
+            margin-left: 5px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showCorrectAnswers();
+        });
+
+        function showCorrectAnswers() {
+            document.querySelectorAll('.choice').forEach(choiceElement => {
+                const isCorrect = choiceElement.getAttribute('data-is-correct') === 'true';
+                const selected = choiceElement.getAttribute('data-selected') === 'true';
+
+                if (selected) {
+                    if (isCorrect) {
+                        choiceElement.classList.add('correct');
+                        choiceElement.innerHTML += '<i class="fas fa-check-circle check-icon"></i>';
+                    } else {
+                        choiceElement.classList.add('incorrect');
+                        choiceElement.innerHTML += '<i class="fas fa-times-circle times-icon"></i>';
+                    }
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Test Detail</h1>
+    <div th:each="history : ${testHistories}" class="question">
+        <p th:text="${history.question.content}" class="font-weight-bold"></p>
+        <div th:each="choice : ${history.question.questionChoices}" class="choice"
+             th:attr="data-is-correct=${choice.correctOrNot}, data-selected=${choice.id == history.questionChoice?.id}">
+            <label>
+                <span th:text="${choice.content}"></span>
+            </label>
+        </div>
+        <div>
+            <span th:text="${'Correct Answer: ' + history.question.getCorrectAnswer().content}" class="correct-answer font-weight-bold text-success"></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
