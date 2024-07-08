@@ -55,7 +55,7 @@ public class TestService {
 
 
         Test test = new Test();
-        test.setCreatedBy(userRepository.getUserById(userId)); // Assuming User class has a constructor that accepts ID
+        test.setCreatedBy(userRepository.findById(userId).orElse(null)); // Assuming User class has a constructor that accepts ID
         test.setQuizBank(quizBank);
         test.setTitle(title);
         test.setNumberOfQuestions(numberOfQuestions);
