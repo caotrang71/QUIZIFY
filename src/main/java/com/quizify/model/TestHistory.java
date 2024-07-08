@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -19,11 +21,19 @@ public class TestHistory {
     private Test test;
 
     @ManyToOne
-    @JoinColumn(name = "choice_id", nullable = false)
+    @JoinColumn(name = "choice_id", nullable = true)
     private QuestionChoice questionChoice;
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
     private Question question;
+
+    @ManyToMany
+    @JoinTable(
+            name = "test_history_choices",
+            joinColumns = @JoinColumn(name = "test_history_id"),
+            inverseJoinColumns = @JoinColumn(name = "choice_id")
+    )
+    private List<QuestionChoice> shuffledChoices;
 
 }

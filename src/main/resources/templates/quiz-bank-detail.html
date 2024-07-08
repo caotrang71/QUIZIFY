@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" th:href="@{/side/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/modal.css}">
 </head>
 <body>
 
@@ -124,7 +125,11 @@
                 </div>
             </div>
             <div><a th:href="@{/quiz-banks/update-quiz-bank/{id} (id=${quizBank.id})}" class="btn btn-primary mt-3">
-                Update</a></div>
+                Update</a>
+                <button type="button" class="btn btn-secondary mt-3" data-toggle="modal" data-target="#mockTestModal">
+                    Practice with Mock Test
+                </button>
+            </div>
 
             <div th:each="entry : ${questionChoicesMap.entrySet()}" class="mt-4">
                 <div class="card">
@@ -141,6 +146,110 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="mockTestModal" tabindex="-1" aria-labelledby="mockTestModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form th:action="@{/tests/create}" th:object="${test}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="mockTestModalLabel">Create Mock Test</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group row align-items-center">
+                                <label for="title" class="col-sm-1">Title:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="title" name="title" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="numberOfQuestions">Number of Questions:</label>
+                                <input type="number" class="form-control d-inline-block w-25 ml-2" id="numberOfQuestions" name="numberOfQuestions" min="1" required>
+                                <span hidden id="totalQuestionsText"></span>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <input type="radio" id="firstNQuestions" name="questionOrder" value="first" checked>
+                                    <label for="firstNQuestions">From first <span id="numberOfQuestionsText"><span id="totalQuestionsText3"></span></span> questions</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="radio" id="shuffleQuestions" name="questionOrder" value="shuffle">
+                                    <label for="shuffleQuestions">From total <span id="totalQuestionsText2"></span> questions</label>
+                                </div>
+
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="shuffleChoices" name="shuffleChoices">
+                                <label class="form-check-label" for="shuffleChoices">Shuffle Choices</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" id="enableTimeLimit" name="enableTimeLimit">
+                                <label for="enableTimeLimit">Time Limit: </label>
+                                <input type="number" class="form-control d-inline-block w-25 ml-2" id="timeLimit" name="timeLimit" min="1" disabled> Minutes
+                            </div>
+
+                            <input type="hidden" name="quizBankId" th:value="${quizBank.id}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Start</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            document.addEventListener('DOMContentLoaded', function() {
+                const maxQuestions = /*[[${quizBank.questions.size()}]]*/;
+                document.getElementById('totalQuestionsText').innerText = `from ${maxQuestions}`;
+                document.getElementById('totalQuestionsText2').innerText = `${maxQuestions}`;
+                document.getElementById('totalQuestionsText3').innerText = `${maxQuestions}`;
+
+                $('#mockTestModal').on('show.bs.modal', function () {
+                    const numberOfQuestionsInput = document.getElementById('numberOfQuestions');
+                    numberOfQuestionsInput.value = maxQuestions;
+                    numberOfQuestionsInput.max = maxQuestions; // Set max attribute to ensure it's not exceeded
+                });
+
+                document.getElementById('numberOfQuestions').addEventListener('input', function() {
+                    let value = parseInt(this.value);
+
+                    if (value > maxQuestions) {
+                        this.value = maxQuestions;
+                    } else if (value < 1) {
+                        this.value = 1;
+                    }
+
+                    document.getElementById('numberOfQuestionsText').innerText = value;
+                });
+
+                document.getElementById('enableTimeLimit').addEventListener('change', function() {
+                    const timeLimitInput = document.getElementById('timeLimit');
+                    if (this.checked) {
+                        timeLimitInput.disabled = false;
+                        timeLimitInput.value = 60;
+                    } else {
+                        timeLimitInput.disabled = true;
+                        timeLimitInput.value = '';
+                    }
+                });
+
+                document.getElementById('timeLimit').addEventListener('input', function() {
+                    if (this.value < 1) {
+                        this.value = 1;
+                    }
+                });
+            });
+            /*]]>*/
+        </script>
+
+
+
 
     </div>
 </div>
