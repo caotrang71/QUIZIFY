@@ -9,6 +9,10 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" th:href="@{/side/css/style.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/star.css}">
+    <script th:src="@{/js/star.js}"></script>
 </head>
 <body>
 
@@ -143,6 +147,25 @@
                         </ul>
                     </div>
                 </div>
+            </div>
+            <br><br>
+            <div class="star">
+                <form action="#" method="post">
+                    <div class="rating-box">
+                        <label>
+                            <input type="hidden" name="quizBanksID" th:value="${quizBank.id}">
+                            <input type="hidden" name="userID" th:value="${session.user.id}">
+                        </label>
+                        <i class="fa fa-star" data-name="star" data-value="1" aria-hidden="true"></i>
+                        <i class="fa fa-star" data-name="star" data-value="2" aria-hidden="true"></i>
+                        <i class="fa fa-star" data-name="star" data-value="3" aria-hidden="true"></i>
+                        <i class="fa fa-star" data-name="star" data-value="4" aria-hidden="true"></i>
+                        <i class="fa fa-star" data-name="star" data-value="5" aria-hidden="true"></i>
+                        <button type="submit">
+                            <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 

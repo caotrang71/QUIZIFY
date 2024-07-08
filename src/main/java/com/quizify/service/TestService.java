@@ -52,7 +52,7 @@ public class TestService {
         List<Question> selectedQuestions = questions.subList(0, numberOfQuestions);
 
         Test test = new Test();
-        test.setCreatedBy(userRepository.getUserById(userId)); // Assuming User class has a constructor that accepts ID
+        test.setCreatedBy(userRepository.findById(userId).orElse(null)); // Assuming User class has a constructor that accepts ID
         test.setQuizBank(quizBank);
         test.setNumberOfQuestions(numberOfQuestions);
         test.setStartedAt(LocalDateTime.now());
