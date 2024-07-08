@@ -116,6 +116,16 @@
         <div class="container mt-5">
             <div class="card">
                 <div class="card-body">
+                    <div class="star">
+                        <h7 th:text="${averageStar}"></h7>
+                        <div class="rating-box">
+                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 1} ? 'active' "></i>
+                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 2} ? 'active' "></i>
+                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 3} ? 'active' "></i>
+                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 4} ? 'active' "></i>
+                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 5} ? 'active' "></i>
+                        </div>
+                    </div>
                     <h2 class="card-title" th:text="${quizBank.bankName}"></h2>
                     <p class="card-text" th:text="${quizBank.description}"></p>
 <!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
@@ -150,18 +160,19 @@
             </div>
             <br><br>
             <div class="star">
-                <form action="#" method="post">
+                <form th:action="@{/quiz-banks/vote}" method="post">
                     <div class="rating-box">
                         <label>
                             <input type="hidden" name="quizBanksID" th:value="${quizBank.id}">
                             <input type="hidden" name="userID" th:value="${session.user.id}">
+                            <input type="hidden" id="star" name="star" value="">
                         </label>
-                        <i class="fa fa-star" data-name="star" data-value="1" aria-hidden="true"></i>
-                        <i class="fa fa-star" data-name="star" data-value="2" aria-hidden="true"></i>
-                        <i class="fa fa-star" data-name="star" data-value="3" aria-hidden="true"></i>
-                        <i class="fa fa-star" data-name="star" data-value="4" aria-hidden="true"></i>
-                        <i class="fa fa-star" data-name="star" data-value="5" aria-hidden="true"></i>
-                        <button type="submit">
+                        <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 1} ? 'active' " th:onclick=" 'setStarValue(1)' "></i>
+                        <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 2} ? 'active' " th:onclick=" 'setStarValue(2)' "></i>
+                        <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 3} ? 'active' " th:onclick=" 'setStarValue(3)' "></i>
+                        <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 4} ? 'active' " th:onclick=" 'setStarValue(4)' "></i>
+                        <i class="fa fa-star"  aria-hidden="true" th:classappend=" ${star >= 5} ? 'active' " th:onclick=" 'setStarValue(5)' "></i>
+                        <button type="submit" th:disabled="${star >0}">
                             <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -210,6 +221,11 @@
                 }
             });
             /*]]>*/
+
+
+            function setStarValue(valueStar){
+                document.getElementById('star').value=valueStar;
+            }
         </script>
 
 

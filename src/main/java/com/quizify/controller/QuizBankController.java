@@ -1,7 +1,9 @@
 package com.quizify.controller;
 
 import com.quizify.model.*;
+import com.quizify.repository.VoteRepository;
 import com.quizify.service.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +30,10 @@ public class QuizBankController {
     private QuestionChoiceService questionChoiceService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private VoteRepository voteRepository;
+    @Autowired
+    private VoteService voteService;
 
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
@@ -41,7 +48,7 @@ public class QuizBankController {
     }
 
     @GetMapping("/quiz-bank-detail/{id}")
-    public String getDetailQuizBank(@PathVariable(value="id") long id, Model model){
+    public String getDetailQuizBank(@PathVariable(value="id") long id, Model model, HttpSession session){
         QuizBank quizBank = quizBankService.getQuizBankById(id);
         List<Question> questions = questionService.getQuestionsByQuizBank(quizBank);
         Map<Question, List<QuestionChoice>> questionChoicesMap = new HashMap<>();
@@ -49,9 +56,19 @@ public class QuizBankController {
             List<QuestionChoice> questionChoices = questionChoiceService.getQuestionChoiceByQuestion(question);
             questionChoicesMap.put(question, questionChoices);
         }
+        //view star voted
+        User user = (User) session.getAttribute("user");
+        if (user!=null){
+            int star = voteService.getStarVoteByUser(user.getId(),id);
+            model.addAttribute("star",star);
+        }
+        //view average star
+        Double average = voteService.getAverageStar(id);
+        model.addAttribute("averageStar", average);
         model.addAttribute("quizBank", quizBank);
         model.addAttribute("questions", questions);
         model.addAttribute("questionChoicesMap", questionChoicesMap);
+
         return "quiz-bank-detail";
     }
 
@@ -165,6 +182,16 @@ public class QuizBankController {
     @GetMapping("/comment")
     public String showPageComment(){
         return "testBox-comment";
+    }
+
+    @PostMapping("/vote")
+    public String voteQuizBanks(@RequestParam("userID") long userID,
+                                @RequestParam("quizBanksID") long quizBanksID,
+                                @RequestParam("star") int star,
+                                RedirectAttributes redirectAttributes)
+    {
+        voteService.saveVote(userID,quizBanksID,star);
+        return "redirect:/quiz-banks/quiz-banks-list";
     }
 
 
