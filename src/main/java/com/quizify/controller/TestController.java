@@ -41,19 +41,37 @@ public class TestController {
     }
 
     @PostMapping("/create")
-    public String createTest(@RequestParam Long quizBankId, @RequestParam int numberOfQuestions, Model model) {
+    public String createTest(@RequestParam Long quizBankId,
+                             @RequestParam String title,
+                             @RequestParam(value = "timeLimit", required = false) Integer timeLimit,
+                             @RequestParam int numberOfQuestions,
+                             @RequestParam String questionOrder,
+                             @RequestParam(name = "shuffleChoices", defaultValue = "false") boolean shuffleChoices,
+                             @RequestParam(name = "enableTimeLimit", defaultValue = "false") boolean enableTimeLimit,
+                             Model model) {
         Long userId = 3L; // Replace with your actual user ID logic
         try {
-            Test test = testService.createTest(userId, quizBankId, numberOfQuestions);
+            boolean shuffleQuestions = questionOrder.equals("shuffle");
+            System.out.println("enableTimeLimit: "+enableTimeLimit);
+            System.out.println("timeLimit: "+timeLimit);
+            if (!enableTimeLimit) {
+                timeLimit = null;
+            }
+            Test test = testService.createTest(userId, quizBankId, title, numberOfQuestions, timeLimit, shuffleQuestions, shuffleChoices);
             return "redirect:/tests/take/" + test.getId();
         } catch (Exception e) {
             model.addAttribute("error", "Error creating test: " + e.getMessage());
+            System.err.println("Error creating test: " + e.getMessage());
+            e.printStackTrace();
             return "redirect:/quiz-banks/quiz-bank-detail/" + quizBankId;
         }
     }
 
+
     @GetMapping("/take/{testId}")
-    public String takeTest(@PathVariable Long testId, Model model, RedirectAttributes redirectAttributes) {
+    public String takeTest(@PathVariable Long testId,
+                           Model model,
+                           RedirectAttributes redirectAttributes) {
         if (testService.isTestSubmitted(testId)) {
             redirectAttributes.addFlashAttribute("message", "Test has already been submitted. You can retake the test.");
             return "redirect:/tests/my-practice";
@@ -64,7 +82,9 @@ public class TestController {
     }
 
     @PostMapping("/submit")
-    public String submitTest(@RequestParam Long testId, @RequestParam Map<String, String> allParams, Model model) {
+    public String submitTest(@RequestParam Long testId,
+                             @RequestParam Map<String, String> allParams,
+                             Model model) {
         try {
             List<Long> selectedChoiceIds = new ArrayList<>();
             for (Map.Entry<String, String> entry : allParams.entrySet()) {

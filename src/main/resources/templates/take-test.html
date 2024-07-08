@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Mock Test</title>
+    <title>Take Test</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
@@ -31,6 +31,11 @@
         .choice {
             margin-left: 20px;
         }
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff0000;
+        }
     </style>
 </head>
 <body>
@@ -39,9 +44,12 @@
     <p class="quiz-bank-name" th:text="${test.quizBank.bankName}"></p>
     <form th:action="@{/tests/submit}" method="post">
         <input type="hidden" name="testId" th:value="${test.id}"/>
+        <div th:if="${test.timeLimit > 0}" class="mb-3">
+            <p class="timer" id="timer"></p>
+        </div>
         <div th:each="history : ${test.testHistories}" class="question">
             <p th:text="${history.question.content}" class="font-weight-bold"></p>
-            <div th:each="choice : ${history.question.questionChoices}" class="form-check choice">
+            <div th:each="choice, iterStat : ${history.shuffledChoices}" class="form-check choice">
                 <input type="radio" class="form-check-input" th:name="${'question-' + history.question.id}"
                        th:value="${choice.id}" th:checked="${choice.id == history.questionChoice?.id}"
                        th:onclick="|handleChoiceSelection(${history.question.id}, ${choice.id})|"/>
@@ -69,7 +77,8 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
     function saveChoiceToLocalStorage(questionId, choiceId) {
         const testId = document.querySelector('input[name="testId"]').value;
         let choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
@@ -93,9 +102,53 @@
         saveChoiceToLocalStorage(questionId, choiceId);
     }
 
-    window.onload = function() {
+    function startTimer(duration, display) {
+        var timer = duration, minutes, seconds;
+        var intervalId = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(intervalId);
+                // Submit the form when the timer runs out
+                document.querySelector('form[th\\:action="@{/tests/submit}"]').submit();
+            }
+
+            // Store the remaining time every second
+            localStorage.setItem('timeLeft', timer);
+        }, 1000);
+    }
+
+    window.onload = function () {
         loadChoicesFromLocalStorage();
+
+        const testId = document.querySelector('input[name="testId"]').value;
+        const timeLimit = /*[[${test.timeLimit}]]*/;
+        console.log("Time Limit: " + timeLimit); // Debug line
+        if (timeLimit > 0) {
+            const display = document.querySelector('#timer');
+            const storedTimeLeft = localStorage.getItem(`timeLeft-${testId}`);
+            if (storedTimeLeft && storedTimeLeft > 0) {
+                startTimer(parseInt(storedTimeLeft), display);
+            } else {
+                startTimer(timeLimit * 60, display);
+                localStorage.setItem(`timeLeft-${testId}`, timeLimit * 60);
+            }
+        }
     };
+
+    window.onbeforeunload = function () {
+        const testId = document.querySelector('input[name="testId"]').value;
+        const timerDisplay = document.querySelector('#timer').textContent.split(':');
+        const timeLeft = parseInt(timerDisplay[0]) * 60 + parseInt(timerDisplay[1]);
+        localStorage.setItem(`timeLeft-${testId}`, timeLeft);
+    };
+    /*]]>*/
 </script>
 </body>
 </html>
