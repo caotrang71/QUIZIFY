@@ -62,6 +62,9 @@ public class QuizBankController {
             int star = voteService.getStarVoteByUser(user.getId(),id);
             model.addAttribute("star",star);
         }
+        //view all user voted
+        List<Vote> votes = voteService.getAllUserVoted(id);
+        model.addAttribute("votes",votes);
         //view average star
         Double average = voteService.getAverageStar(id);
         model.addAttribute("averageStar", average);

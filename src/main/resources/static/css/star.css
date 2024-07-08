@@ -18,4 +18,11 @@
 .rating-box i.active {
     color: #ffcd39;
 }
+.rating-box span.active {
+    color: #ffcd39;
+}
+
+.view-user-voted i{
+    color: #453e3e;
+}
 

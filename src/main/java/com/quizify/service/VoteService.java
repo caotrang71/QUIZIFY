@@ -35,4 +35,12 @@ public class VoteService {
         Vote vote = voteRepository.findByVotedByAndQuizBanksID(userID,quizBanksID);
         return (vote != null) ? vote.getStar(): 0;
     }
+
+    public List<Vote> getAllUserVoted(long quizBanksID){
+        List<Vote> votes = voteRepository.findByQuizBanksID(quizBanksID);
+        if (votes != null){
+            return votes;
+        }
+        return null;
+    }
 }

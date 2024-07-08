@@ -119,15 +119,21 @@
                     <div class="star">
                         <h7 th:text="${averageStar}"></h7>
                         <div class="rating-box">
-                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 1} ? 'active' "></i>
-                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 2} ? 'active' "></i>
-                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 3} ? 'active' "></i>
-                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 4} ? 'active' "></i>
-                            <i class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 5} ? 'active' "></i>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 1} ? 'active' "></span>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 2} ? 'active' "></span>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 3} ? 'active' "></span>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 4} ? 'active' "></span>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 5} ? 'active' "></span>
+                        </div>
+                    </div>
+                    <div class="star">
+                        <div class="view-user-voted">
+                            <i class="fa fa-users" th:text="${votes.size()}+ '  ' + ' ' + 'user voted' " aria-hidden="true"></i>
                         </div>
                     </div>
                     <h2 class="card-title" th:text="${quizBank.bankName}"></h2>
                     <p class="card-text" th:text="${quizBank.description}"></p>
+
 <!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
                 </div>
 
