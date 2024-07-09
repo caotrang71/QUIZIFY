@@ -68,6 +68,8 @@ public class QuizBankController {
         //view average star
         Double average = voteService.getAverageStar(id);
         model.addAttribute("averageStar", average);
+        //comments
+
         model.addAttribute("quizBank", quizBank);
         model.addAttribute("questions", questions);
         model.addAttribute("questionChoicesMap", questionChoicesMap);
