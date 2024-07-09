@@ -1,0 +1,28 @@
+.star {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.rating-box {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.rating-box i {
+    color: #b3afaf;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.rating-box i.active {
+    color: #ffcd39;
+}
+.rating-box span.active {
+    color: #ffcd39;
+}
+
+.view-user-voted i{
+    color: #453e3e;
+}
+

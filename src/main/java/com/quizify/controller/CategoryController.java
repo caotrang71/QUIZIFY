@@ -3,6 +3,7 @@ package com.quizify.controller;
 import com.quizify.model.*;
 import com.quizify.repository.CategoryRepository;
 import com.quizify.service.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,26 +21,42 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
 
     @GetMapping("/category")
-    public String ShowCategory(Model model) {
-        List<Category> categories = categoryRepository.findAll();
-        model.addAttribute("listCategories", categories);
-        return "category";
+    public String ShowCategory(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user.getRole().getId() == 1 || user.getRole().getId() ==2) {
+            List<Category> categories = categoryRepository.findAll();
+            model.addAttribute("listCategories", categories);
+            return "category";
+        }else {
+            return "error";
+        }
     }
 
     @DeleteMapping("/category/{id}")
     @ResponseBody
-    public void deleteCategory(@PathVariable int id) {
-        categoryService.deleteCategory(id);
+    public void deleteCategory(@PathVariable int id, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user.getRole().getId() == 1 || user.getRole().getId() ==2) {
+            categoryService.deleteCategory(id);
+        }else {
+            throw new RuntimeException("something error!");
+        }
     }
 
     @GetMapping("/show//update/category/{id}")
     public String ShowUpdateCategory(Model model,
-                                     @PathVariable int id) {
-        Category category = categoryRepository.findById(id).orElse(null);
-        if (category != null) {
-            model.addAttribute("category", category);
-            return "updateCategory";
-        }else{
+                                     @PathVariable int id,
+                                     HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user.getRole().getId() == 1 || user.getRole().getId() ==2) {
+            Category category = categoryRepository.findById(id).orElse(null);
+            if (category != null) {
+                model.addAttribute("category", category);
+                return "updateCategory";
+            } else {
+                return "error";
+            }
+        }else {
             return "error";
         }
     }
@@ -59,9 +76,14 @@ public class CategoryController {
     }
 
     @GetMapping("/show/create/category")
-    public String showPageCreateCategory(Model model) {
-        model.addAttribute("category", new Category());
-        return "createCategory";
+    public String showPageCreateCategory(Model model,HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user.getRole().getId() == 1 || user.getRole().getId() ==2) {
+            model.addAttribute("category", new Category());
+            return "createCategory";
+        }else {
+            return "error";
+        }
     }
 
     @PostMapping("/create/category")

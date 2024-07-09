@@ -144,9 +144,10 @@
             <tr th:each="listCate : ${listCategories}" >
                 <td th:name="categoryId" th:text="${listCate.getId()}" readonly="true"></td>
                 <td  th:name="categoryName" th:text="${listCate.getCategoryName()}"></td>
-                <td><a href="#"  >
+                <td>
+                    <a th:href="@{/subcategory/{id}(id=${listCate.id})}"  >
                     <i class="fa fa-eye"></i>
-                </a>
+                    </a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a th:href="@{/show//update/category/{id}(id=${listCate.id})}" >
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>

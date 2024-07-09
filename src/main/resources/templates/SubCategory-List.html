@@ -124,58 +124,37 @@
             </div>
         </nav>
         <div style="text-align: center">
-            <h1 >MANAGER ACCOUNT LIST</h1>
+            <h1 >SUBCATEGORIES LIST</h1>
         </div>
 
 
-        <a th:href="@{/create_account}" class="btn btn-primary btn-sm mb-3"> Create Account </a>
-        <h5 style="color: green" th:if="${mess != null}"
-            th:text="${mess}"></h5>
+        <a class="btn btn-primary btn-sm mb-3" th:href="@{/show/create/subCategory}" > Create SubCategory</a>
+
         <table border="1" class = "table table-striped table-responsive-md" id="example">
             <thead>
             <tr>
                 <th>ID</th>
-                <th>FULL NAME</th>
-                <th>ROLE</th>
-                <th>STATUS</th>
-                <th>CREATE AT</th>
+                <th>SUBCATEGORY NAME</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="user : ${users}" th:disabled="${user.email == session.user.email}">
-                <td th:text="${user.id}"></td>
-                <td th:text="${user.fullName}"></td>
+            <tr th:each="listSubCate : ${listSubCategory}">
+                <td th:name="subCategoryid" th:text="${listSubCate.id}" ></td>
+                <td th:name="subCategoryName" th:text="${listSubCate.subcategoryName}"></td>
+
                 <td>
-                    <form th:action="@{/changeRole/{id}(id=${user.id})}" th:method="post" >
-                        <!--                    th:disabled="${user.role_id != 1}"-->
-
-                        <select name="roleID" th:disabled="${user.email == session.user.email || user.getRole().id == session.user.getRole().id || user.getRole().id==1}">
-                            <option th:selected="${user.getRole().id ==1}" disabled>Admin</option>
-                            <option value="2" th:selected="${user.getRole().id ==2}">Staff</option>
-                            <option value="3" th:selected="${user.getRole().id ==3}">User</option>
-                        </select>
-                        <button type="submit" th:hidden="${user.email == session.user.email || user.getRole().id == session.user.getRole().id || user.getRole().id == 1}">
-                            <i class="fa fa-pencil"></i>
-                        </button>
-
-                    </form>
-                </td>
-                <td style="color: Green;" th:if="${user.status == true}" th:text="Active"></td>
-                <td style="color: red;" th:if="${user.status == false }" th:text="Inactive"></td>
-                <td th:text="${#temporals.format(user.createdAt, 'dd/mm/yyyy HH:mm:ss')}"></td>
-
-                <td><a th:href="@{/view_account/{id}(id=${user.id})}" th:hidden="${user.email == session.user.email || user.getRole().id==1}">
+                    <a th:href="@{/show/update/subCategory/{id}(id=${listSubCate.id})}">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </a>
+                    &nbsp;&nbsp;
+                    <a href="#">
                     <i class="fa fa-eye"></i>
                     </a>
-                    &nbsp;&nbsp;&nbsp;
-                    <button th:onclick=" 'deleteAccount(' +${user.id}+')' " th:hidden="${user.email == session.user.email || user.getRole().id == session.user.getRole().id || user.getRole().id==1}">
+                    &nbsp;&nbsp;
+                    <a th:onclick=" 'deleteSubCategory('+${listSubCate.id}+')' ">
                         <i class="fa fa-trash"></i>
-                    </button>
-
-<!--                    <a onclick="" th:hidden="${user.email == session.user.email}">-->
-<!--                        BAN-->
-<!--                    </a>-->
+                    </a>
                 </td>
             </tr>
             </tbody>
@@ -188,9 +167,9 @@
 <script>
     new DataTable('#example');
     // Function to delete a user
-    function deleteAccount(id) {
+    function deleteSubCategory(id) {
         if (confirm("Are you sure delete this account?")) {
-            const url = `http://localhost:8081/Quizify/manage-account/${id}`;
+            const url = `http://localhost:8081/Quizify/subcategory/${id}`;
             fetch(url, {
                 method: 'DELETE',
                 headers:{

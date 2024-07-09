@@ -36,10 +36,6 @@ public class UserController {
     @Autowired
     private RoleRepository roleRepository;
 
-    @GetMapping("/home")
-    public String showhome() {
-        return "HomePage";
-    }
     @GetMapping("/show_page_login")
     public String showLoginForm(Model model) {
         model.addAttribute("user", new User());
@@ -49,6 +45,7 @@ public class UserController {
     public String login(@RequestParam String email, @RequestParam String password,
                         RedirectAttributes redirectAttributes
                         , HttpSession session) {
+
         // Kiểm tra xem người dùng có tồn tại không
         User user = userService.findByEmail(email);
         if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
@@ -61,6 +58,7 @@ public class UserController {
             return "redirect:/show_page_login";
         }
     }
+
     @PostMapping("/logout")
     public String logout(HttpSession session,RedirectAttributes redirectAttributes) {
         User user = (User) session.getAttribute("user");

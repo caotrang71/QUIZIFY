@@ -76,6 +76,9 @@
                 <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
                     <a th:href="@{/manage_account}">Manager Account</a>
                 </li>
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a th:href="@{/category}">Category List</a>
+                </li>
             </ul>
 
             <div class="footer">
