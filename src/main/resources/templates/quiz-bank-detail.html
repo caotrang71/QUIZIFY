@@ -116,6 +116,10 @@
         <div class="container mt-5">
             <div class="card">
                 <div class="card-body">
+
+                    <h2 class="card-title" th:text="${quizBank.bankName}"></h2>
+                    <p class="card-text" th:text="${quizBank.description}"></p>
+
                     <div class="star">
                         <h7 th:text="${averageStar}"></h7>
                         <div class="rating-box">
@@ -131,9 +135,6 @@
                             <i class="fa fa-users" th:text="${votes.size()}+ '  ' + ' ' + 'user voted' " aria-hidden="true"></i>
                         </div>
                     </div>
-                    <h2 class="card-title" th:text="${quizBank.bankName}"></h2>
-                    <p class="card-text" th:text="${quizBank.description}"></p>
-
 <!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
                 </div>
 
