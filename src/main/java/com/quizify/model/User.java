@@ -63,4 +63,7 @@ public class User {
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Test> tests;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comments> Comments;
 }

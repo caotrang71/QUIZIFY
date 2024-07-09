@@ -206,10 +206,10 @@ public class QuizBankController {
     public String saveCommentQuizBanks(@RequestParam("userID") long userID,
                                        @RequestParam("quizBanksID") long quizBanksID,
                                        @RequestParam("content") String content,
-                                       @RequestParam("fullName") String fullName,
                                        RedirectAttributes redirectAttributes)
     {
-        commentsService.saveComment(content,userID,quizBanksID,fullName);
+        User user = userService.findById(userID);
+        commentsService.saveComment(content,user,quizBanksID);
         redirectAttributes.addFlashAttribute("commentSuccess", true);
         return "redirect:/quiz-banks/quiz-bank-detail/"+quizBanksID;
     }

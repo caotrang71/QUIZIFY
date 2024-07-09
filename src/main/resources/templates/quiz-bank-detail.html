@@ -12,6 +12,7 @@
     <link rel="stylesheet" th:href="@{/css/modal.css}">
     <link rel="stylesheet" th:href="@{/css/comment.css}">
     <script src="https://cdn.tiny.cloud/1/h2ruakcf0geb68thp7njx9cias7si0f7q2zoxs6p2ue65v4k/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script th:src="@{/js/comment.js}"></script>
     <script>
         tinymce.init({
             selector: '#mytextarea',
@@ -231,7 +232,6 @@
                                 <form th:action="@{/quiz-banks/comment}" method="POST">
                                     <label for="mytextarea">enter comment here:</label>
                                     <input type="hidden" name="userID" th:value="${session.user.id}">
-                                    <input type="hidden" name="fullName" th:value="${session.user.fullName}">
                                     <input type="hidden" name="quizBanksID" th:value="${quizBank.id}">
                                     <textarea id="mytextarea" name="content" placeholder="enter your comment"></textarea>
                                     <button type="submit">Send</button>
@@ -241,11 +241,17 @@
                                     <div th:each="comments : ${commentsList}">
                                         <div class="comment">
                                             <div class="header-comment">
-                                                <h5 th:text="${comments.fullName}"></h5>
+                                                <h5 th:text="${comments.getUser().fullName}"></h5>
                                                 <small th:text="${#temporals.format(comments.create_at,'dd/MM/yyyy HH:mm:ss')}"></small>
                                             </div>
                                             <p th:text="${comments.comment}"></p>
-<!--                                            th:text="${#dates.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}"-->
+                                            <div class="dropdown">
+                                                <button onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
+                                                <div class="dropdown-content">
+                                                    <a href="#" onclick="editComment()">Edit</a>
+                                                    <a href="#" onclick="deleteComment()">Delete</a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -1,6 +1,7 @@
 package com.quizify.service;
 
 import com.quizify.model.Comments;
+import com.quizify.model.User;
 import com.quizify.repository.CommentsRepository;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,14 @@ public class CommentsService {
     @Autowired
     private CommentsRepository commentsRepository;
 
-    public void saveComment(String comment,long userID,long quizBanksID,String fullName) {
+    public void saveComment(String comment, User user, long quizBanksID) {
         Comments newComment = new Comments();
         //dung thu vien jsoup de xoá các thẻ html có trong comment
         String commentSanitized = Jsoup.parse(comment).text();
         newComment.setComment(commentSanitized);
-        newComment.setComment_by(userID);
+
+        newComment.setUser(user);
         newComment.setQuizBanksID(quizBanksID);
-        newComment.setFullName(fullName);
         commentsRepository.save(newComment);
     }
 
