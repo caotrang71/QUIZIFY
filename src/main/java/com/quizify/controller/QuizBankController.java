@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 public class QuizBankController {
     @Autowired
     private QuizBankService quizBankService;
-
     @Autowired
     private SubcategoryService subcategoryService;
     @Autowired
@@ -34,6 +33,10 @@ public class QuizBankController {
     private VoteRepository voteRepository;
     @Autowired
     private VoteService voteService;
+    @Autowired
+    private CommentsService commentsService;
+    @Autowired
+    private UserService userService;
 
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
@@ -69,6 +72,8 @@ public class QuizBankController {
         Double average = voteService.getAverageStar(id);
         model.addAttribute("averageStar", average);
         //comments
+        List<Comments> commentsList = commentsService.getAllCommentByQuizBanksID(id);
+        model.addAttribute("commentsList", commentsList);
 
         model.addAttribute("quizBank", quizBank);
         model.addAttribute("questions", questions);
@@ -184,11 +189,7 @@ public class QuizBankController {
         return "redirect:/quiz-banks/quiz-banks-list";
     }
 
-    @GetMapping("/comment")
-    public String showPageComment(){
-        return "testBox-comment";
-    }
-
+    //save vote star
     @PostMapping("/vote")
     public String voteQuizBanks(@RequestParam("userID") long userID,
                                 @RequestParam("quizBanksID") long quizBanksID,
@@ -196,7 +197,21 @@ public class QuizBankController {
                                 RedirectAttributes redirectAttributes)
     {
         voteService.saveVote(userID,quizBanksID,star);
+        redirectAttributes.addFlashAttribute("voteSuccess", true);
         return "redirect:/quiz-banks/quiz-banks-list";
+    }
+
+    //comments
+    @PostMapping("/comment")
+    public String saveCommentQuizBanks(@RequestParam("userID") long userID,
+                                       @RequestParam("quizBanksID") long quizBanksID,
+                                       @RequestParam("content") String content,
+                                       @RequestParam("fullName") String fullName,
+                                       RedirectAttributes redirectAttributes)
+    {
+        commentsService.saveComment(content,userID,quizBanksID,fullName);
+        redirectAttributes.addFlashAttribute("commentSuccess", true);
+        return "redirect:/quiz-banks/quiz-bank-detail/"+quizBanksID;
     }
 
 

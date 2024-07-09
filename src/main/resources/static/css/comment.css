@@ -32,3 +32,9 @@ label {
     border-radius: 20px;
     margin-bottom: 10px;
 }
+
+.header-comment{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

@@ -228,18 +228,23 @@
                         </div>
                         <div class="modal-body">
                             <div class="editor-container">
-                                <form action="#" method="POST">
+                                <form th:action="@{/quiz-banks/comment}" method="POST">
                                     <label for="mytextarea">enter comment here:</label>
+                                    <input type="hidden" name="userID" th:value="${session.user.id}">
+                                    <input type="hidden" name="fullName" th:value="${session.user.fullName}">
+                                    <input type="hidden" name="quizBanksID" th:value="${quizBank.id}">
                                     <textarea id="mytextarea" name="content" placeholder="enter your comment"></textarea>
                                     <button type="submit">Send</button>
                                 </form>
                                 <div class="comments">
                                     <h2>Comments</h2>
-                                    <div class="each">
+                                    <div th:each="comments : ${commentsList}">
                                         <div class="comment">
-                                            <h5>user</h5>
-                                            <p>content</p>
-                                            <small>date time</small>
+                                            <div class="header-comment">
+                                                <h5 th:text="${comments.fullName}"></h5>
+                                                <small th:text="${#temporals.format(comments.create_at,'dd/MM/yyyy HH:mm:ss')}"></small>
+                                            </div>
+                                            <p th:text="${comments.comment}"></p>
 <!--                                            th:text="${#dates.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}"-->
                                         </div>
                                     </div>

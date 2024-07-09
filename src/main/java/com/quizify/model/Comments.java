@@ -20,7 +20,11 @@ public class Comments {
 
     private long comment_by;
 
-    private long quiz_banks_id;
+    @Column(name = "quiz_banks_id")
+    private long quizBanksID;
+
+    @Column(name = "full_name")
+    private String fullName;
 
     @PrePersist
     protected void onCreate() {
