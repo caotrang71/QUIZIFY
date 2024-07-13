@@ -1,9 +1,11 @@
 package com.quizify.controller;
 
 import com.quizify.model.*;
+import com.quizify.repository.CommentsRepository;
 import com.quizify.repository.VoteRepository;
 import com.quizify.service.*;
 import jakarta.servlet.http.HttpSession;
+import org.jsoup.Jsoup;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.repository.query.Param;
@@ -35,6 +37,8 @@ public class QuizBankController {
     private VoteService voteService;
     @Autowired
     private CommentsService commentsService;
+    @Autowired
+    private CommentsRepository commentsRepository;
     @Autowired
     private UserService userService;
 
@@ -71,7 +75,7 @@ public class QuizBankController {
         //view average star
         Double average = voteService.getAverageStar(id);
         model.addAttribute("averageStar", average);
-        //comments
+        //List comments
         List<Comments> commentsList = commentsService.getAllCommentByQuizBanksID(id);
         model.addAttribute("commentsList", commentsList);
 
@@ -201,7 +205,7 @@ public class QuizBankController {
         return "redirect:/quiz-banks/quiz-banks-list";
     }
 
-    //comments
+    //save comments
     @PostMapping("/comment")
     public String saveCommentQuizBanks(@RequestParam("userID") long userID,
                                        @RequestParam("quizBanksID") long quizBanksID,
@@ -213,7 +217,29 @@ public class QuizBankController {
         redirectAttributes.addFlashAttribute("commentSuccess", true);
         return "redirect:/quiz-banks/quiz-bank-detail/"+quizBanksID;
     }
-
-
+    //change comment
+    @GetMapping("/edit/comment/{id}")
+    public String showChangeComment(@PathVariable long id, Model model,RedirectAttributes redirectAttributes){
+        Comments oldComment = commentsRepository.findById(id).orElse(null);
+        if (oldComment != null) {
+            model.addAttribute("oldComment", oldComment);
+            return "change_comment";
+        }else {
+            redirectAttributes.addFlashAttribute("mess", "comment not found");
+            return "quiz-bank-detail";
+        }
+    }
+    @PostMapping("/edit/comment")
+    public String changeComment(@RequestParam long commentID,@RequestParam String content, RedirectAttributes redirectAttributes) {
+        Comments comment = commentsRepository.findById(commentID).orElse(null);
+        commentsService.changeComment(content,commentID);
+        return "redirect:/quiz-banks/quiz-bank-detail/" + comment.getQuizBanksID();
+    }
+    // delete comment
+    @DeleteMapping("/delete/comment/{id}")
+    @ResponseBody
+    public void deleteCommnet(@PathVariable long id) {
+        commentsService.deleteComment(id);
+    }
 }
 

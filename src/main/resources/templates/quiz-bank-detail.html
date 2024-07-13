@@ -20,6 +20,8 @@
             toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
             toolbar_mode: 'floating',
         });
+
+
     </script>
 </head>
 <body>
@@ -246,10 +248,10 @@
                                             </div>
                                             <p th:text="${comments.comment}"></p>
                                             <div class="dropdown">
-                                                <button onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
+                                                <button th:hidden="git${session.user.id != comments.user.id}" onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
                                                 <div class="dropdown-content">
-                                                    <a href="#" onclick="editComment()">Edit</a>
-                                                    <a href="#" onclick="deleteComment()">Delete</a>
+                                                    <a th:href="@{/quiz-banks/edit/comment/{id}(id=${comments.id})}" >Edit</a>
+                                                    <a href="#" th:onclick=" 'deleteComment(' + ${comments.id} + ')' ">Delete</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -309,6 +311,33 @@
             /*]]>*/
         </script>
 
+        <script>
+            //delete comment
+            function deleteComment(id){
+                if (confirm("are you sure delete this comment?")) {
+                    const url = `http://localhost:8081/Quizify/quiz-banks/delete/comment/${id}`;
+                    fetch(url ,{
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type':'application/json'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok){
+                                alert('delete comment successfully.')
+                                location.reload();
+                            }else{
+                                alert('delete comment failed!')
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error :',error)
+                            alert('failed to delete commnet')
+                        })
+                }
+
+            }
+        </script>
 
 
 

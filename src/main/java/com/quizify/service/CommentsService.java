@@ -25,11 +25,13 @@ public class CommentsService {
         newComment.setQuizBanksID(quizBanksID);
         commentsRepository.save(newComment);
     }
-
-    public void updateComment(long commentID,String comment) {
-        Comments oldComment = commentsRepository.findById(commentID).orElse(null);
-        oldComment.setComment(comment);
-        commentsRepository.save(oldComment);
+    public void changeComment(String comment, long commentID) {
+        Comments comments = commentsRepository.findById(commentID).orElse(null);
+        if (comments != null) {
+            String commentSanitized = Jsoup.parse(comment).text();
+            comments.setComment(commentSanitized);
+            commentsRepository.save(comments);
+        }
     }
 
     public void deleteComment(long commentID) {

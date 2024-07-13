@@ -30,4 +30,5 @@ public class Comments {
     @JoinColumn(name = "comment_by")
     private User user;
 
+
 }
