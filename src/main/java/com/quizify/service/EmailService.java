@@ -22,7 +22,7 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("notification register success");
-        message.setText("your account register successfully");
+        message.setText(to + "account register successfully");
         mailSender.send(message);
     }
 }
