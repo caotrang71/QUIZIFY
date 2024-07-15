@@ -5,6 +5,8 @@ import com.quizify.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -19,7 +21,12 @@ public class VoteService {
         for (Vote star : votes){
             sum += star.getStar();
         }
-        return sum / votes.size();
+        if (votes.size() ==0){
+            return 0.0;
+        }
+        double average = (sum / votes.size());
+        BigDecimal bd = new BigDecimal(average).setScale(1, RoundingMode.DOWN);
+        return bd.doubleValue();
     }
 
     public void saveVote(long userID,long quizBanksID, int star){

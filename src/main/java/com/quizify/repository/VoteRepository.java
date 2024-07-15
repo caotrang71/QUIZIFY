@@ -10,4 +10,5 @@ import java.util.List;
 public interface VoteRepository extends JpaRepository<Vote, Integer> {
     Vote findByVotedByAndQuizBanksID(long userID,long quizBanksID);
     List<Vote> findByQuizBanksID(long quizBanksID);
+    List<Vote> findByQuizBanksIDOrderByCreatedAtDesc(long quizBanksID);
 }

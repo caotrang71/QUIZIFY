@@ -4,7 +4,6 @@ import com.quizify.model.*;
 import com.quizify.repository.*;
 import com.quizify.service.*;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -32,8 +32,6 @@ public class UserController {
     @Autowired
     private EmailService emailService;
     @Autowired
-    private HttpServletRequest httpServletRequest;
-    @Autowired
     private RoleRepository roleRepository;
 
     @GetMapping("/show_page_login")
@@ -44,7 +42,7 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password,
                         RedirectAttributes redirectAttributes
-                        , HttpSession session) {
+                        , HttpSession session,Model model) {
 
         // Kiểm tra xem người dùng có tồn tại không
         User user = userService.findByEmail(email);
@@ -163,7 +161,7 @@ public class UserController {
                             @RequestParam String fullname, @RequestParam String otp,
                             Model model,RedirectAttributes redirectAttributes) {
         Optional<OTP> otpObjectOptional = otpService.getObjectOTP(email);
-
+        //kiem tra otp ton tai hay khong
         if (otpObjectOptional.isEmpty()) {
             redirectAttributes.addFlashAttribute("mess", "OTP không tồn tại hoặc đã hết hạn.");
             return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + fullname;

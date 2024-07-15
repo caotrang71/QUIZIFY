@@ -17,6 +17,8 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private UserService userService;
@@ -86,6 +88,26 @@ public class AccountController {
         }else {
             redirectAttributes.addFlashAttribute("message","Email already existed!");
             return "redirect:/create_account";
+        }
+    }
+
+    @PutMapping("/manager_account/ban/{id}")
+    @ResponseBody
+    public void banAccount(@PathVariable long id){
+        User user = userService.findById(id);
+        if (user != null){
+            user.setStatus(false);
+            userRepository.save(user);
+        }
+    }
+
+    @PutMapping("/manager_account/active/{id}")
+    @ResponseBody
+    public void activeAccount(@PathVariable long id){
+        User user = userService.findById(id);
+        if (user != null){
+            user.setStatus(true);
+            userRepository.save(user);
         }
     }
 

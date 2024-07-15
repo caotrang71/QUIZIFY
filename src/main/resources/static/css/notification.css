@@ -21,7 +21,7 @@
     right: -300px;
     width: 300px;
     height: 100%;
-    background-color: #ec9564;
+    background-color: #df9d78;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     transition: right 0.3s ease;
     padding: 20px;
@@ -44,10 +44,28 @@
 }
 
 .notification-panel ul li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 15px 10px;
+    border: 2px solid #FFFFFF;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+
+.notification-panel ul li .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 5px;
+
+}
+
+.notification-panel ul li .content {
+    font-size: 14px;
     color: #FFFFFF;
 }
+
 .notification-panel i {
     color: #fff; /* Thay đổi màu của biểu tượng */
     font-size: 30px; /* Thay đổi kích thước biểu tượng */

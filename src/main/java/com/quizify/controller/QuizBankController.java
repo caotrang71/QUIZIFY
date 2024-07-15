@@ -1,6 +1,7 @@
 package com.quizify.controller;
 
 import com.quizify.model.*;
+import com.quizify.repository.UserRepository;
 import com.quizify.repository.VoteRepository;
 import com.quizify.service.*;
 import jakarta.servlet.http.HttpSession;
@@ -21,7 +22,6 @@ import java.util.stream.Collectors;
 public class QuizBankController {
     @Autowired
     private QuizBankService quizBankService;
-
     @Autowired
     private SubcategoryService subcategoryService;
     @Autowired
@@ -31,9 +31,11 @@ public class QuizBankController {
     @Autowired
     private CategoryService categoryService;
     @Autowired
-    private VoteRepository voteRepository;
-    @Autowired
     private VoteService voteService;
+    @Autowired
+    private NotificationsService notificationsService;
+    @Autowired
+    private UserRepository userRepository;
 
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
@@ -191,9 +193,16 @@ public class QuizBankController {
     public String voteQuizBanks(@RequestParam("userID") long userID,
                                 @RequestParam("quizBanksID") long quizBanksID,
                                 @RequestParam("star") int star,
+                                @RequestParam String title,
+                                @RequestParam String content,
+                                @RequestParam long receivedBy,
+                                @RequestParam String link,
                                 RedirectAttributes redirectAttributes)
     {
         voteService.saveVote(userID,quizBanksID,star);
+        User user = userRepository.findById(userID).orElse(null);
+        notificationsService.saveNotification(title, content,user,receivedBy,link);
+
         return "redirect:/quiz-banks/quiz-banks-list";
     }
 

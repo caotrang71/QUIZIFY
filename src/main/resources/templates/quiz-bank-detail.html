@@ -170,9 +170,14 @@
                 <form th:action="@{/quiz-banks/vote}" method="post">
                     <div class="rating-box">
                         <label>
+<!--                            tra ve cac bien request votes and notifications-->
                             <input type="hidden" name="quizBanksID" th:value="${quizBank.id}">
                             <input type="hidden" name="userID" th:value="${session.user.id}">
                             <input type="hidden" id="star" name="star" value="">
+                            <input type="hidden" name="title" th:value=" 'you have new votes' ">
+                            <input type="hidden" name="content" th:value=" 'Your puzzle bank has just been voted ' ">
+                            <input type="hidden" name="receivedBy" th:value="${quizBank.createdBy.id}">
+                            <input type="hidden" name="link" th:value=" '/quiz-banks/quiz-bank-detail/'+ ${quizBank.id} ">
                         </label>
                         <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 1} ? 'active' " th:onclick=" 'setStarValue(1)' "></i>
                         <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 2} ? 'active' " th:onclick=" 'setStarValue(2)' "></i>
