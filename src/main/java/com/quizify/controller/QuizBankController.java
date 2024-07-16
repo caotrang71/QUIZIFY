@@ -193,13 +193,13 @@ public class QuizBankController {
     public String voteQuizBanks(@RequestParam("userID") long userID,
                                 @RequestParam("quizBanksID") long quizBanksID,
                                 @RequestParam("star") int star,
-                                @RequestParam String title,
-                                @RequestParam String content,
                                 @RequestParam long receivedBy,
                                 @RequestParam String link,
                                 RedirectAttributes redirectAttributes)
     {
         voteService.saveVote(userID,quizBanksID,star);
+        String title = "you have new vote";
+        String content = "Your puzzle bank has just been "+ star + " voted star";
         User user = userRepository.findById(userID).orElse(null);
         notificationsService.saveNotification(title, content,user,receivedBy,link);
 

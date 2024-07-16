@@ -174,8 +174,6 @@
                             <input type="hidden" name="quizBanksID" th:value="${quizBank.id}">
                             <input type="hidden" name="userID" th:value="${session.user.id}">
                             <input type="hidden" id="star" name="star" value="">
-                            <input type="hidden" name="title" th:value=" 'you have new votes' ">
-                            <input type="hidden" name="content" th:value=" 'Your puzzle bank has just been voted ' ">
                             <input type="hidden" name="receivedBy" th:value="${quizBank.createdBy.id}">
                             <input type="hidden" name="link" th:value=" '/quiz-banks/quiz-bank-detail/'+ ${quizBank.id} ">
                         </label>
