@@ -40,15 +40,6 @@ public class QuizBankService {
         return quizBankRepository.findAll();
     }
 
-//    public List<QuizBank> getQuizBanksListWithQuestions(){
-//        List<QuizBank> quizBanks = quizBankRepository.findAll();
-//        for (QuizBank q : quizBanks) {
-//            loadQuestions(q);
-//            for (Question question : q.getQuestions()) {
-//                questionRepository.loadQuestionChoices(question);
-//            }
-//        }return quizBanks;
-//    }
     @Transactional
     public QuizBank createQuizBank(QuizBank quizBank) {
         // Create and save the new QuizBank
@@ -69,21 +60,14 @@ public class QuizBankService {
 
             for (QuestionChoice choice : question.getQuestionChoices()) {
 
-//                System.out.println("Content: "+choice.getContent());
-//
-//                System.out.println("Correct? "+choice.getCorrectOrNot());
                 choice.setQuestion(question);
                 questionChoiceRepository.save(choice);
             }
         }
+
         return newQuizBank;
     }
 
-
-
-//    public QuizBank updateQuizBank(QuizBank quizBank) {
-//        return quizBankRepository.save(quizBank);
-//    }
 
     public QuizBank getQuizBankById(long id) {
         Optional <QuizBank> optional = quizBankRepository.findById(id);
@@ -139,25 +123,25 @@ public QuizBank updateQuizBank(QuizBank quizBank) {
             Question existingQuestion = questionRepository.findById(question.getId())
                     .orElseThrow(() -> new RuntimeException("Question not found"));
             existingQuestion.setContent(question.getContent());
-            // Save the updated question
+
             questionRepository.save(existingQuestion);
         }
 
         for (QuestionChoice choice : question.getQuestionChoices()) {
-            // Set the relationship between choice and question
+
             choice.setQuestion(question);
 
-            // Save or update the question choice
+
             if (choice.getId() == null) {
-                // If the choice is new, save it
+
                 questionChoiceRepository.save(choice);
             } else {
-                // If the choice already exists, update its details
+
                 QuestionChoice existingChoice = questionChoiceRepository.findById(choice.getId())
                         .orElseThrow(() -> new RuntimeException("QuestionChoice not found"));
                 existingChoice.setContent(choice.getContent());
                 existingChoice.setCorrectOrNot(choice.getCorrectOrNot());
-                // Save the updated choice
+
                 questionChoiceRepository.save(existingChoice);
             }
         }
@@ -167,21 +151,17 @@ public QuizBank updateQuizBank(QuizBank quizBank) {
 }
 
 
-
-
-
-
     public QuizBank saveQuizBank(QuizBank quizBank) {
         quizBank.setCreatedAt(LocalDateTime.now());
         quizBankRepository.save(quizBank);
 
-        // Save each question and its choices
+
         for (Question question : quizBank.getQuestions()) {
-            question.setQuizBank(quizBank); // Set the newQuizBank to the question
+            question.setQuizBank(quizBank);
             question = questionRepository.save(question);
 
             for (QuestionChoice choice : question.getQuestionChoices()) {
-                choice.setQuestion(question); // Set the saved question to the choice
+                choice.setQuestion(question);
                 questionChoiceRepository.save(choice);
             }
         }
@@ -196,28 +176,22 @@ public QuizBank updateQuizBank(QuizBank quizBank) {
 
 
     public List<QuizBank> searchQuizBank(String keyword) {
-        // Trim the keyword and remove spaces
+
         System.out.println(keyword);
         String trimmedKeyword = keyword.trim().replaceAll("\\s+", "");
 
         List<QuizBank> filteredQuizBanks = new ArrayList<>();
 
-        // Iterate over each QuizBank object
         for (QuizBank quizBank : getAllQuizBanks()) {
-            // Check if the quizBank contains the keyword in any relevant fields
+
             String bankName = quizBank.getBankName().toLowerCase().replaceAll("\\s+", "");
-     //       String subcategoryName = quizBank.getSubcategory().getSubcategoryName().toLowerCase().replaceAll("\\s+", "");
 
             if (bankName.contains(trimmedKeyword.toLowerCase())
-        //            || subcategoryName.contains(trimmedKeyword.toLowerCase())
                         ) {
-                // Add the quizBank to the filtered list if it matches the keyword
                 filteredQuizBanks.add(quizBank);
             }
         }
         System.out.println(filteredQuizBanks);
-
-
 
         return filteredQuizBanks;
     }

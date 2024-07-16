@@ -41,15 +41,16 @@
 <body>
 <div class="container">
     <h1>Take Test</h1>
-    <p class="quiz-bank-name" th:text="${test.quizBank.bankName}"></p>
-    <form th:action="@{/tests/submit}" method="post">
+
+    <form th:action="@{/tests/submit}" method="post" id="submitTest">
+        <p th:if="test" class="quiz-bank-name" th:text="${test.quizBank.bankName}"></p>
         <input type="hidden" name="testId" th:value="${test.id}"/>
         <div th:if="${test.timeLimit > 0}" class="mb-3">
             <p class="timer" id="timer"></p>
         </div>
-        <div th:each="history : ${test.testHistories}" class="question">
-            <p th:text="${history.question.content}" class="font-weight-bold"></p>
-            <div th:each="choice, iterStat : ${history.shuffledChoices}" class="form-check choice">
+        <div th:each="history, iterStats : ${test.testHistories}" class="question">
+            <p th:text="'Q' + (${iterStats.index} + 1) + '. ' + ${history.question.content}" class="font-weight-bold"></p>
+            <div th:each="choice : ${history.shuffledChoices}" class="form-check choice">
                 <input type="radio" class="form-check-input" th:name="${'question-' + history.question.id}"
                        th:value="${choice.id}" th:checked="${choice.id == history.questionChoice?.id}"
                        th:onclick="|handleChoiceSelection(${history.question.id}, ${choice.id})|"/>
@@ -73,6 +74,7 @@
         </button>
     </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -112,11 +114,16 @@
             seconds = seconds < 10 ? "0" + seconds : seconds;
 
             display.textContent = minutes + ":" + seconds;
-
+            console.log(timer);
+            console.log(document.getElementById('submitTest'));
             if (--timer < 0) {
                 clearInterval(intervalId);
+
                 // Submit the form when the timer runs out
-                document.querySelector('form[th\\:action="@{/tests/submit}"]').submit();
+                // document.querySelector('form[th\\:action="@{/tests/submit}"]').submit();
+                document.getElementById('submitTest').submit();
+
+
             }
 
             // Store the remaining time every second

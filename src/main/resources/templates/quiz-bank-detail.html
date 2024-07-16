@@ -6,10 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/css/iziModal.css"
+          integrity="sha512-uZ+G0SzK4GMUDUzxzbIeLGLjYgAhQ2KrIV4bWIP5o6URt5XVcn8S02eW6C1DH35bqq/XX1jYwlhhNPPIE1+q1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pretty-checkbox/3.0.3/pretty-checkbox.min.css"
+          integrity="sha512-kz4Ae66pquz4nVE5ytJyKfPDkQyHSggaDtT1v8oLfOd8bB+ZgZXNLaxex99MNu4fdCsWmi58mhLtfGk5RgfcOw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.4/svg.min.js"
+            integrity="sha512-ovlWyhrYXr3HEkGJI5YPXIFYIbHEKs2yfemKVVIIQe9U74tXyTuVdzMlvZlw/0X5lnIDRgtVlckrkeuCrDpq4Q=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" th:href="@{/side/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/modal.css}">
+    <link th:href="@{/side/css/input-field.css}" rel="stylesheet">
+
 </head>
 <body>
 
@@ -111,54 +123,84 @@
         </nav>
 
         <div class="container mt-5">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="card-title" th:text="${quizBank.bankName}"></h2>
-                    <p class="card-text" th:text="${quizBank.description}"></p>
-<!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
-                </div>
 
-            </div>
-            <div class="card mt-3">
-                <div class="card-body">
-                    Topic: <span class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}"></span>
+                <div class="mb-3" th:text="@{${quizBank.subcategory.getCategory().getCategoryName()} +' > '+ ${quizBank.subcategory.getSubcategoryName()}}">
+                    <span th:text="${quizBank.subcategory.getSubcategoryName()}"></span>
                 </div>
-            </div>
-            <div><a th:href="@{/quiz-banks/update-quiz-bank/{id} (id=${quizBank.id})}" class="btn btn-primary mt-3">
-                Update</a>
-                <button type="button" class="btn btn-secondary mt-3" data-toggle="modal" data-target="#mockTestModal">
-                    Practice with Mock Test
-                </button>
-            </div>
-
-            <div th:each="entry : ${questionChoicesMap.entrySet()}" class="mt-4">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title" th:text="${entry.key.content}">Question Text</div>
-                        <ul class="list-group">
-                            <li th:each="choice, iterStat : ${entry.value}" th:if="${iterStat.index < 4}"
-                                th:classappend="${choice.correctOrNot} ? 'list-group-item list-group-item-success' : 'list-group-item'">
-                                <span th:text="${choice.content}">Option Text</span>
-                                <span th:if="${choice.correctOrNot}" class="badge badge-success ml-2">Correct</span>
-                            </li>
-                        </ul>
+                        <h2 class="card-title" th:text="${quizBank.bankName}"></h2>
+                        <p class="card-text" th:text="${quizBank.description}"></p>
+                        <!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
+                    </div>
+
+                </div>
+                <div class="card mt-3">
+                                    <div class="card-body">
+                    Total questions: <span class="card-text" th:text="${totalQuestions}"></span>
+                    <!--                    Topic: <span class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}"></span>-->
+                                    </div>
+                </div>
+
+            <div class="row sticky-top bg-light pb-3" >
+                <div class="col-sm-5">
+                    <a th:href="@{/quiz-banks/update-quiz-bank/{id} (id=${quizBank.id})}" class="w-100 border-bottom border-5 btn btn-primary mt-3 d-flex justify-content-between align-items-center">
+                        <span><i class="fa-solid fa-pen-to-square"></i></span>
+                        <span style="font-weight : 500">Update Quiz Bank</span>
+                        <span><i class="fa-solid fa-caret-right"></i></span>
+                    </a>
+                </div>
+                <div class="col-sm-5 p-0">
+                    <button type="button" class="w-100 btn btn-success mt-3 d-flex justify-content-between align-items-center" id="practice">
+                        <span><i class="fa-solid fa-person-chalkboard"></i></span>
+                        <span style="font-weight : 500">Practice with Mock Test</span>
+                        <span><i class="fa-solid fa-caret-right"></i></span>
+                    </button>
+                </div>
+                <div class="col-sm-2 mt-4">
+                    <div class="pretty p-switch p-fill">
+                        <input type="checkbox" id="toggleAnswers">
+                        <div class="state">
+                            <label for="toggleAnswers" style="font-weight : 500">Show Answers</label>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+            <div th:each="entry, iterStat : ${questionChoicesMap.entrySet()}" class="mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <span th:text="@{${iterStat.index + 1}+'. '+${entry.key.content}}">Question Text</span>
+                            <div th:if="${entry.key.image != null && entry.key.image != ''}">
+                                <img class="h-25 w-25 pt-3" th:src="@{'/images/uploads/' + ${entry.key.image}}" />
+                            </div>
+
+                        </div>
+                        <ul class="list-group">
+                            <li th:each="choice, iterStat : ${entry.value}" th:if="${iterStat.index < 4}" class="list-group-item">
+                                <span th:text="${choice.content}">Option Text</span>
+
+                            </li>
+                        </ul>
+
+
+                    </div>
+                    <div class="card-footer answer" id="answer">
+                        <span class="correct-answer font-weight-bold text-success">Correct Answer: </span><span th:text="${entry.key.getCorrectAnswer().content}"></span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="mockTestModal" tabindex="-1" aria-labelledby="mockTestModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form th:action="@{/tests/create}" th:object="${test}" method="post">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="mockTestModalLabel">Create Mock Test</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
+        <div id="mockTestModal" tabindex="-1" aria-labelledby="mockTestModalLabel" aria-hidden="true" style="display: none">
+            <div>
+                <div>
+                    <form th:action="@{/tests/create}" th:object="${test}" method="post" id="createMockTest">
+                        <div>
                             <div class="form-group row align-items-center">
                                 <label for="title" class="col-sm-1">Title:</label>
                                 <div class="col-sm-10">
@@ -170,61 +212,162 @@
                                 <input type="number" class="form-control d-inline-block w-25 ml-2" id="numberOfQuestions" name="numberOfQuestions" min="1" required>
                                 <span hidden id="totalQuestionsText"></span>
                             </div>
-                            <div class="form-group row">
-                                <div class="col-sm-6">
-                                    <input type="radio" id="firstNQuestions" name="questionOrder" value="first" checked>
-                                    <label for="firstNQuestions">From first <span id="numberOfQuestionsText"><span id="totalQuestionsText3"></span></span> questions</label>
-                                </div>
-                                <div class="col-sm-6">
-                                    <input type="radio" id="shuffleQuestions" name="questionOrder" value="shuffle">
-                                    <label for="shuffleQuestions">From total <span id="totalQuestionsText2"></span> questions</label>
-                                </div>
-
-                            </div>
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="shuffleChoices" name="shuffleChoices">
-                                <label class="form-check-label" for="shuffleChoices">Shuffle Choices</label>
-                            </div>
                             <div class="form-group">
-                                <input type="checkbox" id="enableTimeLimit" name="enableTimeLimit">
-                                <label for="enableTimeLimit">Time Limit: </label>
-                                <input type="number" class="form-control d-inline-block w-25 ml-2" id="timeLimit" name="timeLimit" min="1" disabled> Minutes
+                                <div class="pretty p-svg p-plain p-bigger p-smooth">
+                                    <input type="radio" id="firstNQuestions" name="questionOrder" value="first" checked>
+                                    <div class="state">
+                                        <img class="svg" th:src="@{/images/svgviewer-output.svg}"/>
+                                        <label for="firstNQuestions">From first <span id="numberOfQuestionsText"><span id="totalQuestionsText3"></span></span> questions</label>
+                                    </div>
+                                </div>
+                                <div class="pretty p-svg p-plain p-bigger p-smooth">
+                                    <input type="radio" id="shuffleQuestions" name="questionOrder" value="shuffle">
+                                    <div class="state">
+                                        <img class="svg" th:src="@{/images/svgviewer-output.svg}"/>
+                                        <label for="shuffleQuestions">From total <span id="totalQuestionsText2"></span> questions</label>
+                                    </div>
+                                </div>
                             </div>
+
+                            <div class="form-group pretty p-switch p-fill">
+                                <input type="checkbox" class="form-check-input" id="shuffleChoices" name="shuffleChoices">
+                                <div class="state">
+                                    <label for="shuffleChoices">Shuffle Choices</label>
+                                </div>
+                            </div><br>
+                            <div class="form-group pretty p-switch p-fill">
+                                <input type="checkbox" id="enableTimeLimit" name="enableTimeLimit">
+                                <div class="state">
+                                    <label for="enableTimeLimit"> Time Limit: </label>
+                                </div>
+                            </div>
+                            <input type="number" class="form-control d-inline-block w-25 ml-2" id="timeLimit" name="timeLimit" min="1" disabled> Minutes
+
 
                             <input type="hidden" name="quizBankId" th:value="${quizBank.id}">
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<!--                        <div class="modal-footer">-->
+                        <div>
+
                             <button type="submit" class="btn btn-primary">Start</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/js/iziModal.min.js" integrity="sha512-lR/2z/m/AunQdfBTSR8gp9bwkrjwMq1cP0BYRIZu8zd4ycLcpRYJopB+WsBGPDjlkJUwC6VHCmuAXwwPHlacww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
         <script th:inline="javascript">
-            /*<![CDATA[*/
             document.addEventListener('DOMContentLoaded', function() {
+
+                const toggleAnswersCheckbox = document.getElementById('toggleAnswers');
+
+                toggleAnswersCheckbox.addEventListener('change', function() {
+
+                    const answers = document.querySelectorAll('.answer');
+                    answers.forEach(function(answer) {
+                        if (toggleAnswersCheckbox.checked) {
+                            answer.style.display = 'block';
+                        } else {
+                            answer.style.display ='none';
+                        }
+                    });
+                });
+
+
+                document.querySelectorAll('.answer').forEach(function(answer) {
+                    answer.style.display = 'none';
+
+                });
+
+                // Existing JavaScript code
                 const maxQuestions = /*[[${quizBank.questions.size()}]]*/;
                 document.getElementById('totalQuestionsText').innerText = `from ${maxQuestions}`;
                 document.getElementById('totalQuestionsText2').innerText = `${maxQuestions}`;
                 document.getElementById('totalQuestionsText3').innerText = `${maxQuestions}`;
 
-                $('#mockTestModal').on('show.bs.modal', function () {
+                $("#mockTestModal").iziModal({
+                    title: '<i class="fas fa-cog"></i> Mock Test Setting',  // Use 'fas' instead of 'fa-solid' for Font Awesome 6
+                    width: 600,
+                    padding: 30,
+                    fullscreen: false,
+                    closeOnEscape: true,
+                    overlayClose: true,
+                    onOpening: function(modal) {
+                        $("#mockTestModal").css({
+                            'background-color': '#f9f9f9',
+                            'border-radius': '10px',
+                            'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'
+                        });
+                        $("#mockTestModal .iziModal-header").css({
+                            'background-color': '#ff9a41',
+                            'color': 'white',
+                            'padding': '15px',
+                            'border-top-left-radius': '10px',
+                            'border-top-right-radius': '10px',
+                            'font-size': '40px'
+                        });
+                        $("#mockTestModal .iziModal-header-title").css({
+                            'font-size': '20px',
+                            'font-family': 'Poppins, Arial, sans-serif',
+                            'font-weight': '500'
+                        });
+                        $("#mockTestModal .iziModal-title").css({
+                            'font-size': '1.5em'
+                        });
+                        $("#mockTestModal .iziModal-content").css({
+                            'padding': '20px',
+                            'color': '#333'
+                        });
+                        $("#mockTestModal .iziModal-footer").css({
+                            'padding': '10px 20px',
+                            'border-bottom-left-radius': '10px',
+                            'border-bottom-right-radius': '10px',
+                            'text-align': 'right'
+                        });
+                        $("#mockTestModal .iziModal-button").css({
+                            'background-color': '#f89432',
+                            'color': 'white',
+                            'border': 'none',
+                            'padding': '10px 20px',
+                            'border-radius': '5px',
+                            'cursor': 'pointer'
+                        }).hover(function() {
+                            $(this).css('background-color', '#d58637');
+                        }, function() {
+                            $(this).css('background-color', '#d58637');
+                        });
+                    }
+                });
+
+                $(document).on('click', '#practice', function() {
+                    $('#mockTestModal').iziModal('open');
+                    $('.sticky-top').hide();
+                });
+
+                $("#mockTestModal").on('closing', function () {
+                    $('.sticky-top').show();
+                });
+
+                $("#mockTestModal").on('show.bs.modal', function () {
                     const numberOfQuestionsInput = document.getElementById('numberOfQuestions');
                     numberOfQuestionsInput.value = maxQuestions;
                     numberOfQuestionsInput.max = maxQuestions; // Set max attribute to ensure it's not exceeded
                 });
 
-                document.getElementById('numberOfQuestions').addEventListener('input', function() {
+                document.getElementById('numberOfQuestions').addEventListener('change', function() {
                     let value = parseInt(this.value);
-
                     if (value > maxQuestions) {
                         this.value = maxQuestions;
+                        value = maxQuestions;
+                        console.log('value: '+value);
                     } else if (value < 1) {
                         this.value = 1;
+                        value= 1;
                     }
-
+                    console.log('max: '+maxQuestions)
+                    console.log(value)
                     document.getElementById('numberOfQuestionsText').innerText = value;
                 });
 
@@ -244,21 +387,17 @@
                         this.value = 1;
                     }
                 });
-            });
-            /*]]>*/
-        </script>
 
+            });
+        </script>
 
 
 
     </div>
 </div>
 
-<script th:src="@{/side/js/jquery.min.js}"></script>
-<script th:src="@{/side/js/popper.js}"></script>
-<script th:src="@{/side/js/bootstrap.min.js}"></script>
 <script th:src="@{/side/js/main.js}"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
