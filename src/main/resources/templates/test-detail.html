@@ -74,7 +74,11 @@
 </head>
 <body>
 <div class="container">
-    <h1>Test Detail</h1>
+    <h1 th:text="${test.quizBank.bankName}" class="mb-3">Test Detail</h1>
+    <h5 style="color: #55524d" th:text="${test.title}" class="mb-5"></h5>
+    <div th:if="${test.timeLimit > 0}">
+        <span>Time Taken: </span><span th:text="${test.timeTaken}"></span>
+    </div>
     <div th:each="history, iterStat : ${testHistories}" class="question">
         <p th:text="@{'Q' + ${iterStat.index + 1}+ '. ' +${history.question.content}}" class="font-weight-bold"></p>
         <div th:each="choice : ${history.getShuffledChoices()}" class="choice"

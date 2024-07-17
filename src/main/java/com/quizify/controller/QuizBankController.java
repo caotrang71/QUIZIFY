@@ -137,7 +137,8 @@ public class QuizBankController {
 
 
         model.addAttribute("success", true);
-        return "redirect:/quiz-banks/quiz-bank-detail/" + newQuizBank.getId();
+//        return "redirect:/quiz-banks/quiz-bank-detail/" + newQuizBank.getId();
+        return "redirect:/quiz-banks/quiz-banks-list";
     }
 
     @ModelAttribute("categoryList")
