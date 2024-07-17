@@ -248,7 +248,7 @@
                                             </div>
                                             <p th:text="${comments.comment}"></p>
                                             <div class="dropdown">
-                                                <button th:hidden="git${session.user.id != comments.user.id}" onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
+                                                <button th:hidden="${session.user.id != comments.user.id}" onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
                                                 <div class="dropdown-content">
                                                     <a th:href="@{/quiz-banks/edit/comment/{id}(id=${comments.id})}" >Edit</a>
                                                     <a href="#" th:onclick=" 'deleteComment(' + ${comments.id} + ')' ">Delete</a>
