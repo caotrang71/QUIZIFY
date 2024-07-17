@@ -1,9 +1,9 @@
 package com.quizify.controller;
 
 import com.quizify.model.*;
-import com.quizify.repository.NotificationsRepsitory;
+import com.quizify.repository.*;
 import com.quizify.repository.UserRepository;
-import com.quizify.repository.VoteRepository;
+import org.jsoup.Jsoup;
 import com.quizify.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
@@ -39,6 +39,12 @@ public class QuizBankController {
     private NotificationsRepsitory notificationsRepsitory;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CommentsService commentsService;
+    @Autowired
+    private CommentsRepository commentsRepository;
+    @Autowired
+    private UserService userService;
 
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
@@ -73,6 +79,10 @@ public class QuizBankController {
         //view average star
         Double average = voteService.getAverageStar(id);
         model.addAttribute("averageStar", average);
+        //List comments
+        List<Comments> commentsList = commentsService.getAllCommentByQuizBanksID(id);
+        model.addAttribute("commentsList", commentsList);
+
         model.addAttribute("quizBank", quizBank);
         model.addAttribute("questions", questions);
         model.addAttribute("questionChoicesMap", questionChoicesMap);
@@ -187,15 +197,10 @@ public class QuizBankController {
         return "redirect:/quiz-banks/quiz-banks-list";
     }
 
-    @GetMapping("/comment")
-    public String showPageComment(){
-        return "testBox-comment";
-    }
-
     @PostMapping("/vote")
     public String voteQuizBanks(@RequestParam("userID") long userID,
                                 @RequestParam("quizBanksID") long quizBanksID,
-                                @RequestParam("star") int star,
+                                @RequestParam("star") Integer star,
                                 @RequestParam long receivedBy,
                                 @RequestParam String link,
                                 RedirectAttributes redirectAttributes)
@@ -208,6 +213,44 @@ public class QuizBankController {
 
         return "redirect:/quiz-banks/quiz-banks-list";
     }
+
+    //save comments
+    @PostMapping("/comment")
+    public String saveCommentQuizBanks(@RequestParam("userID") long userID,
+                                       @RequestParam("quizBanksID") long quizBanksID,
+                                       @RequestParam("content") String content,
+                                       RedirectAttributes redirectAttributes)
+    {
+        User user = userService.findById(userID);
+        commentsService.saveComment(content,user,quizBanksID);
+        redirectAttributes.addFlashAttribute("commentSuccess", true);
+        return "redirect:/quiz-banks/quiz-bank-detail/"+quizBanksID;
+    }
+    //change comment
+    @GetMapping("/edit/comment/{id}")
+    public String showChangeComment(@PathVariable long id, Model model,RedirectAttributes redirectAttributes){
+        Comments oldComment = commentsRepository.findById(id).orElse(null);
+        if (oldComment != null) {
+            model.addAttribute("oldComment", oldComment);
+            return "change_comment";
+        }else {
+            redirectAttributes.addFlashAttribute("mess", "comment not found");
+            return "quiz-bank-detail";
+        }
+    }
+    @PostMapping("/edit/comment")
+    public String changeComment(@RequestParam long commentID,@RequestParam String content, RedirectAttributes redirectAttributes) {
+        Comments comment = commentsRepository.findById(commentID).orElse(null);
+        commentsService.changeComment(content,commentID);
+        return "redirect:/quiz-banks/quiz-bank-detail/" + comment.getQuizBanksID();
+    }
+    // delete comment
+    @DeleteMapping("/delete/comment/{id}")
+    @ResponseBody
+    public void deleteCommnet(@PathVariable long id) {
+        commentsService.deleteComment(id);
+    }
+
     // make notifications as read
     @PutMapping("/notifications/mark-as-read/{id}")
     @ResponseBody

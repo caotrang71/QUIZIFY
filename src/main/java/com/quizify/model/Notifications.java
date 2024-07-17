@@ -30,6 +30,7 @@ public class Notifications {
 
     private String link;
 
+    @Column(name = "is_read")
     private boolean read;
 
     @PrePersist

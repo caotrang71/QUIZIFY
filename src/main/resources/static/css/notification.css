@@ -21,7 +21,7 @@
     right: -300px;
     width: 300px;
     height: 100%;
-    background-color: #df9d78;
+    background-color: #FFFFFF;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     transition: right 0.3s ease;
     padding: 20px;
@@ -58,7 +58,6 @@
     font-weight: 700;
     color: #007bff;
     margin-bottom: 5px;
-
 }
 
 .notification-panel ul li .content {
@@ -67,7 +66,7 @@
 }
 
 .notification-panel i {
-    color: #fff; /* Thay đổi màu của biểu tượng */
+    color: rgba(22, 37, 142, 0.35); /* Thay đổi màu của biểu tượng */
     font-size: 30px; /* Thay đổi kích thước biểu tượng */
 }
 
@@ -75,10 +74,29 @@
     padding: 10px;
     border-bottom: 1px solid #ddd;
     transition: all 0.3s ease;
+    background-color: #ecc07f;
 }
 .notification-item.new {
     font-weight: bold;
     color: #ff5722; /* Highlight color for new notifications */
     background-color: #7fc2ec;
     cursor: pointer;
+    position: relative;
+}
+.notification-item.new::before {
+    content: '';
+    position: absolute;
+    top: 10px; /* Điều chỉnh vị trí theo ý muốn */
+    left: -15px; /* Điều chỉnh vị trí theo ý muốn */
+    width: 10px; /* Kích thước của chấm */
+    height: 10px; /* Kích thước của chấm */
+    background-color: red; /* Màu sắc của chấm */
+    border-radius: 50%; /* Tạo chấm tròn */
+}
+
+.notification-item.new .title {
+    font-size: 22px;
+}
+.notification-item.new .content {
+    font-size: 16px;
 }

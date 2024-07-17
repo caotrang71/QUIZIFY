@@ -22,11 +22,20 @@ public class Test {
     @Column(name = "test_id")
     private Long id;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "started_at")
     private LocalDateTime startedAt;
 
     @Column(name = "ended_at")
     private LocalDateTime endedAt;
+
+    @Column(name = "time_limit")
+    private Integer timeLimit;
+
+    @Column(name = "time_taken")
+    private Integer timeTaken;
 
     @Column(name = "result")
     private int result;

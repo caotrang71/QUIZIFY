@@ -66,4 +66,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Notifications> notifications;
 
+    @OneToMany(mappedBy = "user")
+    private List<Comments> Comments;
 }
