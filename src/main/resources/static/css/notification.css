@@ -70,3 +70,15 @@
     color: #fff; /* Thay đổi màu của biểu tượng */
     font-size: 30px; /* Thay đổi kích thước biểu tượng */
 }
+
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+.notification-item.new {
+    font-weight: bold;
+    color: #ff5722; /* Highlight color for new notifications */
+    background-color: #7fc2ec;
+    cursor: pointer;
+}

@@ -30,6 +30,8 @@ public class Notifications {
 
     private String link;
 
+    private boolean read;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

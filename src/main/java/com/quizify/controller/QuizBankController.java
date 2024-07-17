@@ -1,6 +1,7 @@
 package com.quizify.controller;
 
 import com.quizify.model.*;
+import com.quizify.repository.NotificationsRepsitory;
 import com.quizify.repository.UserRepository;
 import com.quizify.repository.VoteRepository;
 import com.quizify.service.*;
@@ -34,6 +35,8 @@ public class QuizBankController {
     private VoteService voteService;
     @Autowired
     private NotificationsService notificationsService;
+    @Autowired
+    private NotificationsRepsitory notificationsRepsitory;
     @Autowired
     private UserRepository userRepository;
 
@@ -201,9 +204,29 @@ public class QuizBankController {
         String title = "you have new vote";
         String content = "Your puzzle bank has just been "+ star + " voted star";
         User user = userRepository.findById(userID).orElse(null);
-        notificationsService.saveNotification(title, content,user,receivedBy,link);
+        notificationsService.saveNotification(title, content,user,receivedBy,link,false);
 
         return "redirect:/quiz-banks/quiz-banks-list";
+    }
+    // make notifications as read
+    @PutMapping("/notifications/mark-as-read/{id}")
+    @ResponseBody
+    public void markAsRead(@PathVariable long id) {
+        Notifications notification = notificationsRepsitory.findById(id).orElse(null);
+        if (notification != null) {
+            notification.setRead(true);
+            notificationsRepsitory.save(notification);
+        }
+    }
+    // make notifications as new
+    @PutMapping("/notifications/mark-as-new/{id}")
+    @ResponseBody
+    public void markAsNew(@PathVariable long id) {
+        Notifications notification = notificationsRepsitory.findById(id).orElse(null);
+        if (notification != null) {
+            notification.setRead(false);
+            notificationsRepsitory.save(notification);
+        }
     }
 
 

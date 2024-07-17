@@ -16,13 +16,14 @@ public class NotificationsService {
         return notificationsRepsitory.findAll();
     }
 
-    public void saveNotification(String title,String content,User createdBy,long receivedBy,String link){
+    public void saveNotification(String title,String content,User createdBy,long receivedBy,String link,boolean read){
         Notifications notifi = new Notifications();
         notifi.setTitle(title);
         notifi.setContent(content);
         notifi.setUser(createdBy);
         notifi.setReceivedBy(receivedBy);
         notifi.setLink(link);
+        notifi.setRead(read);
         notificationsRepsitory.save(notifi);
     }
 
