@@ -147,7 +147,7 @@
             <a href="#"><i class="fas fa-bell" id="closeIcon"></i></a>
         </div>
             <ul>
-                <li th:each=" notification : ${notifications} " th:attr="data-id=${notification.notificationId}" th:hidden="${notification.receivedBy != session.user.id}" class="notification-item" th:classappend="${notification.read == false} ? 'new' ">
+                <li th:each=" notification : ${notifications} " th:attr="data-id=${notification.notificationId}" th:hidden="${notification.receivedBy != session.user.id || session.user.getRole().id != 1 || session.user.getRole().id != 2}" class="notification-item" th:classappend="${notification.read == false} ? 'new' ">
                     <a th:href="@{${notification.link}}" class="title" onclick="makeAsRead([[${notification.notificationId}]])" th:text="${notification.title}"></a>
                     <div class="content" th:text="${notification.content}"></div>
                 </li>
