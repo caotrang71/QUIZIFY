@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -169,7 +168,7 @@
     new DataTable('#example');
     // Function to delete a user
     function deleteCategory(id) {
-        if (confirm("Are you sure delete this account?")) {
+        if (confirm("Are you sure delete this Category?")) {
             const url = `http://localhost:8081/Quizify/category/${id}`;
             fetch(url, {
                 method: 'DELETE',

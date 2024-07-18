@@ -168,7 +168,7 @@
     new DataTable('#example');
     // Function to delete a user
     function deleteSubCategory(id) {
-        if (confirm("Are you sure delete this account?")) {
+        if (confirm("Are you sure delete this SubCategory?")) {
             const url = `http://localhost:8081/Quizify/subcategory/${id}`;
             fetch(url, {
                 method: 'DELETE',
