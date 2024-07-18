@@ -21,7 +21,7 @@ public class VoteService {
         for (Vote star : votes){
             sum += star.getStar();
         }
-        if (votes.size() ==0){
+        if (votes.isEmpty()){
             return 0.0;
         }
         double average = (sum / votes.size());

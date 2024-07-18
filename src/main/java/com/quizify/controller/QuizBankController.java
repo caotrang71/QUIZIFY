@@ -207,7 +207,7 @@ public class QuizBankController {
     {
         voteService.saveVote(userID,quizBanksID,star);
         String title = "you have new vote";
-        String content = "Your puzzle bank has just been "+ star + " voted star";
+        String content = "Your quiz bank has just been "+ star + " voted star";
         User user = userRepository.findById(userID).orElse(null);
         notificationsService.saveNotification(title, content,user,receivedBy,link,false);
 
@@ -219,10 +219,17 @@ public class QuizBankController {
     public String saveCommentQuizBanks(@RequestParam("userID") long userID,
                                        @RequestParam("quizBanksID") long quizBanksID,
                                        @RequestParam("content") String content,
+                                       @RequestParam long receivedBy,
+                                       @RequestParam String link,
                                        RedirectAttributes redirectAttributes)
     {
+        // save comment
         User user = userService.findById(userID);
         commentsService.saveComment(content,user,quizBanksID);
+        //save notification
+        String title = "Quiz Bank have new comments";
+        String contentNotification = user.getFullName() + " commented on Quiz Banks";
+        notificationsService.saveNotification(title,contentNotification,user,receivedBy,link,false);
         redirectAttributes.addFlashAttribute("commentSuccess", true);
         return "redirect:/quiz-banks/quiz-bank-detail/"+quizBanksID;
     }
@@ -261,6 +268,7 @@ public class QuizBankController {
             notificationsRepsitory.save(notification);
         }
     }
+
     // make notifications as new
     @PutMapping("/notifications/mark-as-new/{id}")
     @ResponseBody
@@ -269,6 +277,15 @@ public class QuizBankController {
         if (notification != null) {
             notification.setRead(false);
             notificationsRepsitory.save(notification);
+        }
+    }
+
+    @DeleteMapping("/notifications/delete/{id}")
+    @ResponseBody
+    public void deleteNotification(@PathVariable long id) {
+        Notifications notification = notificationsRepsitory.findById(id).orElse(null);
+        if (notification != null) {
+            notificationsRepsitory.delete(notification);
         }
     }
 

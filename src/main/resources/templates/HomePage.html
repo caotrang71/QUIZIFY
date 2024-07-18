@@ -22,6 +22,8 @@
 
     <link rel="stylesheet" th:href="@{/css/notification.css}">
     <script th:src="@{/js/notification.js}"></script>
+
+    <script th:src="@{/js/comment.js}"></script>
 </head>
 <body>
 
@@ -147,9 +149,18 @@
             <a href="#"><i class="fas fa-bell" id="closeIcon"></i></a>
         </div>
             <ul>
-                <li th:each=" notification : ${notifications} " th:attr="data-id=${notification.notificationId}" th:hidden="${notification.receivedBy != session.user.id && session.user.getRole().id != 1 && session.user.getRole().id != 2}" class="notification-item" th:classappend="${notification.read == false} ? 'new' ">
-                    <a th:href="@{${notification.link}}" class="title" onclick="makeAsRead([[${notification.notificationId}]])" th:text="${notification.title}"></a>
+                <li th:each=" notification : ${notifications} "
+                    th:hidden="${notification.receivedBy != session.user.id && session.user.getRole().id != 1 && session.user.getRole().id != 2}"
+                    class="notification-item" th:classappend="${notification.read == false} ? 'new' ">
+                    <a th:href="@{${notification.link}}" class="title" th:text="${notification.title}"
+                       th:onclick = " 'markAsReadLink('+${notification.notificationId}+')'"></a>
                     <div class="content" th:text="${notification.content}"></div>
+                    <button onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
+                    <div class="dropdown-content">
+                        <a th:hidden="${notification.read == true}" href="#" th:onclick = " 'markAsRead('+${notification.notificationId}+')' ">make as read</a>
+                        <a th:hidden="${notification.read == false}" href="#" th:onclick = " 'markAsNew('+${notification.notificationId}+')' ">make as new</a>
+                        <a th:onclick=" 'deleteNotification('+${notification.notificationId}+')' ">Delete</a>
+                    </div>
                 </li>
                 <li>
                     <div>You have no new notifications</div>

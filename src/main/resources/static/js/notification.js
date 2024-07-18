@@ -44,30 +44,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function makeAsRead(id) {
-    const url = `http://localhost:8081/Quizify/notifications/mark-as-read/${id}`;
-    fetch(url, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => {
-            if (response.ok) {
-                const notificationItem = document.querySelector(`[data-id='${id}']`);
-                if (notificationItem) {
-                    notificationItem.classList.remove('new');
-                }
-            } else {
-                console.error('Failed to mark as read:', response.statusText);
-            }
-        })
-        .catch(error => console.error('Error:', error));
-}
 
-
-function makeAsNew(id) {
-    const url = `http://localhost:8081/Quizify/quiz-banks/notifications/mark-as-new/${id}`;
+//make as read
+function markAsRead(notificationId) {
+    const url = `http://localhost:8081/Quizify/quiz-banks/notifications/mark-as-read/${notificationId}`;
     fetch(url, {
         method: 'PUT',
         headers:{
@@ -75,9 +55,86 @@ function makeAsNew(id) {
         }
     })
         .then(response => {
-            if (response.ok) {
-                document.querySelector(`[th\\:onclick="makeAsRead(${id})"]`).parentElement.classList.add('new');
+            if (response.ok){
+                alert('make as read success');
+                location.reload();
+            }else {
+                return response.text().then(text => { throw new Error(text) });
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error=> {
+            console.error('Error:' ,error);
+            alert('failed to make as read')
+        })
+}
+// when click link
+function markAsReadLink(notificationId) {
+    const url = `http://localhost:8081/Quizify/quiz-banks/notifications/mark-as-read/${notificationId}`;
+    fetch(url, {
+        method: 'PUT',
+        headers:{
+            'Content-Type':'application/json'
+        }
+    })
+        .then(response => {
+            if (response.ok){
+
+            }else {
+                return response.text().then(text => { throw new Error(text) });
+            }
+        })
+        .catch(error=> {
+            console.error('Error:' ,error);
+            alert('failed to make as read')
+        })
+}
+
+//make as new
+function markAsNew(notificationId) {
+    const url = `http://localhost:8081/Quizify/quiz-banks/notifications/mark-as-new/${notificationId}`;
+    fetch(url, {
+        method: 'PUT',
+        headers:{
+            'Content-Type':'application/json'
+        }
+    })
+        .then(response => {
+            if (response.ok){
+                alert('make as new success');
+                location.reload();
+            }else {
+                return response.text().then(text => { throw new Error(text) });
+            }
+        })
+        .catch(error=> {
+            console.error('Error:' ,error);
+            alert('failed to make as read')
+        })
+}
+
+//delete notification
+function deleteNotification(notificationId) {
+    if (confirm("Are you sure want to delete this notification?")) {
+        const url = `http://localhost:8081/Quizify/quiz-banks/notifications/delete/${notificationId}`;
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('delete notification successfully.');
+                    location.reload();
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(text)
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('failed to delete this notification')
+            })
+    }
 }
