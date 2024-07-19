@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h2>Quiz Results by Week</h2>
+<canvas id="quizChart" width="400" height="200"></canvas>
+<script>
+    // Dữ liệu mẫu
+    const weeklyResults = '{"2023-07-03": 5, "2023-07-10": 3, "2023-07-17": 7,' +
+        '                   "2023-07-24": 9, "2023-07-31": 8, "2023-08-06": 14}';
+    console.log("Weekly Results from Thymeleaf: ", weeklyResults);
+
+    const parsedWeeklyResults = JSON.parse(weeklyResults);
+
+    const weeks = Object.keys(parsedWeeklyResults);
+    const counts = Object.values(parsedWeeklyResults);
+
+    console.log("Parsed Weekly Results: ", parsedWeeklyResults);
+    console.log("Weeks: ", weeks);
+    console.log("Counts: ", counts);
+
+    const ctx = document.getElementById('quizChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: weeks,
+            datasets: [{
+                label: 'Number of Quizzes Taken',
+                data: counts,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
