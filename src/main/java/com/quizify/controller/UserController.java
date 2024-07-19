@@ -12,10 +12,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class UserController {
@@ -130,21 +135,42 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user
-                                                    ,RedirectAttributes redirectAttributes) {
+            ,RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
+        //kiểm tra mật khẩu có đúng độ dài chữ số không
+        String regexPass = "^[a-zA-Z0-9][a-zA-Z0-9\\-_@&]{6,14}[a-zA-Z0-9]$";
+        String inputPass = user.getPassword();
 
-        // Kiểm tra xem email đã tồn tại chưa
+        Pattern patternPass = Pattern.compile(regexPass);
+        Matcher matcherPass = patternPass.matcher(inputPass);
 
-        if (userService.userExists(user.getEmail())) {
-            redirectAttributes.addFlashAttribute("message", "Email already exists");
+        //kiểm tra email có đúng format không
+        String regexEmail = "^[a-zA-Z0-9]+@gmail\\.com$";
+        String inputEmail =  user.getEmail();
+
+        Pattern patternEmail = Pattern.compile(regexEmail);
+        Matcher matcherEmail = patternEmail.matcher(inputEmail);
+        if (!matcherEmail.matches()){
+            redirectAttributes.addFlashAttribute("message", "Your email must end with .com");
             return "redirect:/show_page_login";
+        }else if(!matcherPass.matches()){
+            redirectAttributes.addFlashAttribute("message", "You must enter a password of 8-16 characters including letters, numbers," +
+                    " some special characters such as - _ @ & and cannot begin or end with those characters");
+            return "redirect:/show_page_login";
+        } else {
+            // Kiểm tra xem email đã tồn tại chưa
+            if (userService.userExists(user.getEmail())) {
+                redirectAttributes.addFlashAttribute("message", "Email already exists");
+                return "redirect:/show_page_login";
+            }
+            // Tạo OTP và gửi email
+            OTP otp = otpService.createOTP(user.getEmail());
+            emailService.sendOTPEmail(user.getEmail(), otp.getOtp());
+            String email = user.getEmail();
+            String password = passwordEncoder.encode(user.getPassword());
+            String fullname = user.getFullName();
+            String urlFullname = URLEncoder.encode(fullname, StandardCharsets.UTF_8.toString());
+            return "redirect:/showVerifyOTP?email=" + email + "&password=" + password + "&fullname=" + urlFullname;
         }
-        // Tạo OTP và gửi email
-        OTP otp = otpService.createOTP(user.getEmail());
-        emailService.sendOTPEmail(user.getEmail(), otp.getOtp());
-        String email = user.getEmail();
-        String password = passwordEncoder.encode(user.getPassword());
-        String fullname = user.getFullName();
-        return "redirect:/showVerifyOTP?email=" + email + "&password=" + password + "&fullname=" + fullname;
     }
 
     @GetMapping("/showVerifyOTP")
@@ -159,12 +185,13 @@ public class UserController {
     @PostMapping("/verifyOTP")
     public String verifyOTP(@RequestParam String email, @RequestParam String pass,
                             @RequestParam String fullname, @RequestParam String otp,
-                            Model model,RedirectAttributes redirectAttributes) {
+                            Model model,RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
         Optional<OTP> otpObjectOptional = otpService.getObjectOTP(email);
         //kiem tra otp ton tai hay khong
         if (otpObjectOptional.isEmpty()) {
+            String urlFullname = URLEncoder.encode(fullname, StandardCharsets.UTF_8.toString());
             redirectAttributes.addFlashAttribute("mess", "OTP không tồn tại hoặc đã hết hạn.");
-            return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + fullname;
+            return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + urlFullname;
         }
 
         OTP otpObject = otpObjectOptional.get();
@@ -186,8 +213,9 @@ public class UserController {
             // Tăng số lần thử nếu OTP sai
             otpObject.setAttempts(otpObject.getAttempts() + 1);
             otpRepository.save(otpObject);
+            String urlFullname = URLEncoder.encode(fullname, StandardCharsets.UTF_8.toString());
             redirectAttributes.addFlashAttribute("error", "OTP không chính xác.");
-            return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + fullname; // Redirect để nhập lại OTP
+            return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + urlFullname; // Redirect để nhập lại OTP
         }
     }
     @GetMapping("/show_page_forgetPassword")
