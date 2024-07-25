@@ -161,7 +161,7 @@
                     <button onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
                     <div class="dropdown-content">
                         <a th:hidden="${notification.read == true}" href="#" th:onclick = " 'markAsRead('+${notification.notificationId}+')' ">make as read</a>
-                        <a th:hidden="${notification.read == false}" href="#" th:onclick = " 'markAsNew('+${notification.notificationId}+')' ">make as new</a>
+                        <a th:hidden="${notification.read == false}" href="#" th:onclick = " 'markAsNew('+${notification.notificationId}+')' ">mark as unread</a>
                         <a th:onclick=" 'deleteNotification('+${notification.notificationId}+')' ">Delete</a>
                     </div>
                 </li>
