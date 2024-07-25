@@ -47,14 +47,19 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password,
                         RedirectAttributes redirectAttributes
-                        , HttpSession session,Model model) {
+                        , HttpSession session) {
 
         // Kiểm tra xem người dùng có tồn tại không
         User user = userService.findByEmail(email);
         if (user != null && userService.checkPasswordEncoder(password, user.getPassword())) {
-            // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
-            session.setAttribute("user", user);
-            return "redirect:/userHome";
+            if(user.getStatus()) {
+                // Nếu email và mật khẩu khớp, chuyển hướng đến trang home
+                session.setAttribute("user", user);
+                return "redirect:/userHome";
+            }else {
+                redirectAttributes.addFlashAttribute("mess", "Your account has been BANNED");
+                return "redirect:/show_page_login";
+            }
         } else {
             // Nếu không khớp, hiển thị thông báo lỗi và chuyển lại trang đăng nhập
             redirectAttributes.addFlashAttribute("mess", "Invalid email or password");
