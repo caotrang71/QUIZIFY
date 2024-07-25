@@ -35,7 +35,7 @@ public class Test {
     private Integer timeLimit;
 
     @Column(name = "time_taken")
-    private Integer timeTaken;
+    private Long timeTaken;
 
     @Column(name = "result")
     private int result;
@@ -53,4 +53,13 @@ public class Test {
 
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TestHistory> testHistories;
+
+    public String getFormattedTimeTaken() {
+        if (timeTaken == null) return "Not Available";
+        long hours = timeTaken / 3600000;
+        long minutes = ((timeTaken/1000) % 3600) / 60;
+        long seconds = (timeTaken/1000) % 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
 }

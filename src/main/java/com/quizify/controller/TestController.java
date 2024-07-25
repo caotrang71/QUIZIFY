@@ -67,7 +67,6 @@ public class TestController {
         }
     }
 
-
     @GetMapping("/take/{testId}")
     public String takeTest(@PathVariable Long testId,
                            Model model,
@@ -90,32 +89,8 @@ public class TestController {
         return "take-test";
     }
 
-//    @PostMapping("/submit")
-//    public String submitTest(@RequestParam Long testId,
-//                             @RequestParam Map<String, String> allParams,
-//                             Model model) {
-//        try {
-//            List<Long> selectedChoiceIds = new ArrayList<>();
-//            Test test = testService.getTestById(testId);
-//            if (test == null) {
-//                throw new Exception("Test not found");
-//            }
-//            test.getTestHistories().forEach(history -> {
-//                String choiceParam = allParams.get("question-" + history.getQuestion().getId());
-//                selectedChoiceIds.add(choiceParam != null ? Long.parseLong(choiceParam) : null);
-//            });
-//
-//            test = testService.submitTest(testId, selectedChoiceIds);
-//            model.addAttribute("test", test);
-//            return "redirect:/tests/my-practice";
-//        } catch (Exception e) {
-//            model.addAttribute("error", "Error submitting test: " + e.getMessage());
-//            return "take-test";
-//        }
-//    }
-
     @PostMapping("/submit")
-    public String submitTest(@RequestParam Long testId, @RequestParam Map<String, String> allParams, Model model) {
+    public String submitTest(@RequestParam Long testId, @RequestParam Long elapsedTime, @RequestParam Map<String, String> allParams, Model model) {
         try {
             Test test = testService.getTestById(testId);
             if (test == null) {
@@ -130,7 +105,7 @@ public class TestController {
                     })
                     .collect(Collectors.toList());
 
-            test = testService.submitTest(testId, selectedChoiceIds);
+            test = testService.submitTest(testId, selectedChoiceIds, elapsedTime);
             model.addAttribute("test", test);
             return "redirect:/tests/my-practice";
         } catch (NumberFormatException e) {
@@ -141,9 +116,6 @@ public class TestController {
             return "take-test";
         }
     }
-
-
-
 
     @GetMapping("/detail/{testId}")
     public String testDetail(@PathVariable Long testId, Model model) {
@@ -156,14 +128,21 @@ public class TestController {
 
     @PostMapping("/exit")
     public String exitTest(@RequestParam Long testId, RedirectAttributes redirectAttributes) {
-        try {
-            testService.markTestInProgress(testId);
-            redirectAttributes.addFlashAttribute("message", "Test has been saved. You can continue later.");
+        if(testService.isTestSubmitted(testId)){
             return "redirect:/tests/my-practice";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error exiting test: " + e.getMessage());
-            return "redirect:/tests/take/" + testId;
         }
+        else {
+
+            try {
+                testService.markTestInProgress(testId);
+                redirectAttributes.addFlashAttribute("message", "Test has been saved. You can continue later.");
+                return "redirect:/tests/my-practice";
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("error", "Error exiting test: " + e.getMessage());
+                return "redirect:/tests/take/" + testId;
+            }
+        }
+
     }
 
 }
