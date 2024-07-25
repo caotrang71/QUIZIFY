@@ -93,30 +93,6 @@ public class TestController {
         return "take-test";
     }
 
-//    @PostMapping("/submit")
-//    public String submitTest(@RequestParam Long testId,
-//                             @RequestParam Map<String, String> allParams,
-//                             Model model) {
-//        try {
-//            List<Long> selectedChoiceIds = new ArrayList<>();
-//            Test test = testService.getTestById(testId);
-//            if (test == null) {
-//                throw new Exception("Test not found");
-//            }
-//            test.getTestHistories().forEach(history -> {
-//                String choiceParam = allParams.get("question-" + history.getQuestion().getId());
-//                selectedChoiceIds.add(choiceParam != null ? Long.parseLong(choiceParam) : null);
-//            });
-//
-//            test = testService.submitTest(testId, selectedChoiceIds);
-//            model.addAttribute("test", test);
-//            return "redirect:/tests/my-practice";
-//        } catch (Exception e) {
-//            model.addAttribute("error", "Error submitting test: " + e.getMessage());
-//            return "take-test";
-//        }
-//    }
-
     @PostMapping("/submit")
     public String submitTest(@RequestParam Long testId, @RequestParam Long elapsedTime, @RequestParam Map<String, String> allParams, Model model) {
         try {
