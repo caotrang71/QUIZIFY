@@ -45,6 +45,8 @@ public class QuizBankController {
     private CommentsRepository commentsRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private QuizBankRepository quizBankRepository;
 
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
@@ -227,8 +229,9 @@ public class QuizBankController {
         User user = userService.findById(userID);
         commentsService.saveComment(content,user,quizBanksID);
         //save notification
+        QuizBank quizBank = quizBankRepository.findById(quizBanksID).orElse(null);
         String title = "Quiz Bank have new comments";
-        String contentNotification = user.getFullName() + " commented on Quiz Banks";
+        String contentNotification = user.getFullName() + " commented on Quiz Banks "+ quizBank.getBankName();
         notificationsService.saveNotification(title,contentNotification,user,receivedBy,link,false);
         redirectAttributes.addFlashAttribute("commentSuccess", true);
         return "redirect:/quiz-banks/quiz-bank-detail/"+quizBanksID;

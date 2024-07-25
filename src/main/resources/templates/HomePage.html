@@ -87,6 +87,9 @@
                 <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
                     <a th:href="@{/category}">Category List</a>
                 </li>
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a th:href="@{api/data/chart}">statistics</a>
+                </li>
             </ul>
 
             <div class="footer">
