@@ -48,8 +48,11 @@ public class TestController {
                              @RequestParam String questionOrder,
                              @RequestParam(name = "shuffleChoices", defaultValue = "false") boolean shuffleChoices,
                              @RequestParam(name = "enableTimeLimit", defaultValue = "false") boolean enableTimeLimit,
-                             Model model) {
-        Long userId = 3L; // Replace with your actual user ID logic
+                             Model model, HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+        Long userId = user.getId(); // Replace with your actual user ID logic
+        System.out.println("user id: " + userId);
         try {
             boolean shuffleQuestions = questionOrder.equals("shuffle");
             System.out.println("enableTimeLimit: "+enableTimeLimit);
@@ -77,29 +80,71 @@ public class TestController {
             return "redirect:/tests/my-practice";
         }
         Test test = testService.getTestById(testId);
+        List<TestHistory> history = testHistoryService.getTestHistoriesByTest(test);
+        System.out.print("Thu tu dap an: ");
+        for(TestHistory historyItem : history) {
+            for(QuestionChoice questionChoice : historyItem.getQuestion().getQuestionChoices()) {
+                System.out.println(questionChoice.getId());
+            }
+
+        }
+
         model.addAttribute("test", test);
         return "take-test";
     }
 
+//    @PostMapping("/submit")
+//    public String submitTest(@RequestParam Long testId,
+//                             @RequestParam Map<String, String> allParams,
+//                             Model model) {
+//        try {
+//            List<Long> selectedChoiceIds = new ArrayList<>();
+//            Test test = testService.getTestById(testId);
+//            if (test == null) {
+//                throw new Exception("Test not found");
+//            }
+//            test.getTestHistories().forEach(history -> {
+//                String choiceParam = allParams.get("question-" + history.getQuestion().getId());
+//                selectedChoiceIds.add(choiceParam != null ? Long.parseLong(choiceParam) : null);
+//            });
+//
+//            test = testService.submitTest(testId, selectedChoiceIds);
+//            model.addAttribute("test", test);
+//            return "redirect:/tests/my-practice";
+//        } catch (Exception e) {
+//            model.addAttribute("error", "Error submitting test: " + e.getMessage());
+//            return "take-test";
+//        }
+//    }
+
     @PostMapping("/submit")
-    public String submitTest(@RequestParam Long testId,
-                             @RequestParam Map<String, String> allParams,
-                             Model model) {
+    public String submitTest(@RequestParam Long testId, @RequestParam Map<String, String> allParams, Model model) {
         try {
-            List<Long> selectedChoiceIds = new ArrayList<>();
-            for (Map.Entry<String, String> entry : allParams.entrySet()) {
-                if (entry.getKey().startsWith("question-")) {
-                    selectedChoiceIds.add(Long.parseLong(entry.getValue()));
-                }
+            Test test = testService.getTestById(testId);
+            if (test == null) {
+                throw new Exception("Test not found");
             }
-            Test test = testService.submitTest(testId, selectedChoiceIds);
+
+            List<Long> selectedChoiceIds = test.getTestHistories().stream()
+                    .map(history -> {
+                        String paramKey = "question-" + history.getQuestion().getId();
+                        String choiceId = allParams.get(paramKey);
+                        return choiceId != null ? Long.valueOf(choiceId) : null;
+                    })
+                    .collect(Collectors.toList());
+
+            test = testService.submitTest(testId, selectedChoiceIds);
             model.addAttribute("test", test);
             return "redirect:/tests/my-practice";
+        } catch (NumberFormatException e) {
+            model.addAttribute("error", "Invalid input. Please select valid choices.");
+            return "take-test";
         } catch (Exception e) {
             model.addAttribute("error", "Error submitting test: " + e.getMessage());
             return "take-test";
         }
     }
+
 
 
     @GetMapping("/detail/{testId}")

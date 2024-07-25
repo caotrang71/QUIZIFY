@@ -33,7 +33,7 @@ public class TestHistoryService {
         return testHistoryRepository.getTestHistoriesByTest(test);
     }
     public void updateTestHistory(Long testId, Long questionId, Long choiceId) {
-        Test test = testRepository.findById(Math.toIntExact(testId)).orElseThrow(() -> new RuntimeException("Test not found"));
+        Test test = testRepository.findById(testId).orElseThrow(() -> new RuntimeException("Test not found"));
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new RuntimeException("Question not found"));
         QuestionChoice choice = questionChoiceRepository.findById(choiceId).orElse(null);
 

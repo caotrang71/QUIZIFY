@@ -4,18 +4,22 @@
     <title>Quizify</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" href="/static/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png" type="image/x-icon">
+    <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
           rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link th:href="@{/side/css/style.css}" rel="stylesheet">
+    <link th:href="@{/side/css/input-field.css}" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/css/iziModal.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/js/iziModal.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -26,17 +30,6 @@
             <ul class="list-unstyled components mb-5">
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                    <!--                    <ul class="collapse list-unstyled" id="homeSubmenu">-->
-                    <!--                        <li>-->
-                    <!--                            <a href="#">Home 1</a>-->
-                    <!--                        </li>-->
-                    <!--                        <li>-->
-                    <!--                            <a href="#">Home 2</a>-->
-                    <!--                        </li>-->
-                    <!--                        <li>-->
-                    <!--                            <a href="#">Home 3</a>-->
-                    <!--                        </li>-->
-                    <!--                    </ul>-->
                 </li>
                 <li>
                     <a href="#">My Library</a>
@@ -86,19 +79,17 @@
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-
-                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary me-3">
                     <i class="fa fa-bars"></i>
                     <span class="sr-only">Toggle Menu</span>
                 </button>
-                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home</a>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Notification</a>
@@ -114,17 +105,16 @@
             </div>
         </nav>
 
-
         <div class="container mt-5">
             <h2>Create Quiz Bank</h2>
-            <form th:action="@{/quiz-banks/created}" th:object="${quizBank}" method="POST" id="quizBankForm">
-                Title: <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control mb-4 col-4" required>
-                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4" required>
+            <form th:action="@{/quiz-banks/created}" th:object="${quizBank}" method="POST" id="quizBankForm" enctype="multipart/form-data">
+                Title: <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control d-inline-block mb-4 col-4" required>
+                <br>
+                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control d-inline-block mb-4 col-4">
+                <br>
                 Topic:
 
-
-                <select th:field="*{subcategory}" class="form-control mb-4 col-4 js-example-basic-single" name="state" required>
-
+                <select th:field="*{subcategory}" class="form-control mb-4 mt-4 col-4 js-example-basic-single" name="state" required>
                     <th:block th:each="category : ${categoryList}">
                         <optgroup th:label="${category.categoryName}">
                             <th:block th:each="sub : ${category.subcategories}">
@@ -132,148 +122,345 @@
                             </th:block>
                         </optgroup>
                     </th:block>
-
                 </select>
 
-                <div id="questionsSection">
+                <div class="card sticky-top p-0 mt-4" style="font-weight: 500">
+                    <div class="card-body row d-flex justify-content-between align-items-center">
+                        <div class="col-sm text-left">
+                            Total Questions: <span id="total">0</span>
+                        </div>
+                        <div class="col-sm text-right">
+                            <button type="button" class="btn btn-sm btn-success add-question"><i class="fa fa-plus"></i> Add Question</button>
+                            <button type="button" class="btn btn-sm btn-primary" id="importFile"><i class="fa fa-upload"></i></button>
+                            <button type="submit" class="btn btn-sm btn-success" id="btnSave">Save</button>
+                        </div>
+                    </div>
 
                 </div>
 
-                <button type="button" class="btn btn-sm btn-success add-question"><i class="fa fa-plus"></i> Question</button>
-                <button type="submit" class="btn btn-sm btn-success">Save</button>
-            </form>
+                <div id="questionsSection" class="mt-4"></div>
 
+            </form>
 
             <div th:if="${error}" class="alert alert-danger mt-4" id="errorAlert">
                 <p th:text="${error}"></p>
             </div>
-
         </div>
+
     </div>
-        <!-- JavaScript -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const addQuestionButton = document.querySelector('.add-question');
-            const errorAlert = document.getElementById('errorAlert');
+</div>
 
-            addQuestionButton.addEventListener('click', function() {
-                const questionsSection = document.getElementById('questionsSection');
-                const questionCount = questionsSection.querySelectorAll('.question').length;
+<!-- Modal -->
+<div id="importExcel" class="iziModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+    <div>
+        <p>Please ensure your Excel file follows this format:</p>
+        <ul>
+            <li>The first row should have the following headers: <strong>Question Content, Choice 1, Choice 2, Choice 3, Choice 4, Answer</strong></li>
+            <li>Each subsequent row should contain the question and its four choices contents</li>
+            <li>The Answer column must contain values <strong>1, 2, 3, or 4</strong> indicating the correct choice</li>
+        </ul>
+        <p>You can download a sample file for reference: <a th:href="@{/files/sample-quiz.xlsx}" download="Sample Quiz">Download Sample File</a></p>
 
-                if (errorAlert) {
-                    errorAlert.style.display = 'none';
-                }
+        <button type="button" class="btn btn-primary import-excel"><i class="fa fa-upload"></i> Import</button>
+        <input type="file" class="file-input" id="fileInput" style="display: none;" accept=".xls,.xlsx">
+    </div>
+</div>
 
-                const newQuestionHtml = `
-        <div class="card mb-4 question">
-            <div class="card-body">
-                <label>Question ${questionCount + 1}</label>
-                <input type="text" name="questions[${questionCount}].content" class="form-control mb-2" required>
-                <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
-                <div class="choices">
-                    ${[...Array(4)].map((_, index) => `
-                        <div class="form-check">
-                            <label>
 
-                                <input type="radio" name="questions[${questionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCount}, ${index})" required>
+<!-- JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/js/iziModal.min.js" integrity="sha512-lR/2z/m/AunQdfBTSR8gp9bwkrjwMq1cP0BYRIZu8zd4ycLcpRYJopB+WsBGPDjlkJUwC6VHCmuAXwwPHlacww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-                                <input type="hidden" name="questions[${questionCount}].questionChoices[${index}].correctOrNot" value="false">
-                                <input type="text" name="questions[${questionCount}].questionChoices[${index}].content" class="form-control mb-2" required>
-                            </label>
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const form = document.getElementById('quizBankForm');
+        // let btnSave = document.getElementById("btnSave");
+        // btnSave.addEventListener('click', function () {
+        //     console.log('click');
+        //     setTimeout(function() {
+        //         window.location.reload();
+        //     }, 10000); // 10000 milliseconds = 10 seconds
+        // });
+
+
+
+        form.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && event.target.tagName.toLowerCase() !== 'textarea') {
+                event.preventDefault();
+            }
+        });
+        const addQuestionButton = document.querySelector('.add-question');
+        const errorAlert = document.getElementById('errorAlert');
+        let questionCounter = 0;
+
+        addQuestionButton.addEventListener('click', function() {
+            const questionsSection = document.getElementById('questionsSection');
+
+
+
+            if (errorAlert) {
+                errorAlert.style.display = 'none';
+            }
+
+            const newQuestionHtml = `
+                <div class="card mb-4 question">
+                    <div class="card-body">
+                        <label>Question ${questionCounter + 1}</label>
+                        <textarea type="text" name="questions[${questionCounter}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
+                        <input type="file" name="questionImage" class="form-control mb-2">
+                        <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
+
+                        <div class="choices">
+                            ${[...Array(4)].map((_, index) => `
+                                <div class="form-check">
+                                    <label class="w-100">
+                                        <input type="radio" name="questions[${questionCounter}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCounter}, ${index})" required>
+                                        <input type="hidden" name="questions[${questionCounter}].questionChoices[${index}].correctOrNot" value="false">
+                                        <textarea type="text" name="questions[${questionCounter}].questionChoices[${index}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
+                                    </label>
+                                </div>
+                            `).join('')}
                         </div>
-                    `).join('')}
+                    </div>
                 </div>
-            </div>
-        </div>
-        `;
+            `;
 
-                questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
-                attachRemoveQuestionHandlers();
-            });
-
+            questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
+            questionCounter++;
+            attachTotalQuestionsHandlers(questionCounter);
             attachRemoveQuestionHandlers();
 
-            function attachRemoveQuestionHandlers() {
-                document.querySelectorAll('.remove-question').forEach(button => {
-                    button.removeEventListener('click', handleRemoveQuestion);
-                    button.addEventListener('click', handleRemoveQuestion);
+        });
+
+
+
+        attachRemoveQuestionHandlers();
+
+        function attachRemoveQuestionHandlers() {
+            document.querySelectorAll('.remove-question').forEach(button => {
+                button.removeEventListener('click', handleRemoveQuestion);
+                button.addEventListener('click', handleRemoveQuestion);
+            });
+        }
+
+        function handleRemoveQuestion(event) {
+            const question = event.target.closest('.question');
+            question.remove();
+            updateQuestionLabels();
+        }
+
+        function attachTotalQuestionsHandlers(questionCounter) {
+            const totalQuestions = document.getElementById('total');
+            totalQuestions.innerText = questionCounter;
+        }
+
+        function updateQuestionLabels() {
+             const questions = document.querySelectorAll('.question');
+            questions.forEach((question, index) => {
+                question.querySelector('label').textContent = `Question ${index + 1}`;
+                const inputs = question.querySelectorAll('input');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        const updatedName = name.replace(/\d+/, index);
+                        input.setAttribute('name', updatedName);
+                    }
+                });
+            });
+            questionCounter = questions.length;
+
+        }
+
+        $("#importExcel").iziModal({
+            title: '<i class="fa-regular fa-file-excel"></i>  Import file from your computer',
+            fullscreen: false,
+            closeOnEscape: true,
+            overlayClose: false,
+            onOpening: function(modal) {
+                $("#importExcel").css({
+                    'background-color': '#f9f9f9',
+                    'border-radius': '10px',
+                    'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'
+                });
+
+                $("#importExcel .iziModal-header").css({
+                    'background-color': '#f89432',
+                    'color': 'white',
+                    'font-size': '40px'
+                });
+
+                $("#importExcel .iziModal-header-title").css({
+                    'font-size': '20px',
+                    'font-family': 'Poppins, Arial, sans-serif',
+                    'font-weight': '500'
+                });
+
+                $("#importExcel .iziModal-title").css({
+                    'font-size': '1.5em'
+                });
+
+                $("#importExcel .iziModal-content").css({
+                    'padding': '20px',
+                    'color': '#333'
+                });
+
+                $("#importExcel .iziModal-footer").css({
+                    'padding': '10px 20px',
+                    'border-bottom-left-radius': '10px',
+                    'border-bottom-right-radius': '10px',
+                    'text-align': 'right'
+                });
+
+                $("#importExcel .iziModal-button").css({
+                    'background-color': '#d58637',
+                    'color': 'white',
+                    'border': 'none',
+                    'padding': '10px 20px',
+                    'border-radius': '5px',
+                    'cursor': 'pointer'
+                }).hover(function() {
+                    $(this).css('background-color', '#d58637');
+                }, function() {
+                    $(this).css('background-color', '#d58637');
                 });
             }
+        });
+        $(document).on('click', '#importFile', function() {
+            $('#importExcel').iziModal('open');
+            $('.sticky-top').hide();
+        });
 
-            function handleRemoveQuestion(event) {
-                const question = event.target.closest('.question');
-                question.remove();
-                updateQuestionLabels();
-            }
+        $("#importExcel").on('closing', function () {
+            $('.sticky-top').show();
+        });
 
-            function updateQuestionLabels() {
-                const questions = document.querySelectorAll('.question');
-                questions.forEach((question, index) => {
-                    question.querySelector('label').textContent = `Question ${index + 1}`;
-                    const inputs = question.querySelectorAll('input');
-                    inputs.forEach(input => {
-                        const name = input.getAttribute('name');
-                        if (name) {
-                            const updatedName = name.replace(/\d+/, index);
-                            input.setAttribute('name', updatedName);
-                        }
-                    });
-                });
+        $(document).on('click', '#importFile', function() {
+            $('#importExcel').iziModal('open');
+        });
+
+
+        const importExcelButton = document.querySelector('.import-excel');
+
+        importExcelButton.addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                importQuestionsFromExcel(file);
             }
         });
 
 
-        function updateCorrectChoice(questionCount, index) {
-            const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
+        function importQuestionsFromExcel(file) {
+            const formData = new FormData();
+            formData.append('file', file);
 
-            radios.forEach(radio => {
-                const currentIndex = radio.value;
-                const hiddenInput = document.querySelector(`input[name='questions[${questionCount}].questionChoices[${currentIndex}].correctOrNot']`);
-
-                hiddenInput.value = (currentIndex == index) ? "true" : "false";
-            });
+            fetch('/Quizify/quiz-banks/import-excel', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Excel Import Response:", data);
+                    if (data.success) {
+                        populateQuestions(data.questions);
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Your work has been saved",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        alert('Failed to import questions: ' + data.message);
+                    }
+                    resetFileInput();
+                })
+                .catch(error => {
+                    console.error('Error importing questions:', error);
+                    alert('An error occurred while importing questions');
+                    resetFileInput();
+                });
         }
 
-    </script>
+        function populateQuestions(questions) {
+            const questionsSection = document.getElementById('questionsSection');
+            const existingQuestionsCount = questionsSection.querySelectorAll('.question').length;
+
+            questions.forEach((question, questionCount) => {
+                const adjustedQuestionCount = questionCount + existingQuestionsCount;
+                const newQuestionHtml = `
+                <div class="card mb-4 question">
+                    <div class="card-body">
+                        <label>Question ${adjustedQuestionCount + 1}</label>
+                        <input type="text" name="questions[${adjustedQuestionCount}].content" class="form-control mb-2" value="${question.content}" rows="1" oninput="autoResize(this)" required></input>
+                         <input type="file" name="questionImage" class="form-control mb-2">
+                        <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
+
+                        <div class="choices">
+                            ${question.questionChoices.map((choice, index) => `
+                                <div class="form-check">
+                                    <label class="w-100">
+                                        <input type="radio" name="questions[${adjustedQuestionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${adjustedQuestionCount}, ${index})" ${choice.correctOrNot ? 'checked' : ''} required>
+                                        <input type="hidden" name="questions[${adjustedQuestionCount}].questionChoices[${index}].correctOrNot" value="${choice.correctOrNot}">
+                                        <input type="text" name="questions[${adjustedQuestionCount}].questionChoices[${index}].content" class="form-control mb-2" value="${choice.content}" rows="1" oninput="autoResize(this)" required></input>
+                                    </label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+                questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
+                questionCounter++;
+            });
+
+            attachRemoveQuestionHandlers();
+        }
+
+        function resetFileInput() {
+            const fileInput = document.getElementById('fileInput');
+            fileInput.value = '';
+        }
+    });
+
+    function updateCorrectChoice(questionCount, index) {
+        const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
+
+        radios.forEach(radio => {
+            const currentIndex = radio.value;
+            const hiddenInput = document.querySelector(`input[name='questions[${questionCount}].questionChoices[${currentIndex}].correctOrNot']`);
+
+            hiddenInput.value = (currentIndex == index) ? "true" : "false";
+        });
+    }
+
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+    }
 
 
-    </div>
-
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         $('.js-example-basic-single').select2();
     });
-</script>
-<script>
-    $(document).ready(function() {
 
+    $(document).ready(function() {
         $('form').submit(function() {
             $('input[type="radio"]').attr('correctOrNot', 'true');
             $('input[type!="radio"]').attr('correctOrNot', 'false');
-
         });
-
     });
-    function handleRadioSelection(radioButton) {
-
-        var parentElement = radioButton.parentElement;
-
-        var radioButtons = parentElement.getElementsByTagName('input');
-
-        for (var i = 0; i < radioButtons.length; i++) {
-            if (radioButtons[i].type === 'radio') {
-                radioButtons[i].checked = false;
-            }
-        }
-
-        radioButton.checked = true;
-    }
-
 
 
 </script>
-
-<script th:src="@{/side/js/jquery.min.js}"></script>
 <script th:src="@{/side/js/popper.js}"></script>
 <script th:src="@{/side/js/bootstrap.min.js}"></script>
 <script th:src="@{/side/js/main.js}"></script>

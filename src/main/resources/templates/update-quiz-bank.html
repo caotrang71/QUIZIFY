@@ -1,15 +1,16 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Sidebar 01</title>
+    <title>Quizify</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" th:href="@{/side/css/style.css}">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
 
@@ -113,7 +114,7 @@
             <form th:action="@{/quiz-banks/saved}" th:object="${quizBank}" method="POST" id="quizBankForm">
                 <input type="hidden" th:field="*{id}">
                 Title: <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control mb-4 col-4" required>
-                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4" required>
+                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4">
                 Topic:
 
                 <select th:field="*{subcategory}" class="form-control mb-4 col-4 selectpicker" required>
@@ -137,7 +138,7 @@
                         <div class="card-body">
                             <label th:text="'Question ' + ${iterStat.index + 1}"></label>
                             <input type="text" th:field="*{questions[__${iterStat.index}__].content}" class="form-control mb-2" required>
-                            <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm remove-question mb-3" th:data-id="${iterStat.index}"><i class="fa fa-trash"></i></button>
                             <div class="choices">
                                 <div th:each="choice, choiceStat : ${entry.value}" class="form-check">
                                     <label>
@@ -152,9 +153,8 @@
                 </div>
                 <!-- Add Question Button -->
                 <button type="button" class="btn btn-sm btn-success add-question"><i class="fa fa-plus"></i> Add Question</button>
-                <button type="submit" class="btn btn-sm btn-success">Save</button>
+                <button type="submit" class="btn btn-sm btn-success save-button">Save</button>
             </form>
-
 
             <!-- Success and Error Messages -->
             <div th:if="${error}" class="alert alert-danger mt-4" id="errorAlert">
@@ -163,184 +163,143 @@
         </div>
 
         <!-- JavaScript to dynamically add new questions -->
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let formChanged = false;
                 const addQuestionButton = document.querySelector('.add-question');
+                const saveButton = document.querySelector('.save-button');
+                const quizBankForm = document.getElementById('quizBankForm');
                 const questionsSection = document.getElementById('questionsSection');
                 const errorAlert = document.getElementById('errorAlert');
 
                 addQuestionButton.addEventListener('click', function() {
-                const questionCount = questionsSection.querySelectorAll('.question').length;
-                if (errorAlert) {
-                errorAlert.style.display = 'none';
-            }
+                    formChanged = true;
+                    const questionCount = questionsSection.querySelectorAll('.question').length;
+                    if (errorAlert) {
+                        errorAlert.style.display = 'none';
+                    }
 
-                const newQuestionHtml = `
-                <div class="card mb-4 question">
-                    <div class="card-body">
-                        <label>Question ${questionCount + 1}</label>
-                        <input type="text" name="questions[${questionCount}].content" class="form-control mb-2" required>
-                        <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
-                        <div class="choices">
-                            ${[...Array(4)].map((_, index) => `
-                                <div class="form-check">
-                                    <label>
-                                        <input type="radio" name="questions[${questionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCount}, ${index})" required>
-                                        <input type="hidden" name="questions[${questionCount}].questionChoices[${index}].correctOrNot" value="false">
-                                        <input type="text" name="questions[${questionCount}].questionChoices[${index}].content" class="form-control mb-2" required>
-                                    </label>
+                    const newQuestionHtml = `
+                        <div class="card mb-4 question">
+                            <div class="card-body">
+                                <label>Question ${questionCount + 1}</label>
+                                <input type="text" name="questions[${questionCount}].content" class="form-control mb-2" required>
+                                <button type="button" class="btn btn-danger btn-sm remove-question mb-3" data-id="${questionCount}"><i class="fa fa-trash"></i></button>
+                                <div class="choices">
+                                    ${[...Array(4)].map((_, index) => `
+                                        <div class="form-check">
+                                            <label>
+                                                <input type="radio" name="questions[${questionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCount}, ${index})" required>
+                                                <input type="hidden" name="questions[${questionCount}].questionChoices[${index}].correctOrNot" value="false">
+                                                <input type="text" name="questions[${questionCount}].questionChoices[${index}].content" class="form-control mb-2" required>
+                                            </label>
+                                        </div>
+                                    `).join('')}
                                 </div>
-                            `).join('')}
+                            </div>
                         </div>
-                    </div>
-                </div>
-            `;
-                questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
-                attachRemoveQuestionHandlers();
-            });
+                    `;
+                    questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
                     attachRemoveQuestionHandlers();
+                });
 
+                attachRemoveQuestionHandlers();
 
-                    function attachRemoveQuestionHandlers() {
-                const removeButtons = document.querySelectorAll('.remove-question');
-                removeButtons.forEach(button => {
-                button.removeEventListener('click', handleRemoveQuestion);
-                button.addEventListener('click', handleRemoveQuestion);
-            });
-            }
+                function attachRemoveQuestionHandlers() {
+                    const removeButtons = document.querySelectorAll('.remove-question');
+                    removeButtons.forEach(button => {
+                        button.removeEventListener('click', handleRemoveQuestion);
+                        button.addEventListener('click', handleRemoveQuestion);
+                    });
+                }
 
                 function handleRemoveQuestion(event) {
-                const question = event.target.closest('.question');
-                question.remove();
-                updateQuestionLabels();
-            }
+                    formChanged = true;
+                    const question = event.target.closest('.question');
+                    const questionId = $(event.target).closest('.remove-question').data('id');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'This action cannot be undone!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            question.remove();
+                            updateQuestionLabels();
+                            Swal.fire('Deleted!', 'The question has been removed.', 'success');
+                        }
+                    });
+                }
 
                 function updateQuestionLabels() {
-                const questions = questionsSection.querySelectorAll('.question');
-                questions.forEach((question, index) => {
-                question.querySelector('label').textContent = `Question ${index + 1}`;
-                const inputs = question.querySelectorAll('input');
-                inputs.forEach(input => {
-                const name = input.getAttribute('name');
-                if (name) {
-                const updatedName = name.replace(/\d+/, index);
-                input.setAttribute('name', updatedName);
-            }
-            });
-            });
-            }
-            });
+                    const questions = questionsSection.querySelectorAll('.question');
+                    questions.forEach((question, index) => {
+                        question.querySelector('label').textContent = `Question ${index + 1}`;
+                        const inputs = question.querySelectorAll('input');
+                        inputs.forEach(input => {
+                            const name = input.getAttribute('name');
+                            if (name) {
+                                const updatedName = name.replace(/\d+/, index);
+                                input.setAttribute('name', updatedName);
+                            }
+                        });
+                    });
+                }
 
-                function updateCorrectChoice(questionCount, index) {
-                const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
-                radios.forEach(radio => {
-                const currentIndex = radio.value;
-                const hiddenInput = document.querySelector(`input[name='questions[${questionCount}].questionChoices[${currentIndex}].correctOrNot']`);
-                hiddenInput.value = (currentIndex == index) ? "true" : "false";
-            });
-            }
+                saveButton.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent the form from submitting immediately
+                    Swal.fire({
+                        title: "Do you want to save the changes?",
+                        showDenyButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: "Save",
+                        denyButtonText: "Don't save"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire("Saved!", "", "success");
+                            formChanged = false; // Reset the flag
+                            quizBankForm.submit(); // Submit the form if confirmed
+                        } else if (result.isDenied) {
+                            Swal.fire("Changes are not saved", "", "info");
+                        }
+                    });
+                });
 
+                // Listen for form changes to set the flag
+                quizBankForm.addEventListener('change', function() {
+                    formChanged = true;
+                });
 
-
-            </script>
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                $('form').submit(function () {
-                    $('input[type="radio"]').attr('correctOrNot', 'true');
-                    $('input[type!="radio"]').attr('correctOrNot', 'false');
+                // Handle beforeunload event to warn user about unsaved changes
+                window.addEventListener('beforeunload', function(event) {
+                    if (formChanged) {
+                        event.preventDefault();
+                        event.returnValue = '';
+                    }
                 });
             });
 
-            function handleRadioSelection(radioButton) {
-                // Get the parent element of the clicked radio button
-                var parentElement = radioButton.parentElement;
-
-                // Find all radio buttons within the parent element
-                var radioButtons = parentElement.getElementsByTagName('input');
-
-                // Uncheck all other radio buttons
-                for (var i = 0; i < radioButtons.length; i++) {
-                    if (radioButtons[i].type === 'radio') {
-                        radioButtons[i].checked = false;
-                    }
-                }
-
-                // Check the selected radio button
-                radioButton.checked = true;
+            function updateCorrectChoice(questionCount, index) {
+                const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
+                radios.forEach(radio => {
+                    const currentIndex = radio.value;
+                    const hiddenInput = document.querySelector(`input[name='questions[${questionCount}].questionChoices[${currentIndex}].correctOrNot']`);
+                    hiddenInput.value = (currentIndex == index) ? "true" : "false";
+                });
             }
-
         </script>
 
-
+        <script th:src="@{/side/js/popper.js}"></script>
+        <script th:src="@{/side/js/bootstrap.min.js}"></script>
+        <script th:src="@{/side/js/main.js}"></script>
     </div>
 </div>
 
-<script th:src="@{/side/js/jquery.min.js}"></script>
-<script th:src="@{/side/js/popper.js}"></script>
-<script th:src="@{/side/js/bootstrap.min.js}"></script>
-<script th:src="@{/side/js/main.js}"></script>
 </body>
 </html>
-
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
-
-<!--<head>-->
-<!--    <meta charset="ISO-8859-1">-->
-<!--    <title>Quizify</title>-->
-
-<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">-->
-<!--    <script>-->
-<!--        // Function to format the current date and time-->
-<!--        function getCurrentDateTime() {-->
-<!--            const now = new Date();-->
-<!--            return now.toISOString().slice(0, 16); // Format as 'YYYY-MM-DDTHH:MM'-->
-<!--        }-->
-
-<!--        // Set the current date and time in the modifiedAt field-->
-<!--        window.onload = function() {-->
-<!--            document.getElementById('modifiedAt').value = getCurrentDateTime();-->
-<!--        }-->
-<!--    </script>-->
-<!--</head>-->
-
-<!--<body>-->
-<!--<div class="container">-->
-<!--    <h1>Quizify</h1>-->
-<!--    <hr>-->
-<!--    <h2>Update Quiz Bank</h2>-->
-<!--    <form action="#" th:action="@{/quiz-banks/saved}" th:object="${quizBank}" method="POST">-->
-
-<!--        &lt;!&ndash; Add hidden form field to handle update &ndash;&gt;-->
-<!--        <input type="hidden" th:field="*{id}" />-->
-
-<!--        <input type="text" th:field="*{bankName}" class="form-control mb-4 col-4">-->
-
-<!--        <input type="text" th:field="*{description}" class="form-control mb-4 col-4">-->
-
-<!--        <input type="hidden" th:field="*{createdAt}" />-->
-
-<!--        <input type="hidden" id="modifiedAt" th:field="*{modifiedAt}">-->
-
-<!--        <input type="hidden" th:field="*{editable}" />-->
-
-<!--        <input type="hidden" th:field="*{createdBy}" />-->
-
-
-<!--        <input type="hidden" th:field="*{subcategory}" />-->
-
-<!--&lt;!&ndash;        <input type="text" th:field="*{email}" class="form-control mb-4 col-4">&ndash;&gt;-->
-
-<!--        <button type="submit" class="btn btn-info col-2"> Update Quiz Bank</button>-->
-<!--    </form>-->
-
-<!--    <hr>-->
-
-<!--    <a th:href="@{/quiz-banks/quiz-banks-list}"> Back to Quiz Banh List</a>-->
-<!--</div>-->
-<!--</body>-->
-
-<!--</html>-->

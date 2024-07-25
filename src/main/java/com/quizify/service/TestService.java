@@ -5,6 +5,7 @@ import com.quizify.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -65,7 +66,7 @@ public class TestService {
         if (timeLimit != null) {
             test.setTimeLimit((int) timeLimit);
         }
-        System.out.println("shuffleChoices: "+shuffleChoices);
+        System.out.println("shuffleChoices: "+ shuffleChoices);
         try {
             for (Question question : selectedQuestions) {
                 List<QuestionChoice> choices = new ArrayList<>(question.getQuestionChoices());
@@ -90,6 +91,14 @@ public class TestService {
         }
         System.out.println("Time Limit: " + test.getTimeLimit());
 
+        List<TestHistory> history = testHistoryRepository.getTestHistoriesByTest(test);
+        System.out.print("Thu tu dap an: ");
+        for(TestHistory historyItem : history) {
+            for(QuestionChoice questionChoice : historyItem.getQuestion().getQuestionChoices()) {
+                System.out.println(questionChoice.getId());
+            }
+
+        }
         return test;
     }
 
@@ -138,8 +147,8 @@ public class TestService {
         List<TestHistory> testHistories = test.getTestHistories();
         for (int i = 0; i < testHistories.size(); i++) {
             TestHistory history = testHistories.get(i);
-            Long selectedChoiceId = selectedChoiceIds.get(i);
-            QuestionChoice selectedChoice = questionChoiceRepository.findById(selectedChoiceId).orElse(null);
+            Long selectedChoiceId = i < selectedChoiceIds.size() ? selectedChoiceIds.get(i) : null;
+            QuestionChoice selectedChoice = selectedChoiceId != null ? questionChoiceRepository.findById(selectedChoiceId).orElse(null) : null;
 
             if (selectedChoice != null && selectedChoice.getCorrectOrNot()) {
                 correctAnswers++;
@@ -152,14 +161,14 @@ public class TestService {
         test.setResult(correctAnswers);
         test.setEndedAt(LocalDateTime.now());
 
-        // Calculate total time taken
         if (test.getTimeLimit() != null) {
-            long timeTaken = java.time.Duration.between(test.getStartedAt(), test.getEndedAt()).getSeconds();
+            long timeTaken = Duration.between(test.getStartedAt(), test.getEndedAt()).getSeconds();
             test.setTimeTaken((int) timeTaken);
         }
 
         return testRepository.save(test);
     }
+
 
 
     public void markTestInProgress(Long testId) throws Exception {

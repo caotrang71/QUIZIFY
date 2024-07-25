@@ -1,0 +1,104 @@
+/*body {*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+.container {
+    margin-top: 50px;
+    /*background: white;*/
+    padding: 30px;
+    /*border-radius: 8px;*/
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+}
+div.card{
+    font-size: 1rem;
+}
+div.card-title{
+    font-size: 1rem;
+}
+h1 {
+    margin-bottom: 10px;
+    font-size: 2rem;
+    color: #343a40;
+}
+.quiz-bank-name {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 30px;
+}
+.question {
+    margin-bottom: 20px;
+    scroll-margin-top: 80px;
+}
+.choice {
+    margin-left: 20px;
+}
+.timer {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff0000;
+}
+.choice {
+    display: block;
+    cursor: pointer;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+.choice:hover {
+    background-color: #f8b739;
+}
+.choice input[type="radio"] {
+    display: none;
+}
+.choice.active {
+    background-color: #e9ecef;
+    border-color: #007bff;
+}
+.card-container {
+    max-width: 800px;
+    margin: auto;
+}
+.navbar {
+    background-color: #343a40;
+    padding: 1rem 1.5rem;
+}
+.navbar-brand {
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+.navbar-nav .nav-link {
+    color: #ffffff;
+    font-size: 1rem;
+}
+.sidebar {
+    position: fixed;
+    top: 70px; /* Adjust this if you have a different navbar height */
+    /*left: 0;*/
+    text-align: center;
+    width: 200px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+    margin-top: 8px;
+}
+.content {
+    margin-left: 220px;
+}
+.sidebar a {
+    display: block;
+    padding: 10px;
+    color: #000;
+    text-decoration: none;
+}
+.sidebar a:hover {
+    background-color: #ddd;
+}
+.timerLeft {
+    color: #343a40;
+}
+.sidebar h5 {
+    margin-top: 8px;
+}

@@ -1,0 +1,40 @@
+/*.fileInputField.row {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    margin: 20px 0;*/
+/*    background-color: #f8f9fa;*/
+/*    padding: 10px;*/
+/*    border-radius: 8px;*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+/*}*/
+/*.fileInputField.col-sm-2 {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    background-color: #e9ecef;*/
+/*    border: 2px dashed #6c757d;*/
+/*    border-radius: 8px;*/
+/*    padding: 10px;*/
+/*}*/
+/*.fileInputField.fa-file-image {*/
+/*    font-size: 24px;*/
+/*    color: #6c757d;*/
+/*}*/
+/*.fileInputField.col-sm-10 {*/
+/*    padding-left: 15px;*/
+/*}*/
+/*.fileInputField.form-control {*/
+/*    width: 100%;*/
+/*    padding: 10px;*/
+/*    border: 1px solid #ced4da;*/
+/*    border-radius: 4px;*/
+/*    transition: border-color 0.3s;*/
+/*}*/
+/*.fileInputField.form-control:focus {*/
+/*    border-color: #80bdff;*/
+/*    outline: none;*/
+/*    box-shadow: 0 0 5px rgba(128, 189, 255, 0.5);*/
+/*}*/
+/*label.row {*/
+/*    cursor: pointer;*/
+/*}*/

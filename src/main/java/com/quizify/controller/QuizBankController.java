@@ -9,11 +9,14 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 public class QuizBankController {
     @Autowired
     private QuizBankService quizBankService;
+    @Autowired
+    private FileStorageService fileStorageService;
     @Autowired
     private SubcategoryService subcategoryService;
     @Autowired
@@ -47,6 +52,8 @@ public class QuizBankController {
     private UserService userService;
     @Autowired
     private QuizBankRepository quizBankRepository;
+    @Autowired
+    private ExcelService excelService;
 
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
@@ -61,7 +68,7 @@ public class QuizBankController {
     }
 
     @GetMapping("/quiz-bank-detail/{id}")
-    public String getDetailQuizBank(@PathVariable(value="id") long id, Model model, HttpSession session){
+    public String getDetailQuizBank(@PathVariable(value="id") long id, Model model,  HttpSession session){
         QuizBank quizBank = quizBankService.getQuizBankById(id);
         List<Question> questions = questionService.getQuestionsByQuizBank(quizBank);
         Map<Question, List<QuestionChoice>> questionChoicesMap = new HashMap<>();
@@ -69,6 +76,8 @@ public class QuizBankController {
             List<QuestionChoice> questionChoices = questionChoiceService.getQuestionChoiceByQuestion(question);
             questionChoicesMap.put(question, questionChoices);
         }
+        System.out.println("Số câu hỏi: "+questionChoicesMap.size());
+        model.addAttribute("totalQuestions", questionChoicesMap.size());
         //view star voted
         User user = (User) session.getAttribute("user");
         if (user!=null){
@@ -99,8 +108,31 @@ public class QuizBankController {
         return "create-quiz-bank";
     }
 
+    @PostMapping("/import-excel")
+    public ResponseEntity<?> importExcel(@RequestParam("file") MultipartFile file) {
+        try {
+            List<Question> questions = excelService.parseExcelFile(file);
+            Map<String, Object> response = new HashMap<>();
+            for (Question question : questions) {
+                System.out.println("Controller: Added question: " + question.getContent() + " with choices: " + question.getQuestionChoices().size());
+            }
+            response.put("success", true);
+            response.put("questions", questions);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+
     @PostMapping("/created")
-    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result, Model model) {
+    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result,
+                                 @RequestParam("questionImage") List<MultipartFile> questionImages,
+                                 Model model, HttpSession session) {
         if (result.hasErrors()) {
             return "create-quiz-bank";
         }
@@ -110,20 +142,39 @@ public class QuizBankController {
             return "create-quiz-bank";
         }
 
-        for (Question question : quizBank.getQuestions()) {
-//            if (question.getQuestionChoices() == null || question.getQuestionChoices().size() != 4) {
-//                model.addAttribute("error", "Each question must have exactly 4 choices.");
-//                return "create-quiz-bank";
-//            }
+        boolean tontai = true;
+
+        if(questionImages != null && !questionImages.isEmpty()) {
+            tontai = true;
+        }
+        System.out.println("File anh ton tai " + tontai);
+
+        for (int i = 0; i < quizBank.getQuestions().size(); i++) {
+            Question question = quizBank.getQuestions().get(i);
+            MultipartFile imageFile = questionImages.get(i);
+
+            if (!imageFile.isEmpty()) {
+                try {
+                    String fileName = fileStorageService.storeFile(imageFile);
+                    question.setImage(fileName);
+                } catch (RuntimeException e) {
+                    model.addAttribute("error", "File upload failed: " + e.getMessage());
+                    return "create-quiz-bank";
+                }
+            }
+
             for (QuestionChoice choice : question.getQuestionChoices()) {
-                System.out.println(choice.getCorrectOrNot());
                 choice.setQuestion(question);
             }
         }
+//
+        // infomation user
+        User user = (User) session.getAttribute("user");
+        QuizBank newQuizBank = quizBankService.createQuizBank(quizBank, user);
 
-        quizBankService.createQuizBank(quizBank);
 
         model.addAttribute("success", true);
+//        return "redirect:/quiz-banks/quiz-bank-detail/" + newQuizBank.getId();
         return "redirect:/quiz-banks/quiz-banks-list";
     }
 
@@ -147,7 +198,7 @@ public class QuizBankController {
         }).collect(Collectors.toList());
     }
 
-    //form to update quiz bank
+
     @GetMapping("/update-quiz-bank/{id}")
     public String updateQuizBank(@PathVariable(value="id") long id, Model model) {
         QuizBank quizBank = quizBankService.getQuizBankById(id);
@@ -163,7 +214,7 @@ public class QuizBankController {
         return "update-quiz-bank";
     }
 
-    //back to list after saved updating successfully
+
     @PostMapping("/saved")
     public String saveQuizBank(@ModelAttribute("quizBank") QuizBank quizBank, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -174,10 +225,6 @@ public class QuizBankController {
             return "update-quiz-bank";
         }
         for (Question question : quizBank.getQuestions()) {
-//            if (question.getQuestionChoices() == null || question.getQuestionChoices().size() != 4) {
-//                model.addAttribute("error", "Each question must have exactly 4 choices.");
-//                return "update-quiz-bank";
-//            }
             question.setId(null);
             for (QuestionChoice choice : question.getQuestionChoices()) {
                 choice.setId(null);
@@ -189,7 +236,7 @@ public class QuizBankController {
         quizBankService.updateQuizBank(quizBank);
 
         model.addAttribute("success", true);
-        return "redirect:/quiz-banks/quiz-banks-list";
+        return "redirect:/quiz-banks/quiz-bank-detail/"+quizBank.getId();
     }
 
 

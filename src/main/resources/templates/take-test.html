@@ -3,103 +3,175 @@
 <head>
     <title>Take Test</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .container {
-            margin-top: 50px;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            margin-bottom: 10px;
-            font-size: 2rem;
-            color: #343a40;
-        }
-        .quiz-bank-name {
-            font-size: 0.875rem;
-            color: #6c757d;
-            margin-bottom: 30px;
-        }
-        .question {
-            margin-bottom: 20px;
-        }
-        .choice {
-            margin-left: 20px;
-        }
-        .timer {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ff0000;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/side/css/take-test.css}">
+    <link rel="stylesheet" th:href="@{/css/homepage/styles.css}">
+    <link rel="stylesheet" th:href="@{/side/css/style.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
-<div class="container">
-    <h1>Take Test</h1>
-    <p class="quiz-bank-name" th:text="${test.quizBank.bankName}"></p>
-    <form th:action="@{/tests/submit}" method="post">
-        <input type="hidden" name="testId" th:value="${test.id}"/>
-        <div th:if="${test.timeLimit > 0}" class="mb-3">
-            <p class="timer" id="timer"></p>
-        </div>
-        <div th:each="history : ${test.testHistories}" class="question">
-            <p th:text="${history.question.content}" class="font-weight-bold"></p>
-            <div th:each="choice, iterStat : ${history.shuffledChoices}" class="form-check choice">
-                <input type="radio" class="form-check-input" th:name="${'question-' + history.question.id}"
-                       th:value="${choice.id}" th:checked="${choice.id == history.questionChoice?.id}"
-                       th:onclick="|handleChoiceSelection(${history.question.id}, ${choice.id})|"/>
-                <label class="form-check-label">
-                    <span th:text="${choice.content}"></span>
-                </label><br/>
+<nav class="navbar navbar-light bg-light fixed-top mb-0 p-0">
+    <div class="container-fluid m-0 p-0">
+        <div class="row no-gutters w-100 pt-2 pl-2 pr-2">
+            <div class="col-sm-4 text-left d-flex align-items-center font-weight-bold">
+                <span><i class="fas fa-chalkboard-teacher"></i></span> <a class="navbar-brand ml-1" th:href="@{'/quiz-banks/quiz-bank-detail/' + ${test.quizBank.id}}" th:text="' ' + ${test.quizBank.bankName}"></a>
+            </div>
+            <div class="col-sm-4 text-center p-0">
+                <p th:if="test" class="p-0 m-0 font-weight-bold" style="font-size: 20px">
+                    <span id="selectedQuestionsCount">0</span> / <span th:text="${test.testHistories.size()}"></span>
+                </p>
+                <div th:if="${test.timeLimit > 0}" class="nav-item border">
+                    <p class="nav-link timer m-0 p-0" id="timer">
+                        <span class="timerLeft">Time Left: </span><span id="timeDisplay"></span>
+                    </p>
+                </div>
+
+            </div>
+            <div class="col-sm-4 d-flex align-items-center justify-content-end font-weight-bold">
+
+                <form id="exitForm" th:action="@{/tests/exit}" method="post" style="display: inline;">
+                    <input type="hidden" name="testId" th:value="${test.id}"/>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('exitForm').submit();">
+                        <i class="fas fa-sign-out-alt"></i> Exit
+                    </button>
+                </form>
             </div>
         </div>
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Submit</button>
+        <div class="row no-gutters w-100 mt-2 p-0 m-0">
+            <div class="col-12 p-0">
+                <div class="progress" style="height: 5px; width: 100%;">
+                    <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%; background-color: #f8b739;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="sidebar">
+    <h5 th:text="${test.title}" class="border">Questions List</h5>
+    <ul class="list-group">
+        <li th:each="history, iterStats : ${test.testHistories}" class="list-group-item">
+            <a href="#" th:href="'#question-' + ${iterStats.index}">Q<span th:text="${iterStats.index + 1}"></span></a>
+        </li>
+    </ul>
+</div>
+
+<div class="container d-flex justify-content-center align-items-center" style="margin-top: 70px;"> <!-- Added margin-top to avoid overlap with fixed navbar -->
+    <form th:action="@{/tests/submit}" method="post" id="submitTest" class="w-100">
+        <input type="hidden" name="testId" th:value="${test.id}"/>
+        <div th:each="history, iterStats : ${test.testHistories}" class="question mt-4 card-container" th:id="'question-' + ${iterStats.index}">
+            <div class="card">
+                <div class="card-body pr-5">
+                    <div class="card-title">
+                        <span th:text="'Q' + (${iterStats.index} + 1) + '. ' + ${history.question.content}" class="font-weight-bold"></span>
+                        <div th:if="${history.question.image != null && history.question.image != ''}">
+                            <img class="h-25 w-25 pt-3" th:src="@{'/images/uploads/' + ${history.question.image}}" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div th:each="choice, iter : ${history.shuffledChoices}" class="col-6 mb-2">
+                            <label class="choice w-100" th:classappend="${choice.id == history.questionChoice?.id} ? ' active'">
+                                <input type="radio" class="form-check-input" th:name="'question-' + ${history.question.id}"
+                                       th:value="${choice.id}" th:checked="${choice.id == history.questionChoice?.id}"
+                                       th:onclick="|handleChoiceSelection(${history.question.id}, ${choice.id})|"/>
+                                <span th:text="${choice.content}"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 text-center">
+            <button type="button" class="btn btn-primary" onclick="showConfirmationAlert()"><i class="fas fa-check"></i> Submit</button>
         </div>
     </form>
-
-    <form id="exitForm" th:action="@{/tests/exit}" method="post" style="display: none;">
-        <input type="hidden" name="testId" th:value="${test.id}"/>
-    </form>
-
-    <div class="mt-2">
-        <button type="button" class="btn btn-secondary" onclick="document.getElementById('exitForm').submit();">
-            <i class="fas fa-sign-out-alt"></i> Exit
-        </button>
-    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
+    function showConfirmationAlert() {
+        Swal.fire({
+            title: "Are you sure you want to submit?",
+            text: "Please confirm to submit your answers.",
+            width: 600,
+            padding: "3em",
+            color: "#716add",
+            background: "#fff url(/images/trees.png)",
+            backdrop: `
+                rgba(0,0,123,0.4)
+                url("/images/nyan-cat.gif")
+                left top
+                no-repeat
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('submitTest').submit();
+            }
+        });
+    }
+
     function saveChoiceToLocalStorage(questionId, choiceId) {
         const testId = document.querySelector('input[name="testId"]').value;
         let choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
         choices[questionId] = choiceId;
         localStorage.setItem(`testChoices-${testId}`, JSON.stringify(choices));
+        updateProgressBar();
+        updateSelectedQuestionsCount();
     }
 
     function loadChoicesFromLocalStorage() {
         const testId = document.querySelector('input[name="testId"]').value;
+        if (!localStorage.getItem(`initialized-${testId}`)) {
+            localStorage.clear();  // Clear localStorage if it's a new test initialization
+            localStorage.setItem(`initialized-${testId}`, true);
+        }
         const choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
         for (const questionId in choices) {
             const choiceId = choices[questionId];
             const input = document.querySelector(`input[name="question-${questionId}"][value="${choiceId}"]`);
             if (input) {
                 input.checked = true;
+                input.closest('.choice').classList.add('active');
             }
         }
+        updateProgressBar();
+        updateSelectedQuestionsCount();
     }
 
     function handleChoiceSelection(questionId, choiceId) {
         saveChoiceToLocalStorage(questionId, choiceId);
+        document.querySelectorAll(`input[name="question-${questionId}"]`).forEach(input => {
+            input.closest('.choice').classList.remove('active');
+        });
+        document.querySelector(`input[name="question-${questionId}"][value="${choiceId}"]`).closest('.choice').classList.add('active');
+    }
+
+    function updateProgressBar() {
+        const testId = document.querySelector('input[name="testId"]').value;
+        const choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
+        const totalQuestions = /*[[${test.testHistories.size()}]]*/;
+        const answeredQuestions = Object.keys(choices).length;
+        const progress = (answeredQuestions / totalQuestions) * 100;
+        const progressBar = document.getElementById('progressBar');
+
+        progressBar.style.width = `${progress}%`;
+        progressBar.setAttribute('aria-valuenow', progress);
+    }
+
+    function updateSelectedQuestionsCount() {
+        const testId = document.querySelector('input[name="testId"]').value;
+        const choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
+        const answeredQuestions = Object.keys(choices).length;
+        document.getElementById('selectedQuestionsCount').textContent = answeredQuestions;
     }
 
     function startTimer(duration, display) {
@@ -112,11 +184,9 @@
             seconds = seconds < 10 ? "0" + seconds : seconds;
 
             display.textContent = minutes + ":" + seconds;
-
             if (--timer < 0) {
                 clearInterval(intervalId);
-                // Submit the form when the timer runs out
-                document.querySelector('form[th\\:action="@{/tests/submit}"]').submit();
+                document.getElementById('submitTest').submit();
             }
 
             // Store the remaining time every second
@@ -125,13 +195,15 @@
     }
 
     window.onload = function () {
+        console.log('Window loaded');
         loadChoicesFromLocalStorage();
 
         const testId = document.querySelector('input[name="testId"]').value;
+        console.log('Test ID:', testId);
         const timeLimit = /*[[${test.timeLimit}]]*/;
-        console.log("Time Limit: " + timeLimit); // Debug line
+        console.log('Time Limit:', timeLimit);
         if (timeLimit > 0) {
-            const display = document.querySelector('#timer');
+            const display = document.querySelector('#timeDisplay');
             const storedTimeLeft = localStorage.getItem(`timeLeft-${testId}`);
             if (storedTimeLeft && storedTimeLeft > 0) {
                 startTimer(parseInt(storedTimeLeft), display);
@@ -143,12 +215,26 @@
     };
 
     window.onbeforeunload = function () {
+     //   localStorage.removeItem(`initialized-${document.querySelector('input[name="testId"]').value}`);
         const testId = document.querySelector('input[name="testId"]').value;
-        const timerDisplay = document.querySelector('#timer').textContent.split(':');
+        const timerDisplay = document.querySelector('#timeDisplay').textContent.split(':');
         const timeLeft = parseInt(timerDisplay[0]) * 60 + parseInt(timerDisplay[1]);
         localStorage.setItem(`timeLeft-${testId}`, timeLeft);
     };
+
+    document.querySelectorAll('.sidebar a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            console.log('click');
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
     /*]]>*/
 </script>
+
 </body>
 </html>
