@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Take Test</title>
+    <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/side/css/take-test.css}">
@@ -16,9 +17,14 @@
 <body>
 <nav class="navbar navbar-light bg-light fixed-top mb-0 p-0">
     <div class="container-fluid m-0 p-0">
-        <div class="row no-gutters w-100 pt-2 pl-2 pr-2">
-            <div class="col-sm-4 text-left d-flex align-items-center font-weight-bold">
-                <span><i class="fas fa-chalkboard-teacher"></i></span> <a class="navbar-brand ml-1" th:href="@{'/quiz-banks/quiz-bank-detail/' + ${test.quizBank.id}}" th:text="' ' + ${test.quizBank.bankName}"></a>
+        <div class="row no-gutters w-100 pt-2 pl-2 pr-2 mb-2">
+            <div class="col-sm-4 d-flex align-items-center justify-content-start font-weight-bold ">
+
+                <a class="navbar-brand d-flex justify-content-between align-items-center w-50 ml-2 bankName" th:href="@{'/quiz-banks/quiz-bank-detail/' + ${test.quizBank.id}}" >
+                    <span><i class="fas fa-chalkboard-teacher"></i></span>
+                    <span th:text="' ' + ${test.quizBank.bankName}"></span>
+                    <span><i class="fa-solid fa-caret-right"></i></span>
+                </a>
             </div>
             <div class="col-sm-4 text-center p-0">
                 <p th:if="test" class="p-0 m-0 font-weight-bold" style="font-size: 20px">
@@ -41,7 +47,7 @@
                 </form>
             </div>
         </div>
-        <div class="row no-gutters w-100 mt-2 p-0 m-0">
+        <div class="row no-gutters w-100 p-0 m-0">
             <div class="col-12 p-0">
                 <div class="progress" style="height: 5px; width: 100%;">
                     <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%; background-color: #f8b739;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
@@ -51,44 +57,52 @@
     </div>
 </nav>
 
-<div class="sidebar">
-    <h5 th:text="${test.title}" class="border">Questions List</h5>
-    <ul class="list-group">
-        <li th:each="history, iterStats : ${test.testHistories}" class="list-group-item">
-            <a href="#" th:href="'#question-' + ${iterStats.index}">Q<span th:text="${iterStats.index + 1}"></span></a>
-        </li>
-    </ul>
-</div>
+<div class="wrapper d-flex align-items-stretch">
+    <div class="sidebar">
+        <h5 th:text="${test.title}" class="border">Questions List</h5>
+        <ul class="list-group">
+            <li th:each="history, iterStats : ${test.testHistories}" class="list-group-item" >
+                <a href="#" th:href="'#question-' + ${iterStats.index}" class="border" th:id="'questionItem-' + ${history.question.id}"><span th:text="'Q' + (${iterStats.index} + 1)"></span></a>
+            </li>
+            <li>
+                <p>
+                    Copyright © 2024 Quizify. All Rights Reserved.
+                </p>
+            </li>
+        </ul>
+    </div>
 
-<div class="container d-flex justify-content-center align-items-center" style="margin-top: 70px;"> <!-- Added margin-top to avoid overlap with fixed navbar -->
-    <form th:action="@{/tests/submit}" method="post" id="submitTest" class="w-100">
-        <input type="hidden" name="testId" th:value="${test.id}"/>
-        <div th:each="history, iterStats : ${test.testHistories}" class="question mt-4 card-container" th:id="'question-' + ${iterStats.index}">
-            <div class="card">
-                <div class="card-body pr-5">
-                    <div class="card-title">
-                        <span th:text="'Q' + (${iterStats.index} + 1) + '. ' + ${history.question.content}" class="font-weight-bold"></span>
-                        <div th:if="${history.question.image != null && history.question.image != ''}">
-                            <img class="h-25 w-25 pt-3" th:src="@{'/images/uploads/' + ${history.question.image}}" />
+    <div class="container d-flex justify-content-center align-items-center" style="margin-top: 70px;"> <!-- Added margin-top to avoid overlap with fixed navbar -->
+        <form th:action="@{/tests/submit}" method="post" id="submitTest" class="w-100">
+            <input type="hidden" name="testId" th:value="${test.id}"/>
+            <input type="hidden" name="elapsedTime" id="elapsedTimeInput" />
+            <div th:each="history, iterStats : ${test.testHistories}" class="question mt-4 card-container" th:id="'question-' + ${iterStats.index}">
+                <div class="card">
+                    <div class="card-body pr-5">
+                        <div class="card-title">
+                            <span th:text="'Q' + (${iterStats.index} + 1) + '. ' + ${history.question.content}" class="font-weight-bold"></span>
+                            <div th:if="${history.question.image != null && history.question.image != ''}">
+                                <img class="h-25 w-25 pt-3" th:src="@{'/images/uploads/' + ${history.question.image}}" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div th:each="choice, iter : ${history.shuffledChoices}" class="col-6 mb-2">
-                            <label class="choice w-100" th:classappend="${choice.id == history.questionChoice?.id} ? ' active'">
-                                <input type="radio" class="form-check-input" th:name="'question-' + ${history.question.id}"
-                                       th:value="${choice.id}" th:checked="${choice.id == history.questionChoice?.id}"
-                                       th:onclick="|handleChoiceSelection(${history.question.id}, ${choice.id})|"/>
-                                <span th:text="${choice.content}"></span>
-                            </label>
+                        <div class="row">
+                            <div th:each="choice, iter : ${history.shuffledChoices}" class="d-flex col-6 mb-2">
+                                <label class="choice w-100" th:classappend="${choice.id == history.questionChoice?.id} ? ' active'">
+                                    <input type="radio" class="form-check-input" th:name="'question-' + ${history.question.id}"
+                                           th:value="${choice.id}" th:checked="${choice.id == history.questionChoice?.id}"
+                                           th:onclick="|handleChoiceSelection(${history.question.id}, ${choice.id})|"/>
+                                    <span th:text="${choice.content}"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="mt-4 text-center">
-            <button type="button" class="btn btn-primary" onclick="showConfirmationAlert()"><i class="fas fa-check"></i> Submit</button>
-        </div>
-    </form>
+            <div class="mt-4 text-center">
+                <button type="button" class="btn btn-primary" onclick="showConfirmationAlert()"><i class="fas fa-check"></i> Submit</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -114,8 +128,31 @@
             cancelButtonText: 'Cancel',
         }).then((result) => {
             if (result.isConfirmed) {
+                document.getElementById('elapsedTimeInput').value = elapsedTime;
                 document.getElementById('submitTest').submit();
             }
+        });
+    }
+
+    function showTimeUpAlert() {
+        Swal.fire({
+            title: "Time is up!",
+            text: "The test will now be submitted.",
+            width: 600,
+            padding: "3em",
+            color: "#716add",
+            background: "#fff url(/images/trees.png)",
+            backdrop: `
+                rgba(0,0,123,0.4)
+                url("/images/nyan-cat.gif")
+                left top
+                no-repeat
+            `,
+            showCancelButton: false,
+            confirmButtonText: 'OK'
+        }).then(() => {
+            document.getElementById('elapsedTimeInput').value = elapsedTime;
+            document.getElementById('submitTest').submit();
         });
     }
 
@@ -141,6 +178,7 @@
             if (input) {
                 input.checked = true;
                 input.closest('.choice').classList.add('active');
+                updateSidebarItem(questionId); // Update sidebar item styling
             }
         }
         updateProgressBar();
@@ -148,11 +186,39 @@
     }
 
     function handleChoiceSelection(questionId, choiceId) {
-        saveChoiceToLocalStorage(questionId, choiceId);
-        document.querySelectorAll(`input[name="question-${questionId}"]`).forEach(input => {
+        const input = document.querySelector(`input[name="question-${questionId}"][value="${choiceId}"]`);
+        const isActive = input.closest('.choice').classList.contains('active');
+
+        // If already active, deselect it
+        if (isActive) {
+            input.checked = false;
             input.closest('.choice').classList.remove('active');
-        });
-        document.querySelector(`input[name="question-${questionId}"][value="${choiceId}"]`).closest('.choice').classList.add('active');
+            saveChoiceToLocalStorage(questionId, null); // Update local storage to reflect deselection
+        } else {
+            // Otherwise, select the choice
+            saveChoiceToLocalStorage(questionId, choiceId);
+            document.querySelectorAll(`input[name="question-${questionId}"]`).forEach(input => {
+                input.closest('.choice').classList.remove('active');
+            });
+            input.closest('.choice').classList.add('active');
+        }
+
+        updateProgressBar(); // Update progress bar after selection/deselection
+        updateSelectedQuestionsCount(); // Update selected questions count after selection/deselection
+        updateSidebarItem(questionId); // Update sidebar item styling
+    }
+
+    function saveChoiceToLocalStorage(questionId, choiceId) {
+        const testId = document.querySelector('input[name="testId"]').value;
+        let choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
+
+        if (choiceId === null) {
+            delete choices[questionId]; // Remove the choice from local storage if deselected
+        } else {
+            choices[questionId] = choiceId; // Otherwise, save the choice
+        }
+
+        localStorage.setItem(`testChoices-${testId}`, JSON.stringify(choices));
     }
 
     function updateProgressBar() {
@@ -167,12 +233,28 @@
         progressBar.setAttribute('aria-valuenow', progress);
     }
 
+    function updateSidebarItem(questionId) {
+        const sidebarItem = document.getElementById(`questionItem-${questionId}`);
+        if (sidebarItem) {
+            const testId = document.querySelector('input[name="testId"]').value;
+            const choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
+            const isSelected = choices.hasOwnProperty(questionId);
+
+            if (isSelected) {
+                sidebarItem.classList.add('selected');
+            } else {
+                sidebarItem.classList.remove('selected');
+            }
+        }
+    }
+
     function updateSelectedQuestionsCount() {
         const testId = document.querySelector('input[name="testId"]').value;
         const choices = JSON.parse(localStorage.getItem(`testChoices-${testId}`)) || {};
         const answeredQuestions = Object.keys(choices).length;
         document.getElementById('selectedQuestionsCount').textContent = answeredQuestions;
     }
+
 
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
@@ -186,12 +268,33 @@
             display.textContent = minutes + ":" + seconds;
             if (--timer < 0) {
                 clearInterval(intervalId);
-                document.getElementById('submitTest').submit();
+                showTimeUpAlert();
+                // document.getElementById('elapsedTimeInput').value = elapsedTime;
+                // document.getElementById('submitTest').submit();
             }
 
             // Store the remaining time every second
             localStorage.setItem('timeLeft', timer);
         }, 1000);
+    }
+
+    let startTime;
+    let elapsedTime = 0;
+
+    function initializeElapsedTime() {
+        startTime = Date.now();
+        const storedElapsedTime = localStorage.getItem('elapsedTime');
+        if (storedElapsedTime) {
+            elapsedTime = parseInt(storedElapsedTime);
+        }
+        setInterval(updateElapsedTime, 1000);
+    }
+
+    function updateElapsedTime() {
+        const currentTime = Date.now();
+        elapsedTime += (currentTime - startTime);
+        localStorage.setItem('elapsedTime', elapsedTime);
+        startTime = currentTime;
     }
 
     window.onload = function () {
@@ -212,14 +315,16 @@
                 localStorage.setItem(`timeLeft-${testId}`, timeLimit * 60);
             }
         }
+        initializeElapsedTime();
     };
 
     window.onbeforeunload = function () {
-     //   localStorage.removeItem(`initialized-${document.querySelector('input[name="testId"]').value}`);
         const testId = document.querySelector('input[name="testId"]').value;
         const timerDisplay = document.querySelector('#timeDisplay').textContent.split(':');
         const timeLeft = parseInt(timerDisplay[0]) * 60 + parseInt(timerDisplay[1]);
         localStorage.setItem(`timeLeft-${testId}`, timeLeft);
+
+        document.getElementById('elapsedTimeInput').value = elapsedTime;
     };
 
     document.querySelectorAll('.sidebar a').forEach(anchor => {

@@ -136,7 +136,7 @@ public class TestService {
 //        return testRepository.save(test);
 //    }
 
-    public Test submitTest(Long testId, List<Long> selectedChoiceIds) throws Exception {
+    public Test submitTest(Long testId, List<Long> selectedChoiceIds, Long elapsedTime) throws Exception {
         Optional<Test> testOpt = Optional.ofNullable(testRepository.getTestById(testId));
         if (!testOpt.isPresent()) {
             throw new Exception("Test not found");
@@ -161,10 +161,7 @@ public class TestService {
         test.setResult(correctAnswers);
         test.setEndedAt(LocalDateTime.now());
 
-        if (test.getTimeLimit() != null) {
-            long timeTaken = Duration.between(test.getStartedAt(), test.getEndedAt()).getSeconds();
-            test.setTimeTaken((int) timeTaken);
-        }
+        test.setTimeTaken(elapsedTime);
 
         return testRepository.save(test);
     }
