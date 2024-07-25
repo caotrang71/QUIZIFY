@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+</head>
+<body>
+<div class="error-container">
+    <h1>Oops! Something went wrong.</h1>
+    <p>Sorry, an error occurred while processing your request or exception 404 not found</p>
+    <a th:href="@{/show_page_login}" class="btn">Go to Login Page</a>
+</div>
+</body>
+</html>

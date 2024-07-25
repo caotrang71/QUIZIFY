@@ -1,0 +1,182 @@
+              <!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sidebar 01</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/side/css/style.css}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/notification.css}">
+    <script th:src="@{/js/notification.js}"></script>
+
+    <script th:src="@{/js/comment.js}"></script>
+</head>
+<body>
+
+<div class="wrapper d-flex align-items-stretch">
+    <nav id="sidebar">
+        <div class="p-4 pt-5">
+            <h1>Quizify</h1>
+            <ul class="list-unstyled components mb-5">
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="#">Home 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Home 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Home 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a th:href="@{/quiz-banks/quiz-banks-list}">My Library</a>
+                </li>
+                <li>
+                    <a href="#">Favorite Quiz Bank</a>
+                </li>
+                <li>
+                    <a th:href="@{/quiz-banks/quiz-banks-list}">Quiz Banks</a>
+                </li>
+                <li>
+                    <a href="#">Recently</a>
+                </li>
+                <li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Notification</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a href="#">Page 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Page 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Page 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a th:href="@{/profile/{id}(id=${session.user.id})}">My Profile</a>
+                </li>
+                <li>
+                    <a href="#">About</a>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                </li>
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a th:href="@{/manage_account}">Manager Account</a>
+                </li>
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a th:href="@{/category}">Category List</a>
+                </li>
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a th:href="@{api/data/chart}">statistics</a>
+                </li>
+            </ul>
+
+            <div class="footer">
+                <p>
+                    Copyright © 2024 Quizify. All Rights Reserved.
+                </p>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="p-4 p-md-5">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+
+                <button type="button" id="sidebarCollapse" class="btn btn-primary me-3">
+                    <i class="fa fa-bars"></i>
+                    <span class="sr-only">Toggle Menu</span>
+                </button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" th:href="@{/userHome}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="notificationButton" href="#" type="button">Notification</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="link" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false" th:text="${session.user.fullName}">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item dropdown-item-custom" th:href="@{/profile/{id}(id=${session.user.id})}">My Profile <i class="fa fa-user-md" aria-hidden="true"></i></a>
+                                <div class="dropdown-divider"></div>
+                                <form th:action="@{/logout}" method="post">
+                                <button class="dropdown-item dropdown-item-custom" >Logout <i class="fa fa-sign-out" aria-hidden="true"></i></button>
+                                </form>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <h2 class="mb-4">Sidebar #01</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+
+<!--   notification-->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="header">
+            <a href="#"><i class="fas fa-bell" id="closeIcon"></i></a>
+        </div>
+            <ul>
+                <li th:each=" notification : ${notifications} "
+                    th:hidden="${notification.receivedBy != session.user.id && session.user.getRole().id != 1 && session.user.getRole().id != 2}"
+                    class="notification-item" th:classappend="${notification.read == false} ? 'new' ">
+                    <a th:href="@{${notification.link}}" class="title" th:text="${notification.title}"
+                       th:onclick = " 'markAsReadLink('+${notification.notificationId}+')'"></a>
+                    <div class="content" th:text="${notification.content}"></div>
+                    <button onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
+                    <div class="dropdown-content">
+                        <a th:hidden="${notification.read == true}" href="#" th:onclick = " 'markAsRead('+${notification.notificationId}+')' ">make as read</a>
+                        <a th:hidden="${notification.read == false}" href="#" th:onclick = " 'markAsNew('+${notification.notificationId}+')' ">make as new</a>
+                        <a th:onclick=" 'deleteNotification('+${notification.notificationId}+')' ">Delete</a>
+                    </div>
+                </li>
+                <li>
+                    <div>You have no new notifications</div>
+                </li>
+            </ul>
+    </div>
+
+
+</div>
+
+<script th:src="@{/side/js/jquery.min.js}"></script>
+<script th:src="@{/side/js/popper.js}"></script>
+<script th:src="@{/side/js/bootstrap.min.js}"></script>
+<script th:src="@{/side/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quiz Details</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/side/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/modal.css}">
+    <link rel="stylesheet" th:href="@{/css/comment.css}">
+    <link rel="stylesheet" th:href="@{/css/star.css}">
+<!--    nếu src này lỗi thì dùng src này : 1pmk8e03g0ickiw00s0jyxrkir32hmkli89q7wyn782shvdo-->
+    <script src="https://cdn.tiny.cloud/1/h2ruakcf0geb68thp7njx9cias7si0f7q2zoxs6p2ue65v4k/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+    <script th:src="@{/js/comment.js}"></script>
+    <script th:src="@{/js/star.js}"></script>
+    <script>
+        tinymce.init({
+            selector: '#mytextarea',
+            plugins: 'advlist autolink lists link image charmap print preview anchor',
+            toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+            toolbar_mode: 'floating',
+        });
+
+
+    </script>
+</head>
+<body>
+
+<div class="wrapper d-flex align-items-stretch">
+    <nav id="sidebar">
+        <div class="p-4 pt-5">
+            <h1>Quizify</h1>
+            <ul class="list-unstyled components mb-5">
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="#">Home 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Home 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Home 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">My Library</a>
+                </li>
+                <li>
+                    <a href="#">Favorite Quiz Bank</a>
+                </li>
+                <li>
+                    <a href="#">Recently</a>
+                </li>
+                <li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Notification</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a href="#">Page 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Page 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Page 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">My Profile</a>
+                </li>
+                <li>
+                    <a href="#">About</a>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                </li>
+            </ul>
+
+            <div class="footer">
+                <p>
+                    Copyright © 2024 Quizify. All Rights Reserved.
+                </p>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="p-4 p-md-5">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+
+                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                    <i class="fa fa-bars"></i>
+                    <span class="sr-only">Toggle Menu</span>
+                </button>
+                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Notification</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">My Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title" th:text="${quizBank.bankName}"></h2>
+                    <p class="card-text" th:text="${quizBank.description}"></p>
+
+                    <div class="star">
+                        <h7 th:text="${averageStar}"></h7>
+                        <div class="rating-box">
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 1} ? 'active' "></span>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 2} ? 'active' "></span>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 3} ? 'active' "></span>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 4} ? 'active' "></span>
+                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 5} ? 'active' "></span>
+                        </div>
+                    </div>
+                    <div class="star">
+                        <div class="view-user-voted">
+                            <i class="fa fa-users" th:text="${votes.size()}+ '  ' + ' ' + 'user voted' " aria-hidden="true"></i>
+                        </div>
+                    </div>
+<!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
+                </div>
+
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    Topic: <span class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}"></span>
+                </div>
+            </div>
+            <div><a th:href="@{/quiz-banks/update-quiz-bank/{id} (id=${quizBank.id})}" class="btn btn-primary mt-3">
+                Update</a>
+                <button type="button" class="btn btn-secondary mt-3" data-toggle="modal" data-target="#mockTestModal">
+                    Practice with Mock Test
+                </button>
+            </div>
+
+            <div th:each="entry : ${questionChoicesMap.entrySet()}" class="mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title" th:text="${entry.key.content}">Question Text</div>
+                        <ul class="list-group">
+                            <li th:each="choice, iterStat : ${entry.value}" th:if="${iterStat.index < 4}"
+                                th:classappend="${choice.correctOrNot} ? 'list-group-item list-group-item-success' : 'list-group-item'">
+                                <span th:text="${choice.content}">Option Text</span>
+                                <span th:if="${choice.correctOrNot}" class="badge badge-success ml-2">Correct</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-info mt-3" data-toggle="modal" data-target="#commentModal">
+                comment
+            </button>
+            <div class="star">
+                <form th:action="@{/quiz-banks/vote}" method="post">
+                    <div class="rating-box">
+                        <label>
+                            <!--                            tra ve cac bien request votes and notifications-->
+                            <input type="hidden" name="quizBanksID" th:value="${quizBank.id}">
+                            <input type="hidden" name="userID" th:value="${session.user.id}">
+                            <input type="hidden" id="star" name="star" value="">
+                            <input type="hidden" name="receivedBy" th:value="${quizBank.createdBy.id}">
+                            <input type="hidden" name="link" th:value=" '/quiz-banks/quiz-bank-detail/'+ ${quizBank.id} ">
+                        </label>
+                        <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 1} ? 'active' " th:onclick=" 'setStarValue(1)' "></i>
+                        <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 2} ? 'active' " th:onclick=" 'setStarValue(2)' "></i>
+                        <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 3} ? 'active' " th:onclick=" 'setStarValue(3)' "></i>
+                        <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 4} ? 'active' " th:onclick=" 'setStarValue(4)' "></i>
+                        <i class="fa fa-star"  aria-hidden="true" th:classappend=" ${star >= 5} ? 'active' " th:onclick=" 'setStarValue(5)' "></i>
+                        <button type="submit" th:disabled="${star >0}">
+                            <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="mockTestModal" tabindex="-1" aria-labelledby="mockTestModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form th:action="@{/tests/create}" th:object="${test}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="mockTestModalLabel">Create Mock Test</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group row align-items-center">
+                                <label for="title" class="col-sm-1">Title:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="title" name="title" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="numberOfQuestions">Number of Questions:</label>
+                                <input type="number" class="form-control d-inline-block w-25 ml-2" id="numberOfQuestions" name="numberOfQuestions" min="1" required>
+                                <span hidden id="totalQuestionsText"></span>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6">
+                                    <input type="radio" id="firstNQuestions" name="questionOrder" value="first" checked>
+                                    <label for="firstNQuestions">From first <span id="numberOfQuestionsText"><span id="totalQuestionsText3"></span></span> questions</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="radio" id="shuffleQuestions" name="questionOrder" value="shuffle">
+                                    <label for="shuffleQuestions">From total <span id="totalQuestionsText2"></span> questions</label>
+                                </div>
+
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="shuffleChoices" name="shuffleChoices">
+                                <label class="form-check-label" for="shuffleChoices">Shuffle Choices</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" id="enableTimeLimit" name="enableTimeLimit">
+                                <label for="enableTimeLimit">Time Limit: </label>
+                                <input type="number" class="form-control d-inline-block w-25 ml-2" id="timeLimit" name="timeLimit" min="1" disabled> Minutes
+                            </div>
+
+                            <input type="hidden" name="quizBankId" th:value="${quizBank.id}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Start</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<!--        comment model-->
+        <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="mockTestModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="commentModalLabel">Comment</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="editor-container">
+                                <form th:action="@{/quiz-banks/comment}" method="POST">
+                                    <label for="mytextarea">enter comment here:</label>
+                                    <input type="hidden" name="userID" th:value="${session.user.id}">
+                                    <input type="hidden" name="nameUser" th:value="${session.user.fullName}">
+                                    <input type="hidden" name="quizBanksID" th:value="${quizBank.id}">
+                                    <input type="hidden" name="receivedBy" th:value="${quizBank.createdBy.id}">
+                                    <input type="hidden" name="link" th:value=" '/quiz-banks/quiz-bank-detail/' +${quizBank.id}">
+                                    <textarea id="mytextarea" name="content" placeholder="enter your comment"></textarea>
+                                    <button type="submit">Send</button>
+                                </form>
+                                <div class="comments">
+                                    <h2>Comments</h2>
+                                    <div th:each="comments : ${commentsList}">
+                                        <div class="comment">
+                                            <div class="header-comment">
+                                                <h5 th:text="${comments.getUser().fullName}"></h5>
+                                                <small th:text="${#temporals.format(comments.create_at,'dd/MM/yyyy HH:mm:ss')}"></small>
+                                            </div>
+                                            <p th:text="${comments.comment}"></p>
+                                            <div class="dropdown">
+                                                <button th:hidden="${session.user.id != comments.user.id && session.user.getRole().id == 1 && session.user.getRole().id ==2}" onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
+                                                <div class="dropdown-content">
+                                                    <a th:href="@{/quiz-banks/edit/comment/{id}(id=${comments.id})}" >Edit</a>
+                                                    <a href="#" th:onclick=" 'deleteComment(' + ${comments.id} + ')' ">Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            document.addEventListener('DOMContentLoaded', function() {
+                const maxQuestions = /*[[${quizBank.questions.size()}]]*/;
+                document.getElementById('totalQuestionsText').innerText = `from ${maxQuestions}`;
+                document.getElementById('totalQuestionsText2').innerText = `${maxQuestions}`;
+                document.getElementById('totalQuestionsText3').innerText = `${maxQuestions}`;
+
+                $('#mockTestModal').on('show.bs.modal', function () {
+                    const numberOfQuestionsInput = document.getElementById('numberOfQuestions');
+                    numberOfQuestionsInput.value = maxQuestions;
+                    numberOfQuestionsInput.max = maxQuestions; // Set max attribute to ensure it's not exceeded
+                });
+
+                document.getElementById('numberOfQuestions').addEventListener('input', function() {
+                    let value = parseInt(this.value);
+
+                    if (value > maxQuestions) {
+                        this.value = maxQuestions;
+                    } else if (value < 1) {
+                        this.value = 1;
+                    }
+
+                    document.getElementById('numberOfQuestionsText').innerText = value;
+                });
+
+                document.getElementById('enableTimeLimit').addEventListener('change', function() {
+                    const timeLimitInput = document.getElementById('timeLimit');
+                    if (this.checked) {
+                        timeLimitInput.disabled = false;
+                        timeLimitInput.value = 60;
+                    } else {
+                        timeLimitInput.disabled = true;
+                        timeLimitInput.value = '';
+                    }
+                });
+
+                document.getElementById('timeLimit').addEventListener('input', function() {
+                    if (this.value < 1) {
+                        this.value = 1;
+                    }
+                });
+            });
+            /*]]>*/
+        </script>
+
+        <script>
+            //delete comment
+            function deleteComment(id){
+                if (confirm("are you sure delete this comment?")) {
+                    const url = `http://localhost:8081/Quizify/quiz-banks/delete/comment/${id}`;
+                    fetch(url ,{
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type':'application/json'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok){
+                                alert('delete comment successfully.')
+                                location.reload();
+                            }else{
+                                alert('delete comment failed!')
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error :',error)
+                            alert('failed to delete commnet')
+                        })
+                }
+
+            }
+
+            //take star
+            function setStarValue(valueStar){
+                document.getElementById('star').value=valueStar;
+            }
+        </script>
+
+
+
+    </div>
+</div>
+
+<script th:src="@{/side/js/jquery.min.js}"></script>
+<script th:src="@{/side/js/popper.js}"></script>
+<script th:src="@{/side/js/bootstrap.min.js}"></script>
+<script th:src="@{/side/js/main.js}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

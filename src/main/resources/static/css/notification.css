@@ -1,0 +1,128 @@
+::-webkit-scrollbar {
+    display: none; /* Ẩn thanh cuộn trong các trình duyệt dựa trên WebKit như Chrome và Safari */
+}
+
+.notification-panel {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: #FFFFFF;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.notification-panel.active {
+    right: 0;
+}
+
+.notification-panel h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #f6efef;
+}
+
+.notification-panel ul {
+    list-style: none;
+    padding: 0;
+}
+
+.notification-panel ul li {
+    padding: 15px 10px;
+    border: 2px solid #FFFFFF;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+
+.notification-panel ul li .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.notification-panel ul li .content {
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+.notification-panel i {
+    color: rgba(22, 37, 142, 0.35); /* Thay đổi màu của biểu tượng */
+    font-size: 30px; /* Thay đổi kích thước biểu tượng */
+}
+
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: all 0.3s ease;
+    background-color: #CCCCCC;
+}
+.notification-item.new {
+    font-weight: bold;
+    color: #ff5722; /* Highlight color for new notifications */
+    background-color: #7fc2ec;
+    cursor: pointer;
+    position: relative;
+}
+.notification-item.new a {
+
+    color: #0b0b0b; /* Highlight color for new notifications */
+
+}
+.notification-item.new::before {
+    content: '';
+    position: absolute;
+    top: 10px; /* Điều chỉnh vị trí theo ý muốn */
+    left: -15px; /* Điều chỉnh vị trí theo ý muốn */
+    width: 10px; /* Kích thước của chấm */
+    height: 10px; /* Kích thước của chấm */
+    background-color: red; /* Màu sắc của chấm */
+    border-radius: 50%; /* Tạo chấm tròn */
+}
+
+.notification-item.new .title {
+    font-size: 22px;
+}
+.notification-item.new .content {
+    font-size: 16px;
+}
+
+.dropdown-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 10px;
+}
+
+.dropdown-content a {
+    color: black !important;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-radius: 10px;
+}
+
+
+.dropdown-content a:hover {
+    background-color: #dfdddd;
+}
+
+.show {
+    display: block;
+}

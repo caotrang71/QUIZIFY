@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Create Category</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h2 class="mt-5">Update Category</h2>
+  <form action="#" th:action="@{/update/category}" method="post"  class="mt-3">
+    <div class="form-group">
+      <label for="fullness">Category Name:</label>
+      <input type="text" id="fullness" name="categoryName" th:value="${category.getCategoryName()}" class="form-control" placeholder="Enter category name" required />
+    </div>
+    <input type="hidden" name="categoryId" th:value="${category.id}">
+    <button type="submit" class="btn btn-primary">Update Category</button>
+  </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

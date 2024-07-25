@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sidebar 01</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/side/css/style.css}">
+</head>
+<body>
+
+<div class="wrapper d-flex align-items-stretch">
+    <nav id="sidebar">
+        <div class="p-4 pt-5">
+            <h1>Quizify</h1>
+            <ul class="list-unstyled components mb-5">
+                <li class="active">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li>
+                            <a href="#">Home 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Home 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Home 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">My Library</a>
+                </li>
+                <li>
+                    <a href="#">Favorite Quiz Bank</a>
+                </li>
+                <li>
+                    <a href="#">Recently</a>
+                </li>
+                <li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Notification</a>
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        <li>
+                            <a href="#">Page 1</a>
+                        </li>
+                        <li>
+                            <a href="#">Page 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Page 3</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">My Profile</a>
+                </li>
+                <li>
+                    <a href="#">About</a>
+                </li>
+                <li>
+                    <a href="#">Contact</a>
+                </li>
+            </ul>
+
+            <div class="footer">
+                <p>
+                    Copyright © 2024 Quizify. All Rights Reserved.
+                </p>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Page Content  -->
+    <div id="content" class="p-4 p-md-5">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+
+                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                    <i class="fa fa-bars"></i>
+                    <span class="sr-only">Toggle Menu</span>
+                </button>
+                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Notification</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">My Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <h2>Update Quiz Bank</h2>
+            <form th:action="@{/quiz-banks/saved}" th:object="${quizBank}" method="POST" id="quizBankForm">
+                <input type="hidden" th:field="*{id}">
+                Title: <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control mb-4 col-4" required>
+                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4" required>
+                Topic:
+
+                <select th:field="*{subcategory}" class="form-control mb-4 col-4 selectpicker" required>
+
+                    <th:block th:each="category : ${categoryList}">
+                        <optgroup th:label="${category.categoryName}">
+                            <th:block th:each="sub : ${category.subcategories}">
+                                <option th:value="${sub.id}" th:text="${sub.subcategoryName}" th:selected="${sub == quizBank.subcategory}"></option>
+                            </th:block>
+                        </optgroup>
+                    </th:block>
+
+                </select>
+                <input type="hidden" th:field="*{createdAt}" >
+                <input type="hidden" id="modifiedAt" th:field="*{modifiedAt}">
+                <input type="hidden" th:field="*{createdBy}" />
+
+                <!-- Question Section -->
+                <div id="questionsSection">
+                    <div th:each="entry, iterStat : ${questionChoicesMap.entrySet()}" class="card mb-4 question">
+                        <div class="card-body">
+                            <label th:text="'Question ' + ${iterStat.index + 1}"></label>
+                            <input type="text" th:field="*{questions[__${iterStat.index}__].content}" class="form-control mb-2" required>
+                            <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
+                            <div class="choices">
+                                <div th:each="choice, choiceStat : ${entry.value}" class="form-check">
+                                    <label>
+                                        <input type="radio" th:name="|questions[${iterStat.index}].correctChoice|" th:value="${choiceStat.index}" class="form-check-input mb-2" th:onclick="'updateCorrectChoice(' + ${iterStat.index} + ',' + ${choiceStat.index} + ')'" th:checked="${choice.correctOrNot}">
+                                        <input type="hidden" th:field="*{questions[__${iterStat.index}__].questionChoices[__${choiceStat.index}__].correctOrNot}" th:value="${choice.correctOrNot}">
+                                        <input type="text" th:field="*{questions[__${iterStat.index}__].questionChoices[__${choiceStat.index}__].content}" class="form-control mb-2" required>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add Question Button -->
+                <button type="button" class="btn btn-sm btn-success add-question"><i class="fa fa-plus"></i> Add Question</button>
+                <button type="submit" class="btn btn-sm btn-success">Save</button>
+            </form>
+
+
+            <!-- Success and Error Messages -->
+            <div th:if="${error}" class="alert alert-danger mt-4" id="errorAlert">
+                <p th:text="${error}"></p>
+            </div>
+        </div>
+
+        <!-- JavaScript to dynamically add new questions -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                const addQuestionButton = document.querySelector('.add-question');
+                const questionsSection = document.getElementById('questionsSection');
+                const errorAlert = document.getElementById('errorAlert');
+
+                addQuestionButton.addEventListener('click', function() {
+                const questionCount = questionsSection.querySelectorAll('.question').length;
+                if (errorAlert) {
+                errorAlert.style.display = 'none';
+            }
+
+                const newQuestionHtml = `
+                <div class="card mb-4 question">
+                    <div class="card-body">
+                        <label>Question ${questionCount + 1}</label>
+                        <input type="text" name="questions[${questionCount}].content" class="form-control mb-2" required>
+                        <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
+                        <div class="choices">
+                            ${[...Array(4)].map((_, index) => `
+                                <div class="form-check">
+                                    <label>
+                                        <input type="radio" name="questions[${questionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCount}, ${index})" required>
+                                        <input type="hidden" name="questions[${questionCount}].questionChoices[${index}].correctOrNot" value="false">
+                                        <input type="text" name="questions[${questionCount}].questionChoices[${index}].content" class="form-control mb-2" required>
+                                    </label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+                questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
+                attachRemoveQuestionHandlers();
+            });
+                    attachRemoveQuestionHandlers();
+
+
+                    function attachRemoveQuestionHandlers() {
+                const removeButtons = document.querySelectorAll('.remove-question');
+                removeButtons.forEach(button => {
+                button.removeEventListener('click', handleRemoveQuestion);
+                button.addEventListener('click', handleRemoveQuestion);
+            });
+            }
+
+                function handleRemoveQuestion(event) {
+                const question = event.target.closest('.question');
+                question.remove();
+                updateQuestionLabels();
+            }
+
+                function updateQuestionLabels() {
+                const questions = questionsSection.querySelectorAll('.question');
+                questions.forEach((question, index) => {
+                question.querySelector('label').textContent = `Question ${index + 1}`;
+                const inputs = question.querySelectorAll('input');
+                inputs.forEach(input => {
+                const name = input.getAttribute('name');
+                if (name) {
+                const updatedName = name.replace(/\d+/, index);
+                input.setAttribute('name', updatedName);
+            }
+            });
+            });
+            }
+            });
+
+                function updateCorrectChoice(questionCount, index) {
+                const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
+                radios.forEach(radio => {
+                const currentIndex = radio.value;
+                const hiddenInput = document.querySelector(`input[name='questions[${questionCount}].questionChoices[${currentIndex}].correctOrNot']`);
+                hiddenInput.value = (currentIndex == index) ? "true" : "false";
+            });
+            }
+
+
+
+            </script>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('form').submit(function () {
+                    $('input[type="radio"]').attr('correctOrNot', 'true');
+                    $('input[type!="radio"]').attr('correctOrNot', 'false');
+                });
+            });
+
+            function handleRadioSelection(radioButton) {
+                // Get the parent element of the clicked radio button
+                var parentElement = radioButton.parentElement;
+
+                // Find all radio buttons within the parent element
+                var radioButtons = parentElement.getElementsByTagName('input');
+
+                // Uncheck all other radio buttons
+                for (var i = 0; i < radioButtons.length; i++) {
+                    if (radioButtons[i].type === 'radio') {
+                        radioButtons[i].checked = false;
+                    }
+                }
+
+                // Check the selected radio button
+                radioButton.checked = true;
+            }
+
+        </script>
+
+
+    </div>
+</div>
+
+<script th:src="@{/side/js/jquery.min.js}"></script>
+<script th:src="@{/side/js/popper.js}"></script>
+<script th:src="@{/side/js/bootstrap.min.js}"></script>
+<script th:src="@{/side/js/main.js}"></script>
+</body>
+</html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+
+<!--<head>-->
+<!--    <meta charset="ISO-8859-1">-->
+<!--    <title>Quizify</title>-->
+
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">-->
+<!--    <script>-->
+<!--        // Function to format the current date and time-->
+<!--        function getCurrentDateTime() {-->
+<!--            const now = new Date();-->
+<!--            return now.toISOString().slice(0, 16); // Format as 'YYYY-MM-DDTHH:MM'-->
+<!--        }-->
+
+<!--        // Set the current date and time in the modifiedAt field-->
+<!--        window.onload = function() {-->
+<!--            document.getElementById('modifiedAt').value = getCurrentDateTime();-->
+<!--        }-->
+<!--    </script>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <h1>Quizify</h1>-->
+<!--    <hr>-->
+<!--    <h2>Update Quiz Bank</h2>-->
+<!--    <form action="#" th:action="@{/quiz-banks/saved}" th:object="${quizBank}" method="POST">-->
+
+<!--        &lt;!&ndash; Add hidden form field to handle update &ndash;&gt;-->
+<!--        <input type="hidden" th:field="*{id}" />-->
+
+<!--        <input type="text" th:field="*{bankName}" class="form-control mb-4 col-4">-->
+
+<!--        <input type="text" th:field="*{description}" class="form-control mb-4 col-4">-->
+
+<!--        <input type="hidden" th:field="*{createdAt}" />-->
+
+<!--        <input type="hidden" id="modifiedAt" th:field="*{modifiedAt}">-->
+
+<!--        <input type="hidden" th:field="*{editable}" />-->
+
+<!--        <input type="hidden" th:field="*{createdBy}" />-->
+
+
+<!--        <input type="hidden" th:field="*{subcategory}" />-->
+
+<!--&lt;!&ndash;        <input type="text" th:field="*{email}" class="form-control mb-4 col-4">&ndash;&gt;-->
+
+<!--        <button type="submit" class="btn btn-info col-2"> Update Quiz Bank</button>-->
+<!--    </form>-->
+
+<!--    <hr>-->
+
+<!--    <a th:href="@{/quiz-banks/quiz-banks-list}"> Back to Quiz Banh List</a>-->
+<!--</div>-->
+<!--</body>-->
+
+<!--</html>-->

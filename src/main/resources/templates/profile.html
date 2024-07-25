@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <title>Profile</title>
+</head>
+<body>
+<div class="container rounded bg-white mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-4 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src="/static/images/avatar-trang-4.jpg"><span class="font-weight-bold" th:text="${user.get().fullName}"> </span><span class="text-black-50" th:text="${user.get().getEmail()}"></span><span></span></div>
+        </div>
+        <div class="col-md-8 border-right">
+            <div class="p-3 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="text-right">Profile Settings</h4>
+                </div>
+                <form th:action="@{/update_profile}" th:method="post" th:object="${user}" >
+                <div class="row mt-2">
+                    <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control boderbox" placeholder="Full Name" th:value="${user.get().getFullName()}" name="fullName" ></div>
+                    <br><br>
+                    <div class="col-md-6"><label for="gender" class="labels">Gender</label>
+                        <select class="form-control boderbox" id="gender" name="gender">
+                            <option th:selected="${user.get().isGender() == true  }"  >Male</option>
+                            <option th:selected="${user.get().isGender() == false  }"  >Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-12"><label class="labels"></label><input type="hidden" class="form-control" placeholder="user id" th:value="${user.get().id}" name="id" readonly></div>
+                    <div class="col-md-12 mb-3"><label class="labels">BirthDate</label><input type="date" class="form-control boderbox" placeholder="dd/mm/yyyy " th:value="${user.get().getBirthdate()}" name="birthdate"></div>
+                    <div class="col-md-12 mb-3"><label class="labels">Email</label><input type="text" class="form-control boderbox" placeholder="Email" th:value="${user.get().getEmail()}" name="email" readonly></div>
+                    <div class="col-md-12 mb-3"><label class="labels">Userame</label><input type="text" class="form-control boderbox" placeholder="username" th:value="${user.get().getUsername()}" name="username"></div>
+                    <div class="col-md-12 mb-3"><label class="labels">Status</label><input type="text" class="form-control boderbox" placeholder="status" th:value="${user.get().getStatus() == true ? 'Actice' : 'Inactive' }" name="status" readonly></div>
+
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6 mt-6 text-center"><a class="btn btn-primary profile-button boderbox" th:href="@{/change_pass/{username}(username=${user.get().getEmail()})}" >Change Password</a></div>
+                    <div class="col-md-6 mt-6 text-center"><button class="btn btn-primary profile-button boderbox" name="Save" type="submit">Save Profile</button></div>
+                </div>
+                <div class="row mt-2">
+                </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
