@@ -43,7 +43,7 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/show//update/category/{id}")
+    @GetMapping("/show/update/category/{id}")
     public String ShowUpdateCategory(Model model,
                                      @PathVariable int id,
                                      HttpSession session) {
@@ -88,11 +88,16 @@ public class CategoryController {
 
     @PostMapping("/create/category")
     public String createCategory(@ModelAttribute Category category,
-                                 RedirectAttributes redirectAttributes
-    ) {
-        categoryRepository.save(category);
-        redirectAttributes.addFlashAttribute("message", "Create successfully");
-
-        return "redirect:/category";
+                                 RedirectAttributes redirectAttributes)
+    {
+        boolean categoryExist =categoryRepository.existsByCategoryNameIgnoreCase(category.getCategoryName());
+        if (categoryExist) {
+            redirectAttributes.addFlashAttribute("message", "category already exists!");
+            return "redirect:/show/create/category";
+        }else {
+            categoryRepository.save(category);
+            redirectAttributes.addFlashAttribute("message", "Create category successfully");
+            return "redirect:/category";
+        }
     }
 }

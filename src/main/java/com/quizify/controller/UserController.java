@@ -57,7 +57,7 @@ public class UserController {
                 session.setAttribute("user", user);
                 return "redirect:/userHome";
             }else {
-                redirectAttributes.addFlashAttribute("mess", "Your account has been BANNED");
+                redirectAttributes.addFlashAttribute("mess", "Your account has been blocked!");
                 return "redirect:/show_page_login";
             }
         } else {
@@ -96,7 +96,7 @@ public class UserController {
                                 @RequestParam String birthdate,
                                 @RequestParam String gender,
                                 @RequestParam String username
-            ,Model model) {
+            ,RedirectAttributes redirectAttributes) {
         Boolean genderValue;
         if ("Male".equals(gender)) {
             genderValue = true;
@@ -104,7 +104,7 @@ public class UserController {
             genderValue = false;
         }
         userService.updateProfile(id,fullName,birthdate,genderValue,username);
-        model.addAttribute("message", "Profile updated successfully!");
+        redirectAttributes.addFlashAttribute("mess", "Profile updated successfully!");
         return "redirect:/profile/"+id;
     }
     @GetMapping("/change_pass/{email}")
@@ -128,13 +128,30 @@ public class UserController {
                                  @RequestParam("confirmPassword") String ConfirmPassword,
                                  RedirectAttributes redirectAttributes) {
         User user = userRepository.findByEmail(email);
-        if (userService.changePassword(email, oldPassword, newPassword, ConfirmPassword)) {
-            redirectAttributes.addFlashAttribute("mess", "Change password successfully!");
+        //kiểm tra độ dài và kí tự đặc biệt trong mật khẩu
+        String regexPass = "^[a-zA-Z0-9][a-zA-Z0-9\\-_@&]{6,14}[a-zA-Z0-9]$";
+        String inputPass = newPassword;
 
-            return "redirect:/profile/"+user.getId(); // Chuyển hướng đến trang profile nếu thay đổi thành công
-        } else {
-            redirectAttributes.addFlashAttribute("mess", "Change password failed!");
-            return "redirect:/change_pass?error"; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi
+        Pattern patternPass = Pattern.compile(regexPass);
+        Matcher matcherPass = patternPass.matcher(inputPass);
+        if (matcherPass.matches()) {
+            if (!oldPassword.equals(newPassword)) {
+                if (userService.changePassword(email, oldPassword, newPassword, ConfirmPassword)) {
+                    redirectAttributes.addFlashAttribute("mess", "Change password successfully!");
+
+                    return "redirect:/profile/" + user.getId(); // Chuyển hướng đến trang profile nếu thay đổi thành công
+                } else {
+                    redirectAttributes.addFlashAttribute("mess", "Old password is incorrect or password confirmation does not match!");
+                    return "redirect:/change_pass/" + email; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi
+                }
+            }else {
+                redirectAttributes.addFlashAttribute("mess", "The new password cannot be the same as the old password.!");
+                return "redirect:/change_pass/" + email; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi
+            }
+        }else {
+            redirectAttributes.addFlashAttribute("mess", "You must enter a password of 8-16 characters including letters, numbers," +
+                    " some special characters such as - _ @ & and cannot begin or end with those characters");
+            return "redirect:/change_pass/" + email; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi
         }
     }
 
@@ -155,7 +172,7 @@ public class UserController {
         Pattern patternEmail = Pattern.compile(regexEmail);
         Matcher matcherEmail = patternEmail.matcher(inputEmail);
         if (!matcherEmail.matches()){
-            redirectAttributes.addFlashAttribute("message", "Your email must end with .com");
+            redirectAttributes.addFlashAttribute("message", "Your email must end in .com and contain only numbers and letters.");
             return "redirect:/show_page_login";
         }else if(!matcherPass.matches()){
             redirectAttributes.addFlashAttribute("message", "You must enter a password of 8-16 characters including letters, numbers," +
@@ -195,7 +212,7 @@ public class UserController {
         //kiem tra otp ton tai hay khong
         if (otpObjectOptional.isEmpty()) {
             String urlFullname = URLEncoder.encode(fullname, StandardCharsets.UTF_8.toString());
-            redirectAttributes.addFlashAttribute("mess", "OTP không tồn tại hoặc đã hết hạn.");
+            redirectAttributes.addFlashAttribute("mess", "OTP does not exist or has expired.");
             return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + urlFullname;
         }
 
@@ -204,7 +221,7 @@ public class UserController {
         // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
         if (otpObject.getAttempts() >= 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
             otpService.deleteOTP(email);
-            redirectAttributes.addFlashAttribute("mess", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
+            redirectAttributes.addFlashAttribute("mess", "OTP has expired or you have entered it incorrectly more than 3 times.");
             return "redirect:/show_page_login"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
         }
 
@@ -219,7 +236,7 @@ public class UserController {
             otpObject.setAttempts(otpObject.getAttempts() + 1);
             otpRepository.save(otpObject);
             String urlFullname = URLEncoder.encode(fullname, StandardCharsets.UTF_8.toString());
-            redirectAttributes.addFlashAttribute("error", "OTP không chính xác.");
+            redirectAttributes.addFlashAttribute("error", "OTP is incorrect.");
             return "redirect:/showVerifyOTP?email=" + email + "&password=" + pass + "&fullname=" + urlFullname; // Redirect để nhập lại OTP
         }
     }
@@ -255,7 +272,7 @@ public class UserController {
         Optional<OTP> otpObjectOptional = otpService.getObjectOTP(email);
 
         if (otpObjectOptional.isEmpty()) {
-            redirectAttributes.addFlashAttribute("mess", "OTP không tồn tại hoặc đã hết hạn.");
+            redirectAttributes.addFlashAttribute("mess", "OTP does not exist or has expired.");
             return "redirect:/show_page_login";
         }
 
@@ -264,7 +281,7 @@ public class UserController {
         // Kiểm tra nếu OTP đã hết hạn hoặc vượt quá số lần thử
         if (otpObject.getAttempts() >= 2 || Duration.between(otpObject.getExpriTime(), LocalDateTime.now()).toSeconds() >= 59) {
             otpService.deleteOTP(email);
-            redirectAttributes.addFlashAttribute("mess", "OTP đã hết hạn hoặc bạn đã nhập sai quá 3 lần.");
+            redirectAttributes.addFlashAttribute("mess", "OTP has expired or you have entered it incorrectly more than 3 times.");
             return "redirect:/show_page_login"; // Redirect đến trang đăng ký nếu OTP hết hạn hoặc vượt quá số lần thử
         }
 
@@ -276,7 +293,7 @@ public class UserController {
             // Tăng số lần thử nếu OTP sai
             otpObject.setAttempts(otpObject.getAttempts() + 1);
             otpRepository.save(otpObject);
-            redirectAttributes.addFlashAttribute("error", "OTP không chính xác.");
+            redirectAttributes.addFlashAttribute("error", "OTP is incorrect.");
             return "redirect:/show_verifyOTP_forget?email=" + email; // Redirect để nhập lại OTP
         }
     }
@@ -291,14 +308,26 @@ public class UserController {
                                 @RequestParam String confirmPassword ,Model model,
                                 RedirectAttributes redirectAttributes) {
         User user = userService.findByEmail(email);
-        if (user != null && newPassword.equals(confirmPassword)) {
-            String encodepass = passwordEncoder.encode(newPassword);
-            user.setPassword(encodepass);
-            userRepository.save(user);
-            redirectAttributes.addFlashAttribute("mess", "change password successfully!");
-            return "redirect:/show_page_login";
+        //kiểm tra độ dài và kí tự đặc biệt trong mật khẩu
+        String regexPass = "^[a-zA-Z0-9][a-zA-Z0-9\\-_@&]{6,14}[a-zA-Z0-9]$";
+        String inputPass = newPassword;
+
+        Pattern patternPass = Pattern.compile(regexPass);
+        Matcher matcherPass = patternPass.matcher(inputPass);
+        if (matcherPass.matches()) {
+            if (user != null && newPassword.equals(confirmPassword)) {
+                String encodepass = passwordEncoder.encode(newPassword);
+                user.setPassword(encodepass);
+                userRepository.save(user);
+                redirectAttributes.addFlashAttribute("mess", "change password successfully!");
+                return "redirect:/show_page_login";
+            } else {
+                redirectAttributes.addFlashAttribute("mess", "password doesn't match");
+                return "redirect:/show_reset_Password?email=" + email;
+            }
         }else {
-            model.addAttribute("mess","password doesn't match");
+            redirectAttributes.addFlashAttribute("mess", "You must enter a password of 8-16 characters including letters, numbers," +
+                    " some special characters such as - _ @ & and cannot begin or end with those characters");
             return "redirect:/show_reset_Password?email=" + email;
         }
 

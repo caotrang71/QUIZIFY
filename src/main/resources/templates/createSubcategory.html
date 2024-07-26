@@ -24,6 +24,9 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Create SubCategory</button>
+        <h5 style="text-align: center" th:if="${message != null}" >
+            <i style="color: red" th:text="${message}"></i>
+        </h5>
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
