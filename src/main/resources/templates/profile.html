@@ -44,7 +44,8 @@
                     <div class="col-md-6 mt-6 text-center"><a class="btn btn-primary profile-button boderbox" th:href="@{/change_pass/{username}(username=${user.get().getEmail()})}" >Change Password</a></div>
                     <div class="col-md-6 mt-6 text-center"><button class="btn btn-primary profile-button boderbox" name="Save" type="submit">Save Profile</button></div>
                 </div>
-                <div class="row mt-2">
+                <div class="row mt-2" th:if="${mess != null}">
+                    <p style="color: green" th:text="${mess}"></p>
                 </div>
 
                 </form>

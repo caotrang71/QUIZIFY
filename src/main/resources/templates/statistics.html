@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.1">
+    <title>Chart Statistics</title>
+    <link rel="stylesheet" th:href="@{/css/statistics.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h1 style="text-align: center">Quizify usage statistics</h1>
+
+<h3 th:text="${totalUser}"></h3>
+<canvas id="userChart" width="300" height="130"></canvas>
+
+<h3 th:text="${totalTakeQuiz}"></h3>
+<canvas id="useQuizChart" width="300" height="130"></canvas>
+<script>
+    async function fetchDataUser() {
+        const url = 'http://localhost:8081/Quizify/api/data/chart';
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    }
+
+    function renderChartUser(data) {
+        const ctx = document.getElementById('userChart').getContext('2d');
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Users Created Per Week',
+                    data: values,
+                    backgroundColor: 'rgba(75, 192, 192, 0.65)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y:  {
+                        ticks: {
+                            stepSize: 1, // Set the step size to 1 to ensure only integers are shown
+                            callback: function(value) {
+                                if (Number.isInteger(value)) {
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    (async function() {
+        const data = await fetchDataUser();
+        renderChartUser(data);
+    })();
+
+    //Quizify usage statistics
+
+    async function fetchDataUseQuiz() {
+        const url = 'http://localhost:8081/Quizify/api/data/chart/take-quiz';
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    }
+
+    function renderChartUseQuiz(data) {
+        const ctx = document.getElementById('useQuizChart').getContext('2d');
+        const labels = Object.keys(data);
+        const values = Object.values(data);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Users Created Per Week',
+                    data: values,
+                    backgroundColor: 'rgb(236,182,128,0.65)',
+                    borderColor: 'rgb(228,160,92, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y:  {
+                        ticks: {
+                            stepSize: 1, // Set the step size to 1 to ensure only integers are shown
+                            callback: function(value) {
+                                if (Number.isInteger(value)) {
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    (async function() {
+        const data = await fetchDataUseQuiz();
+        renderChartUseQuiz(data);
+    })();
+
+
+
+</script>
+</body>
+</html>
