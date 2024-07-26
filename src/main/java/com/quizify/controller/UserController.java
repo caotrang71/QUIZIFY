@@ -126,14 +126,14 @@ public class UserController {
                                  @RequestParam("oldPassword") String oldPassword,
                                  @RequestParam("newPassword") String newPassword,
                                  @RequestParam("confirmPassword") String ConfirmPassword,
-                                 Model model) {
+                                 RedirectAttributes redirectAttributes) {
         User user = userRepository.findByEmail(email);
         if (userService.changePassword(email, oldPassword, newPassword, ConfirmPassword)) {
-            model.addAttribute("mess", "Change password successfully!");
+            redirectAttributes.addFlashAttribute("mess", "Change password successfully!");
 
             return "redirect:/profile/"+user.getId(); // Chuyển hướng đến trang profile nếu thay đổi thành công
         } else {
-            model.addAttribute("mess", "Change password failed!");
+            redirectAttributes.addFlashAttribute("mess", "Change password failed!");
             return "redirect:/change_pass?error"; // Chuyển hướng lại trang thay đổi mật khẩu với thông báo lỗi
         }
     }
@@ -271,7 +271,7 @@ public class UserController {
         // Kiểm tra nếu OTP nhập vào đúng
         if (otpObject.getOtp().equals(otp)) {
             otpService.deleteOTP(email);
-            return "redirect:/show_reset_Password?email="+email; // Redirect đến trang reset nếu OTP đúng
+            return "redirect:/show_reset_Password?email="+email; // Redirect đến trang login nếu OTP đúng
         } else {
             // Tăng số lần thử nếu OTP sai
             otpObject.setAttempts(otpObject.getAttempts() + 1);
@@ -288,12 +288,14 @@ public class UserController {
     @PostMapping("/reset_password")
     public String resetPassword(@RequestParam String email,
                                 @RequestParam String newPassword,
-                                @RequestParam String confirmPassword ,Model model) {
+                                @RequestParam String confirmPassword ,Model model,
+                                RedirectAttributes redirectAttributes) {
         User user = userService.findByEmail(email);
         if (user != null && newPassword.equals(confirmPassword)) {
             String encodepass = passwordEncoder.encode(newPassword);
             user.setPassword(encodepass);
             userRepository.save(user);
+            redirectAttributes.addFlashAttribute("mess", "change password successfully!");
             return "redirect:/show_page_login";
         }else {
             model.addAttribute("mess","password doesn't match");
