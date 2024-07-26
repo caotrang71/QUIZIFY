@@ -11,8 +11,10 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <link th:href="@{/side/css/style.css}" rel="stylesheet">
     <link th:href="@{/side/css/input-field.css}" rel="stylesheet">
+    <link th:href="@{/side/css/update.css}" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -94,11 +96,19 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Notification</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">My Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contact</a>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="link" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false" >
+                                <span th:text="${session.user.fullName}"></span>
+                                <span><i class="fa-solid fa-user"></i></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item dropdown-item-custom" th:href="@{/profile/{id}(id=${session.user.id})}">My Profile <i class="fa-solid fa-user-pen"></i></a>
+                                <div class="dropdown-divider"></div>
+                                <form th:action="@{/logout}" method="post">
+                                    <button class="dropdown-item dropdown-item-custom" >Logout <i class="fa fa-sign-out" aria-hidden="true"></i></button>
+                                </form>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -174,23 +184,14 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
-
         const form = document.getElementById('quizBankForm');
-        // let btnSave = document.getElementById("btnSave");
-        // btnSave.addEventListener('click', function () {
-        //     console.log('click');
-        //     setTimeout(function() {
-        //         window.location.reload();
-        //     }, 10000); // 10000 milliseconds = 10 seconds
-        // });
-
-
 
         form.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && event.target.tagName.toLowerCase() !== 'textarea') {
                 event.preventDefault();
             }
         });
+
         const addQuestionButton = document.querySelector('.add-question');
         const errorAlert = document.getElementById('errorAlert');
         let questionCounter = 0;
@@ -198,43 +199,36 @@
         addQuestionButton.addEventListener('click', function() {
             const questionsSection = document.getElementById('questionsSection');
 
-
-
             if (errorAlert) {
                 errorAlert.style.display = 'none';
             }
 
             const newQuestionHtml = `
-                <div class="card mb-4 question">
-                    <div class="card-body">
-                        <label>Question ${questionCounter + 1}</label>
-                        <textarea type="text" name="questions[${questionCounter}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
-<!--                        <input type="file" name="questionImage" class="form-control mb-2">-->
-                        <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
-
-                        <div class="choices">
-                            ${[...Array(4)].map((_, index) => `
-                                <div class="form-check">
-                                    <label class="w-100">
-                                        <input type="radio" name="questions[${questionCounter}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCounter}, ${index})" required>
-                                        <input type="hidden" name="questions[${questionCounter}].questionChoices[${index}].correctOrNot" value="false">
-                                        <textarea type="text" name="questions[${questionCounter}].questionChoices[${index}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
-                                    </label>
-                                </div>
-                            `).join('')}
-                        </div>
+            <div class="card mb-4 question">
+                <div class="card-body">
+                    <label>Question ${questionCounter + 1}</label>
+                    <textarea type="text" name="questions[${questionCounter}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
+                    <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
+                    <div class="choices">
+                        ${[...Array(4)].map((_, index) => `
+                            <div class="form-check">
+                                <label class="w-100">
+                                    <input type="radio" name="questions[${questionCounter}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCounter}, ${index})" required>
+                                    <input type="hidden" name="questions[${questionCounter}].questionChoices[${index}].correctOrNot" value="false">
+                                    <textarea type="text" name="questions[${questionCounter}].questionChoices[${index}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
+                                </label>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
-            `;
+            </div>
+        `;
 
             questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
             questionCounter++;
-            attachTotalQuestionsHandlers(questionCounter);
+            updateTotalQuestions();
             attachRemoveQuestionHandlers();
-
         });
-
-
 
         attachRemoveQuestionHandlers();
 
@@ -249,18 +243,14 @@
             const question = event.target.closest('.question');
             question.remove();
             updateQuestionLabels();
-        }
-
-        function attachTotalQuestionsHandlers(questionCounter) {
-            const totalQuestions = document.getElementById('total');
-            totalQuestions.innerText = questionCounter;
+            updateTotalQuestions();
         }
 
         function updateQuestionLabels() {
-             const questions = document.querySelectorAll('.question');
+            const questions = document.querySelectorAll('.question');
             questions.forEach((question, index) => {
                 question.querySelector('label').textContent = `Question ${index + 1}`;
-                const inputs = question.querySelectorAll('input');
+                const inputs = question.querySelectorAll('input, textarea');
                 inputs.forEach(input => {
                     const name = input.getAttribute('name');
                     if (name) {
@@ -270,14 +260,34 @@
                 });
             });
             questionCounter = questions.length;
+        }
 
+        function updateTotalQuestions() {
+            const totalQuestions = document.getElementById('total');
+            totalQuestions.innerText = questionCounter;
+        }
+
+        function updateCorrectChoice(questionCount, index) {
+            const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
+
+            radios.forEach(radio => {
+                const currentIndex = radio.value;
+                const hiddenInput = document.querySelector(`input[name='questions[${questionCount}].questionChoices[${currentIndex}].correctOrNot']`);
+
+                hiddenInput.value = (currentIndex == index) ? "true" : "false";
+            });
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
         }
 
         $("#importExcel").iziModal({
             title: '<i class="fa-regular fa-file-excel"></i>  Import file from your computer',
             fullscreen: false,
             closeOnEscape: true,
-            overlayClose: false,
+            overlayClose: true,
             onOpening: function(modal) {
                 $("#importExcel").css({
                     'background-color': '#f9f9f9',
@@ -327,6 +337,7 @@
                 });
             }
         });
+
         $(document).on('click', '#importFile', function() {
             $('#importExcel').iziModal('open');
             $('.sticky-top').hide();
@@ -340,7 +351,6 @@
             $('#importExcel').iziModal('open');
         });
 
-
         const importExcelButton = document.querySelector('.import-excel');
 
         importExcelButton.addEventListener('click', function() {
@@ -353,7 +363,6 @@
                 importQuestionsFromExcel(file);
             }
         });
-
 
         function importQuestionsFromExcel(file) {
             const formData = new FormData();
@@ -371,7 +380,7 @@
                         Swal.fire({
                             position: "top-end",
                             icon: "success",
-                            title: "Your work has been saved",
+                            title: "Import file successfully!",
                             showConfirmButton: false,
                             timer: 1500
                         });
@@ -394,31 +403,30 @@
             questions.forEach((question, questionCount) => {
                 const adjustedQuestionCount = questionCount + existingQuestionsCount;
                 const newQuestionHtml = `
-                <div class="card mb-4 question">
-                    <div class="card-body">
-                        <label>Question ${adjustedQuestionCount + 1}</label>
-                        <input type="text" name="questions[${adjustedQuestionCount}].content" class="form-control mb-2" value="${question.content}" rows="1" oninput="autoResize(this)" required></input>
-<!--                         <input type="file" name="questionImage" class="form-control mb-2">-->
-                        <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
-
-                        <div class="choices">
-                            ${question.questionChoices.map((choice, index) => `
-                                <div class="form-check">
-                                    <label class="w-100">
-                                        <input type="radio" name="questions[${adjustedQuestionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${adjustedQuestionCount}, ${index})" ${choice.correctOrNot ? 'checked' : ''} required>
-                                        <input type="hidden" name="questions[${adjustedQuestionCount}].questionChoices[${index}].correctOrNot" value="${choice.correctOrNot}">
-                                        <input type="text" name="questions[${adjustedQuestionCount}].questionChoices[${index}].content" class="form-control mb-2" value="${choice.content}" rows="1" oninput="autoResize(this)" required></input>
-                                    </label>
-                                </div>
-                            `).join('')}
-                        </div>
+            <div class="card mb-4 question">
+                <div class="card-body">
+                    <label>Question ${adjustedQuestionCount + 1}</label>
+                    <textarea type="text" name="questions[${adjustedQuestionCount}].content" class="form-control mb-2" value="${question.content}" rows="1" oninput="autoResize(this)" required>${question.content}</textarea>
+                    <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
+                    <div class="choices">
+                        ${question.questionChoices.map((choice, index) => `
+                            <div class="form-check">
+                                <label class="w-100">
+                                    <input type="radio" name="questions[${adjustedQuestionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${adjustedQuestionCount}, ${index})" ${choice.correctOrNot ? 'checked' : ''} required>
+                                    <input type="hidden" name="questions[${adjustedQuestionCount}].questionChoices[${index}].correctOrNot" value="${choice.correctOrNot}">
+                                    <textarea type="text" name="questions[${adjustedQuestionCount}].questionChoices[${index}].content" class="form-control mb-2" value="${choice.content}" rows="1" oninput="autoResize(this)" required>${choice.content}</textarea>
+                                </label>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
-            `;
+            </div>
+        `;
                 questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
                 questionCounter++;
             });
 
+            updateTotalQuestions();
             attachRemoveQuestionHandlers();
         }
 
@@ -427,6 +435,7 @@
             fileInput.value = '';
         }
     });
+
 
     function updateCorrectChoice(questionCount, index) {
         const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);

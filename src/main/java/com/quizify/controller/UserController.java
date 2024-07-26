@@ -105,7 +105,7 @@ public class UserController {
         }
         userService.updateProfile(id,fullName,birthdate,genderValue,username);
         model.addAttribute("message", "Profile updated successfully!");
-        return "redirect:/profile/"+id;
+        return "redirect:/userHome"+id;
     }
     @GetMapping("/change_pass/{email}")
     public String showChangePasswordForm(@PathVariable String email,

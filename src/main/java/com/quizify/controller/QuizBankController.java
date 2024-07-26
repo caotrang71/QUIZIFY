@@ -72,6 +72,7 @@ public class QuizBankController {
         QuizBank quizBank = quizBankService.getQuizBankById(id);
         List<Question> questions = questionService.getQuestionsByQuizBank(quizBank);
         Map<Question, List<QuestionChoice>> questionChoicesMap = new HashMap<>();
+
         for(Question question : questions) {
             List<QuestionChoice> questionChoices = questionChoiceService.getQuestionChoiceByQuestion(question);
             questionChoicesMap.put(question, questionChoices);
@@ -216,7 +217,8 @@ public class QuizBankController {
 
 
     @PostMapping("/saved")
-    public String saveQuizBank(@ModelAttribute("quizBank") QuizBank quizBank, BindingResult result, Model model) {
+    public String saveQuizBank(@ModelAttribute("quizBank") QuizBank quizBank,
+                               BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "update-quiz-bank";
         }

@@ -22,6 +22,9 @@ public class Question {
     @Column(name = "image")
     private String image;
 
+    @Column(name = "is_highlighted")
+    private Boolean isHighlighted = false;
+
     @ManyToOne
     @JoinColumn(name = "quiz_banks_id", nullable = false)
     private QuizBank quizBank;

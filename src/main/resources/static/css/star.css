@@ -2,6 +2,11 @@
     display: flex;
     justify-content: flex-end;
 }
+.total {
+    display: flex;
+    justify-content: flex-start;
+    font-weight : 500
+}
 
 .rating-box {
     display: flex;
@@ -25,4 +30,6 @@
 .view-user-voted i{
     color: #453e3e;
 }
-
+div.card{
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

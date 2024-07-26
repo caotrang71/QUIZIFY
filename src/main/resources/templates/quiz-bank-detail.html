@@ -150,30 +150,41 @@
                         <p class="card-text" th:text="${quizBank.description}"></p>
                         <!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
                     </div>
+                    <div class="card-footer row d-flex ml-0 mr-0">
+                        <div class="total col-md">
+                            Total questions: <span class="card-text" th:text="${totalQuestions}"></span>
+                        </div>
+                        <div class="col-md">
+                            <div class="star">
+                                <!--                            <h7 th:text="${averageStar}"></h7>-->
+                                <div class="rating-box">
+                                    <span th:text="${averageStar}"></span>
+                                    <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 1} ? 'active' "></span>
+                                    <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 2} ? 'active' "></span>
+                                    <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 3} ? 'active' "></span>
+                                    <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 4} ? 'active' "></span>
+                                    <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 5} ? 'active' "></span>
+                                </div>
+                            </div>
+                            <div class="star">
+                                <div class="view-user-voted">
+                                    <i class="fa fa-users"  aria-hidden="true"></i>
+                                    <span th:text="${votes.size()}"></span> voted users
+                                </div>
+                            </div>
+                        </div>
+                        </div>
 
-                    <div class="star">
-                        <h7 th:text="${averageStar}"></h7>
-                        <div class="rating-box">
-                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 1} ? 'active' "></span>
-                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 2} ? 'active' "></span>
-                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 3} ? 'active' "></span>
-                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 4} ? 'active' "></span>
-                            <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar >= 5} ? 'active' "></span>
-                        </div>
-                    </div>
-                    <div class="star">
-                        <div class="view-user-voted">
-                            <i class="fa fa-users" th:text="${votes.size()}+ '  ' + ' ' + 'user voted' " aria-hidden="true"></i>
-                        </div>
-                    </div>
+
+
 <!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
                 </div>
-                <div class="card mt-3">
-                                    <div class="card-body">
-                    Total questions: <span class="card-text" th:text="${totalQuestions}"></span>
-                    <!--                    Topic: <span class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}"></span>-->
-                                    </div>
-                </div>
+<!--                <div class="card mt-3">-->
+<!--                                    <div class="card-body">-->
+<!--                    Total questions: <span class="card-text" th:text="${totalQuestions}"></span>-->
+<!--                    &lt;!&ndash;                    Topic: <span class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}"></span>&ndash;&gt;-->
+<!--                                    </div>-->
+<!--                </div>-->
 
             <div class="row sticky-top bg-light pb-3" >
                 <div class="col-sm-5">
@@ -225,7 +236,7 @@
             </div>
         </div>
             <button type="button" class="btn btn-info mt-3" data-toggle="modal" data-target="#commentModal">
-                comment
+                Comment
             </button>
             <div class="star">
                 <form th:action="@{/quiz-banks/vote}" method="post">
@@ -243,8 +254,8 @@
                         <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 3} ? 'active' " th:onclick=" 'setStarValue(3)' "></i>
                         <i class="fa fa-star" aria-hidden="true" th:classappend=" ${star >= 4} ? 'active' " th:onclick=" 'setStarValue(4)' "></i>
                         <i class="fa fa-star"  aria-hidden="true" th:classappend=" ${star >= 5} ? 'active' " th:onclick=" 'setStarValue(5)' "></i>
-                        <button type="submit" th:disabled="${star >0}">
-                            <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                        <button class="btn btn-info" type="submit" th:disabled="${star >0}">
+                            <span><i class="fa-solid fa-paper-plane"></i></span>
                         </button>
                     </div>
                 </form>

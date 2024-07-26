@@ -23,7 +23,7 @@ public class HomeUserController {
     }
 
     @GetMapping("/")
-    public String viewLandingPage(Model model) {
+    public String viewLandingPage() {
         return "landing-page";
     }
 

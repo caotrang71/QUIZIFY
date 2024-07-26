@@ -6,11 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/side/css/style.css}">
-    <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link th:href="@{/side/css/style.css}" rel="stylesheet">
+    <link th:href="@{/side/css/update.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/css/iziModal.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/js/iziModal.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -21,17 +30,6 @@
             <ul class="list-unstyled components mb-5">
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li>
-                            <a href="#">Home 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Home 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Home 3</a>
-                        </li>
-                    </ul>
                 </li>
                 <li>
                     <a href="#">My Library</a>
@@ -81,28 +79,34 @@
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-
-                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary me-3">
                     <i class="fa fa-bars"></i>
                     <span class="sr-only">Toggle Menu</span>
                 </button>
-                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home</a>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Notification</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">My Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contact</a>
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="link" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false" >
+                                <span th:text="${session.user.fullName}"></span>
+                                <span><i class="fa-solid fa-user"></i></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item dropdown-item-custom" th:href="@{/profile/{id}(id=${session.user.id})}">My Profile <i class="fa-solid fa-user-pen"></i></a>
+                                <div class="dropdown-divider"></div>
+                                <form th:action="@{/logout}" method="post">
+                                    <button class="dropdown-item dropdown-item-custom" >Logout <i class="fa fa-sign-out" aria-hidden="true"></i></button>
+                                </form>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -111,14 +115,15 @@
 
         <div class="container mt-5">
             <h2>Update Quiz Bank</h2>
-            <form th:action="@{/quiz-banks/saved}" th:object="${quizBank}" method="POST" id="quizBankForm">
+            <form th:action="@{/quiz-banks/saved}" th:object="${quizBank}" method="POST" id="quizBankForm" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}">
-                Title: <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control mb-4 col-4" required>
-                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control mb-4 col-4">
+                Title: <input type="text" th:field="*{bankName}" placeholder="Quiz Bank Name" class="form-control d-inline-block mb-4 col-4" required>
+                <br>
+                Description: <input type="text" th:field="*{description}" placeholder="Description" class="form-control d-inline-block mb-4 col-4">
+                <br>
                 Topic:
 
-                <select th:field="*{subcategory}" class="form-control mb-4 col-4 selectpicker" required>
-
+                <select th:field="*{subcategory}" class="form-control mb-4 mt-4 col-4 js-example-basic-single" name="state" required>
                     <th:block th:each="category : ${categoryList}">
                         <optgroup th:label="${category.categoryName}">
                             <th:block th:each="sub : ${category.subcategories}">
@@ -126,180 +131,386 @@
                             </th:block>
                         </optgroup>
                     </th:block>
-
                 </select>
-                <input type="hidden" th:field="*{createdAt}" >
-                <input type="hidden" id="modifiedAt" th:field="*{modifiedAt}">
-                <input type="hidden" th:field="*{createdBy}" />
 
-                <!-- Question Section -->
-                <div id="questionsSection">
+                <div class="card sticky-top p-0 mt-4 mb-4" style="font-weight: 500">
+                    <div class="card-body row d-flex justify-content-between align-items-center">
+                        <div class="col-sm text-left">
+                            Total Questions: <span id="total">0</span>
+                        </div>
+                        <div class="col-sm text-right">
+                            <button type="button" class="btn btn-sm btn-success add-question"><i class="fa fa-plus"></i> Add Question</button>
+                            <button type="button" class="btn btn-sm btn-primary" id="importFile"><i class="fa fa-upload"></i></button>
+                            <button type="submit" class="btn btn-sm btn-success save-button" id="btnSave">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="questionsSection" class="mt-4">
                     <div th:each="entry, iterStat : ${questionChoicesMap.entrySet()}" class="card mb-4 question">
                         <div class="card-body">
                             <label th:text="'Question ' + ${iterStat.index + 1}"></label>
-                            <input type="text" th:field="*{questions[__${iterStat.index}__].content}" class="form-control mb-2" required>
+                            <textarea type="text" th:field="*{questions[__${iterStat.index}__].content}" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
                             <button type="button" class="btn btn-danger btn-sm remove-question mb-3" th:data-id="${iterStat.index}"><i class="fa fa-trash"></i></button>
                             <div class="choices">
                                 <div th:each="choice, choiceStat : ${entry.value}" class="form-check">
-                                    <label>
+                                    <label class="w-100">
                                         <input type="radio" th:name="|questions[${iterStat.index}].correctChoice|" th:value="${choiceStat.index}" class="form-check-input mb-2" th:onclick="'updateCorrectChoice(' + ${iterStat.index} + ',' + ${choiceStat.index} + ')'" th:checked="${choice.correctOrNot}">
                                         <input type="hidden" th:field="*{questions[__${iterStat.index}__].questionChoices[__${choiceStat.index}__].correctOrNot}" th:value="${choice.correctOrNot}">
-                                        <input type="text" th:field="*{questions[__${iterStat.index}__].questionChoices[__${choiceStat.index}__].content}" class="form-control mb-2" required>
+                                        <textarea type="text" th:field="*{questions[__${iterStat.index}__].questionChoices[__${choiceStat.index}__].content}" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
                                     </label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Add Question Button -->
-                <button type="button" class="btn btn-sm btn-success add-question"><i class="fa fa-plus"></i> Add Question</button>
-                <button type="submit" class="btn btn-sm btn-success save-button">Save</button>
             </form>
 
-            <!-- Success and Error Messages -->
             <div th:if="${error}" class="alert alert-danger mt-4" id="errorAlert">
                 <p th:text="${error}"></p>
             </div>
         </div>
 
-        <!-- JavaScript to dynamically add new questions -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                let formChanged = false;
-                const addQuestionButton = document.querySelector('.add-question');
-                const saveButton = document.querySelector('.save-button');
-                const quizBankForm = document.getElementById('quizBankForm');
-                const questionsSection = document.getElementById('questionsSection');
-                const errorAlert = document.getElementById('errorAlert');
-
-                addQuestionButton.addEventListener('click', function() {
-                    formChanged = true;
-                    const questionCount = questionsSection.querySelectorAll('.question').length;
-                    if (errorAlert) {
-                        errorAlert.style.display = 'none';
-                    }
-
-                    const newQuestionHtml = `
-                        <div class="card mb-4 question">
-                            <div class="card-body">
-                                <label>Question ${questionCount + 1}</label>
-                                <input type="text" name="questions[${questionCount}].content" class="form-control mb-2" required>
-                                <button type="button" class="btn btn-danger btn-sm remove-question mb-3" data-id="${questionCount}"><i class="fa fa-trash"></i></button>
-                                <div class="choices">
-                                    ${[...Array(4)].map((_, index) => `
-                                        <div class="form-check">
-                                            <label>
-                                                <input type="radio" name="questions[${questionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCount}, ${index})" required>
-                                                <input type="hidden" name="questions[${questionCount}].questionChoices[${index}].correctOrNot" value="false">
-                                                <input type="text" name="questions[${questionCount}].questionChoices[${index}].content" class="form-control mb-2" required>
-                                            </label>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
-                    attachRemoveQuestionHandlers();
-                });
-
-                attachRemoveQuestionHandlers();
-
-                function attachRemoveQuestionHandlers() {
-                    const removeButtons = document.querySelectorAll('.remove-question');
-                    removeButtons.forEach(button => {
-                        button.removeEventListener('click', handleRemoveQuestion);
-                        button.addEventListener('click', handleRemoveQuestion);
-                    });
-                }
-
-                function handleRemoveQuestion(event) {
-                    formChanged = true;
-                    const question = event.target.closest('.question');
-                    const questionId = $(event.target).closest('.remove-question').data('id');
-
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: 'This action cannot be undone!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            question.remove();
-                            updateQuestionLabels();
-                            Swal.fire('Deleted!', 'The question has been removed.', 'success');
-                        }
-                    });
-                }
-
-                function updateQuestionLabels() {
-                    const questions = questionsSection.querySelectorAll('.question');
-                    questions.forEach((question, index) => {
-                        question.querySelector('label').textContent = `Question ${index + 1}`;
-                        const inputs = question.querySelectorAll('input');
-                        inputs.forEach(input => {
-                            const name = input.getAttribute('name');
-                            if (name) {
-                                const updatedName = name.replace(/\d+/, index);
-                                input.setAttribute('name', updatedName);
-                            }
-                        });
-                    });
-                }
-
-                saveButton.addEventListener('click', function(event) {
-                    event.preventDefault(); // Prevent the form from submitting immediately
-                    Swal.fire({
-                        title: "Do you want to save the changes?",
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: "Save",
-                        denyButtonText: "Don't save"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire("Saved!", "", "success");
-                            formChanged = false; // Reset the flag
-                            quizBankForm.submit(); // Submit the form if confirmed
-                        } else if (result.isDenied) {
-                            Swal.fire("Changes are not saved", "", "info");
-                        }
-                    });
-                });
-
-                // Listen for form changes to set the flag
-                quizBankForm.addEventListener('change', function() {
-                    formChanged = true;
-                });
-
-                // Handle beforeunload event to warn user about unsaved changes
-                window.addEventListener('beforeunload', function(event) {
-                    if (formChanged) {
-                        event.preventDefault();
-                        event.returnValue = '';
-                    }
-                });
-            });
-
-            function updateCorrectChoice(questionCount, index) {
-                const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
-                radios.forEach(radio => {
-                    const currentIndex = radio.value;
-                    const hiddenInput = document.querySelector(`input[name='questions[${questionCount}].questionChoices[${currentIndex}].correctOrNot']`);
-                    hiddenInput.value = (currentIndex == index) ? "true" : "false";
-                });
-            }
-        </script>
-
-        <script th:src="@{/side/js/popper.js}"></script>
-        <script th:src="@{/side/js/bootstrap.min.js}"></script>
-        <script th:src="@{/side/js/main.js}"></script>
     </div>
 </div>
 
+<!-- Modal -->
+<div id="importExcel" class="iziModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+    <div>
+        <p>Please ensure your Excel file follows this format:</p>
+        <ul>
+            <li>The first row should have the following headers: <strong>Question Content, Choice 1, Choice 2, Choice 3, Choice 4, Answer</strong></li>
+            <li>Each subsequent row should contain the question and its four choices contents</li>
+            <li>The Answer column must contain values <strong>1, 2, 3, or 4</strong> indicating the correct choice</li>
+        </ul>
+        <p>You can download a sample file for reference: <a th:href="@{/files/sample-quiz.xlsx}" download="Sample Quiz">Download Sample File</a></p>
+
+        <button type="button" class="btn btn-primary import-excel"><i class="fa fa-upload"></i> Import</button>
+        <input type="file" class="file-input" id="fileInput" style="display: none;" accept=".xls,.xlsx">
+    </div>
+</div>
+
+
+<!-- JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/js/iziModal.min.js" integrity="sha512-lR/2z/m/AunQdfBTSR8gp9bwkrjwMq1cP0BYRIZu8zd4ycLcpRYJopB+WsBGPDjlkJUwC6VHCmuAXwwPHlacww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('quizBankForm');
+
+        form.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && event.target.tagName.toLowerCase() !== 'textarea') {
+                event.preventDefault();
+            }
+        });
+
+        const addQuestionButton = document.querySelector('.add-question');
+        const saveButton = document.querySelector('.save-button');
+        const errorAlert = document.getElementById('errorAlert');
+        const questionsSection = document.getElementById('questionsSection');
+        let questionCounter = document.querySelectorAll('.question').length;
+
+        addQuestionButton.addEventListener('click', function() {
+            if (errorAlert) {
+                errorAlert.style.display = 'none';
+            }
+
+            const newQuestionHtml = `
+            <div class="card mb-4 question">
+                <div class="card-body">
+                    <label>Question ${questionCounter + 1}</label>
+                    <textarea type="text" name="questions[${questionCounter}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
+                    <button type="button" class="btn btn-danger btn-sm remove-question mb-3"><i class="fa fa-trash"></i></button>
+                    <div class="choices">
+                        ${[...Array(4)].map((_, index) => `
+                            <div class="form-check">
+                                <label class="w-100">
+                                    <input type="radio" name="questions[${questionCounter}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${questionCounter}, ${index})" required>
+                                    <input type="hidden" name="questions[${questionCounter}].questionChoices[${index}].correctOrNot" value="false">
+                                    <textarea type="text" name="questions[${questionCounter}].questionChoices[${index}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" required></textarea>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+            questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
+            questionCounter++;
+            updateTotalQuestions();
+            attachRemoveQuestionHandlers();
+        });
+
+        attachRemoveQuestionHandlers();
+
+        function attachRemoveQuestionHandlers() {
+            document.querySelectorAll('.remove-question').forEach(button => {
+                button.removeEventListener('click', handleRemoveQuestion);
+                button.addEventListener('click', handleRemoveQuestion);
+            });
+        }
+
+        function handleRemoveQuestion(event) {
+            const question = event.target.closest('.question');
+            const questionId = $(event.target).closest('.remove-question').data('id');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This action cannot be undone!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    question.remove();
+                    updateQuestionLabels();
+                    updateTotalQuestions();
+                    Swal.fire('Deleted!', 'The question has been removed.', 'success');
+                }
+            });
+        }
+
+        function updateQuestionLabels() {
+            const questions = document.querySelectorAll('.question');
+            questions.forEach((question, index) => {
+                question.querySelector('label').textContent = `Question ${index + 1}`;
+                const inputs = question.querySelectorAll('input, textarea');
+                inputs.forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        const updatedName = name.replace(/\d+/, index);
+                        input.setAttribute('name', updatedName);
+                    }
+                });
+            });
+            questionCounter = questions.length;
+        }
+
+        function updateTotalQuestions() {
+            const totalQuestions = document.getElementById('total');
+            totalQuestions.innerText = questionCounter;
+        }
+
+        saveButton.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the form from submitting immediately
+            Swal.fire({
+                title: "Do you want to save the changes?",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Save",
+                denyButtonText: "Don't save"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire("Saved!", "", "success");
+                    formChanged = false; // Reset the flag
+                    quizBankForm.submit(); // Submit the form if confirmed
+                } else if (result.isDenied) {
+                    Swal.fire("Changes are not saved", "", "info");
+                }
+            });
+        });
+
+        // Listen for form changes to set the flag
+        quizBankForm.addEventListener('change', function() {
+            formChanged = true;
+        });
+
+        // Handle beforeunload event to warn user about unsaved changes
+        window.addEventListener('beforeunload', function(event) {
+            if (formChanged) {
+                event.preventDefault();
+                event.returnValue = '';
+            }
+        });
+
+        $("#importExcel").iziModal({
+            title: '<i class="fa-regular fa-file-excel"></i>  Import file from your computer',
+            fullscreen: false,
+            closeOnEscape: true,
+            overlayClose: true,
+            onOpening: function(modal) {
+                $("#importExcel").css({
+                    'background-color': '#f9f9f9',
+                    'border-radius': '10px',
+                    'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.1)'
+                });
+
+                $("#importExcel .iziModal-header").css({
+                    'background-color': '#f89432',
+                    'color': 'white',
+                    'font-size': '40px'
+                });
+
+                $("#importExcel .iziModal-header-title").css({
+                    'font-size': '20px',
+                    'font-family': 'Poppins, Arial, sans-serif',
+                    'font-weight': '500'
+                });
+
+                $("#importExcel .iziModal-title").css({
+                    'font-size': '1.5em'
+                });
+
+                $("#importExcel .iziModal-content").css({
+                    'padding': '20px',
+                    'color': '#333'
+                });
+
+                $("#importExcel .iziModal-footer").css({
+                    'padding': '10px 20px',
+                    'border-bottom-left-radius': '10px',
+                    'border-bottom-right-radius': '10px',
+                    'text-align': 'right'
+                });
+
+                $("#importExcel .iziModal-button").css({
+                    'background-color': '#d58637',
+                    'color': 'white',
+                    'border': 'none',
+                    'padding': '10px 20px',
+                    'border-radius': '5px',
+                    'cursor': 'pointer'
+                }).hover(function() {
+                    $(this).css('background-color', '#d58637');
+                }, function() {
+                    $(this).css('background-color', '#d58637');
+                });
+            }
+        });
+
+        $(document).on('click', '#importFile', function() {
+            $('#importExcel').iziModal('open');
+            $('.sticky-top').hide();
+        });
+
+        $("#importExcel").on('closing', function () {
+            $('.sticky-top').show();
+        });
+
+        $(document).on('click', '#importFile', function() {
+            $('#importExcel').iziModal('open');
+        });
+
+        const importExcelButton = document.querySelector('.import-excel');
+
+        importExcelButton.addEventListener('click', function() {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                importQuestionsFromExcel(file);
+            }
+        });
+
+        function importQuestionsFromExcel(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/Quizify/quiz-banks/import-excel', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Excel Import Response:", data);
+                    if (data.success) {
+                        populateQuestions(data.questions);
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Import file successfully!",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        alert('Failed to import questions: ' + data.message);
+                    }
+                    resetFileInput();
+                })
+                .catch(error => {
+                    console.error('Error importing questions:', error);
+                    alert('An error occurred while importing questions');
+                    resetFileInput();
+                });
+        }
+
+        function populateQuestions(questions) {
+            const existingQuestionsCount = questionsSection.querySelectorAll('.question').length;
+
+            questions.forEach((question, questionCount) => {
+                const adjustedQuestionCount = questionCount + existingQuestionsCount;
+                const newQuestionHtml = `
+                <div class="card mb-4 question">
+                    <div class="card-body">
+                        <label>Question ${adjustedQuestionCount + 1}</label>
+                        <textarea type="text" name="questions[${adjustedQuestionCount}].content" class="form-control mb-2" value="${question.content}" rows="1" oninput="autoResize(this)" required>${question.content}</textarea>
+                        <button type="button" class="btn btn-danger btn-sm remove-question mb-3" data-id="${adjustedQuestionCount}"><i class="fa fa-trash"></i></button>
+                        <div class="choices">
+                            ${question.questionChoices.map((choice, index) => `
+                                <div class="form-check">
+                                    <label class="w-100">
+                                        <input type="radio" name="questions[${adjustedQuestionCount}].correctChoice" value="${index}" class="form-check-input mb-2" onclick="updateCorrectChoice(${adjustedQuestionCount}, ${index})" ${choice.correctOrNot ? 'checked' : ''} required>
+                                        <input type="hidden" name="questions[${adjustedQuestionCount}].questionChoices[${index}].correctOrNot" value="${choice.correctOrNot}">
+                                        <textarea type="text" name="questions[${adjustedQuestionCount}].questionChoices[${index}].content" class="form-control mb-2" rows="1" oninput="autoResize(this)" value="${choice.content}"  required>${choice.content}</textarea>
+                                    </label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+                questionsSection.insertAdjacentHTML('beforeend', newQuestionHtml);
+                questionCounter++;
+            });
+
+            updateTotalQuestions();
+            attachRemoveQuestionHandlers();
+        }
+
+        function resetFileInput() {
+            const fileInput = document.getElementById('fileInput');
+            fileInput.value = '';
+        }
+    });
+
+
+    function updateCorrectChoice(questionCount, index) {
+        const radios = document.getElementsByName(`questions[${questionCount}].correctChoice`);
+
+        radios.forEach(radio => {
+            const currentIndex = radio.value;
+            const hiddenInput = document.querySelector(`input[name='questions[${questionCount}].questionChoices[${currentIndex}].correctOrNot']`);
+
+            hiddenInput.value = (currentIndex == index) ? "true" : "false";
+        });
+    }
+
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+    }
+
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+    });
+
+    $(document).ready(function() {
+        $('form').submit(function() {
+            $('input[type="radio"]').attr('correctOrNot', 'true');
+            $('input[type!="radio"]').attr('correctOrNot', 'false');
+        });
+    });
+</script>
+<script th:src="@{/side/js/popper.js}"></script>
+<script th:src="@{/side/js/bootstrap.min.js}"></script>
+<script th:src="@{/side/js/main.js}"></script>
 </body>
 </html>
