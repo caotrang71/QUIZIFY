@@ -57,6 +57,8 @@ public class QuizBankController {
     private QuizBankRepository quizBankRepository;
     @Autowired
     private ExcelService excelService;
+    @Autowired
+    private FavoriteQuizBanksRepository favoriteQuizBanksRepository;
 
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
@@ -136,10 +138,8 @@ public class QuizBankController {
     }
 
     @PostMapping("/created")
-    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result, Model model) {
-    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result,
-                                 @RequestParam("questionImage") List<MultipartFile> questionImages,
-                                 Model model, HttpSession session) {
+    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result, Model model, HttpSession session) {
+
         if (result.hasErrors()) {
             return "create-quiz-bank";
         }
