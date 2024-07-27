@@ -105,7 +105,7 @@ public class QuizBankController {
         List<Comments> commentsList = commentsService.getAllCommentByQuizBanksID(id);
         model.addAttribute("commentsList", commentsList);
         //list favorite
-        boolean exitFavoriteQuizBanks = favoriteQuizBanksRepository.existsByQuizBank_Id(id);
+        boolean exitFavoriteQuizBanks = favoriteQuizBanksRepository.existsByQuizBank_IdAndUser_Id(id,user.getId());
 
         model.addAttribute("exitFavoriteQuizBanks", exitFavoriteQuizBanks);
         model.addAttribute("quizBank", quizBank);

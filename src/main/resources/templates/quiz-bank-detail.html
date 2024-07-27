@@ -151,8 +151,8 @@
 <!--                        add favorite quiz banks-->
                         <form th:action="@{/add/favorite_quiz_bank}" method="post">
                             <input type="hidden" name="quizBankId" th:value="${quizBank.id}">
-                            <button th:disabled="${exitFavoriteQuizBanks}" type="submit" class="button-no-border">
-                                <i class="fa fa-heart" aria-hidden="true"></i>
+                            <button th:disabled="${exitFavoriteQuizBanks}" th:classappend="${exitFavoriteQuizBanks ? 'active' : ''}" type="submit" class="button-no-border">
+                                <i class="fa fa-heart" aria-hidden="true">&nbsp;favorite</i>
                             </button>
                             <div th:if="${mess != null}">
                                 <p style="color: green" th:text="${mess}"></p>

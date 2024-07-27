@@ -87,3 +87,14 @@ label {
     padding: 0;
     outline: none; /* Để bỏ viền khi nút được chọn */
 }
+
+/*tô màu cho nút favorite quiz bank*/
+.button-no-border {
+    border: none;
+    background: none;
+    color: rgba(128, 123, 123, 0.5); /* Màu nhạt khi chưa nhấn */
+    transition: color 0.3s;
+}
+.button-no-border.active {
+    color: rgba(255, 0, 0, 1); /* Màu đậm khi đã nhấn */
+}
