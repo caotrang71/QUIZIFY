@@ -108,34 +108,6 @@ public class TestService {
         return test.getEndedAt() != null && test.getResult() != 0;
     }
 
-//    public Test submitTest(Long testId, List<Long> selectedChoiceIds) throws Exception {
-//        Optional<Test> testOpt = Optional.ofNullable(testRepository.getTestById(testId));
-//        if (!testOpt.isPresent()) {
-//            throw new Exception("Test not found");
-//        }
-//        Test test = testOpt.get();
-//        int correctAnswers = 0;
-//
-//        List<TestHistory> testHistories = test.getTestHistories();
-//        for (int i = 0; i < testHistories.size(); i++) {
-//            TestHistory history = testHistories.get(i);
-//            Long selectedChoiceId = selectedChoiceIds.get(i);
-//            QuestionChoice selectedChoice = questionChoiceRepository.findById(selectedChoiceId).orElse(null);
-//
-//            if (selectedChoice != null && selectedChoice.getCorrectOrNot()) {
-//                correctAnswers++;
-//            }
-//
-//
-//            history.setQuestionChoice(selectedChoice);
-//            testHistoryRepository.save(history);
-//        }
-//
-//        test.setResult(correctAnswers);
-//        test.setEndedAt(LocalDateTime.now());
-//        return testRepository.save(test);
-//    }
-
     public Test submitTest(Long testId, List<Long> selectedChoiceIds, Long elapsedTime) throws Exception {
         Optional<Test> testOpt = Optional.ofNullable(testRepository.getTestById(testId));
         if (!testOpt.isPresent()) {
@@ -164,6 +136,10 @@ public class TestService {
         test.setTimeTaken(elapsedTime);
 
         return testRepository.save(test);
+    }
+
+    public void deleteTestById(Long id) {
+        this.testRepository.deleteById(id);
     }
 
 

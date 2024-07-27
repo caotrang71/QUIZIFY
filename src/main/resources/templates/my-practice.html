@@ -42,7 +42,7 @@
         <table class="table mt-5" id="example">
             <thead>
             <tr>
-                <th>Test ID</th>
+                <th>Test Title</th>
                 <th>Quiz Bank</th>
                 <th>Start At</th>
                 <th>End At</th>
@@ -53,7 +53,7 @@
             <tbody>
             <tr th:each="test : ${tests}" class="test-row"
                 th:attr="data-test-id=${test.id}, data-total-questions=${test.numberOfQuestions}">
-                <td th:text="${test.id}"></td>
+                <td th:text="${test.title}"></td>
                 <td th:text="${test.quizBank.bankName}"></td>
                 <td th:text="${test.startedAt}"></td>
                 <td th:text="${test.endedAt != null ? test.endedAt : 'Pending'}"></td>
@@ -73,6 +73,9 @@
                     </a>
                     <a th:if="${test.endedAt != null}" th:href="@{/tests/detail/{testId}(testId=${test.id})}" class="text-secondary" style="font-size: 1.5rem;">
                         <i class="fas fa-info-circle"></i>
+                    </a>
+                    <a th:href="@{/tests/deleted/{id} (id=${test.id})  }">
+                        <i class="fa fa-trash-o"></i>
                     </a>
                 </td>
             </tr>

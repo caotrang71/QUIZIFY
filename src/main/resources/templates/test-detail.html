@@ -45,12 +45,12 @@
             </div>
             <div class="col-sm-4 d-flex align-items-center justify-content-end font-weight-bold">
 
-                <form id="exitForm" th:action="@{/tests/exit}" method="post" style="display: inline;">
-                    <input type="hidden" name="testId" th:value="${test.id}"/>
-                    <button type="submit" class="btn btn-secondary">
+                <div id="exitForm"  style="display: inline;">
+
+                    <a type="button" th:href="@{/tests/my-practice}" class="btn btn-secondary">
                         <i class="fas fa-sign-out-alt"></i> Exit
-                    </button>
-                </form>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

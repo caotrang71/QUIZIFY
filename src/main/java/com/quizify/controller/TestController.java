@@ -130,6 +130,12 @@ public class TestController {
         return "test-detail";
     }
 
+    @GetMapping("/deleted/{id}")
+    public String deleteTest(@PathVariable("id") Long id){
+        testService.deleteTestById(id);
+        return "redirect:/tests/my-practice";
+    }
+
     @PostMapping("/exit")
     public String exitTest(@RequestParam Long testId, RedirectAttributes redirectAttributes) {
         if(testService.isTestSubmitted(testId)){

@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 public class QuizBankController {
     @Autowired
     private QuizBankService quizBankService;
+
+//    @Autowired
+//    private UserService userService;
     @Autowired
     private FileStorageService fileStorageService;
     @Autowired
@@ -54,17 +57,7 @@ public class QuizBankController {
     private QuizBankRepository quizBankRepository;
     @Autowired
     private ExcelService excelService;
-    @Autowired
-    private FavoriteQuizBanksRepository favoriteQuizBanksRepository;
 
-
-    //view list of quiz banks by subcategory
-    @GetMapping("/quiz-banks-list/{id}")
-    public String showQuizBanksList(@PathVariable long id ,Model model){
-        List<QuizBank> quizBankList = quizBankRepository.findBySubcategoryId(id);
-        model.addAttribute("quizBanksList", quizBankList);
-        return "quiz-bank-list";
-    }
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
     public String quizBankList(Model model, @Param("keyword") String keyword) {
@@ -82,7 +75,6 @@ public class QuizBankController {
         QuizBank quizBank = quizBankService.getQuizBankById(id);
         List<Question> questions = questionService.getQuestionsByQuizBank(quizBank);
         Map<Question, List<QuestionChoice>> questionChoicesMap = new HashMap<>();
-
         for(Question question : questions) {
             List<QuestionChoice> questionChoices = questionChoiceService.getQuestionChoiceByQuestion(question);
             questionChoicesMap.put(question, questionChoices);
@@ -144,6 +136,7 @@ public class QuizBankController {
     }
 
     @PostMapping("/created")
+    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result, Model model) {
     public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result,
                                  @RequestParam("questionImage") List<MultipartFile> questionImages,
                                  Model model, HttpSession session) {
@@ -158,24 +151,24 @@ public class QuizBankController {
 
         boolean tontai = true;
 
-        if(questionImages != null && !questionImages.isEmpty()) {
-            tontai = true;
-        }
+//        if(questionImages != null && !questionImages.isEmpty()) {
+//            tontai = true;
+//        }
         System.out.println("File anh ton tai " + tontai);
 
         for (int i = 0; i < quizBank.getQuestions().size(); i++) {
             Question question = quizBank.getQuestions().get(i);
-            MultipartFile imageFile = questionImages.get(i);
+//            MultipartFile imageFile = questionImages.get(i);
 
-            if (!imageFile.isEmpty()) {
-                try {
-                    String fileName = fileStorageService.storeFile(imageFile);
-                    question.setImage(fileName);
-                } catch (RuntimeException e) {
-                    model.addAttribute("error", "File upload failed: " + e.getMessage());
-                    return "create-quiz-bank";
-                }
-            }
+//            if (!imageFile.isEmpty()) {
+//                try {
+//                    String fileName = fileStorageService.storeFile(imageFile);
+//                    question.setImage(fileName);
+//                } catch (RuntimeException e) {
+//                    model.addAttribute("error", "File upload failed: " + e.getMessage());
+//                    return "create-quiz-bank";
+//                }
+//            }
 
             for (QuestionChoice choice : question.getQuestionChoices()) {
                 choice.setQuestion(question);
