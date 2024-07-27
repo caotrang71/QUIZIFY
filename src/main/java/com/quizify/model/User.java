@@ -68,4 +68,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Comments> Comments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FavoriteQuizBanks> favoriteQuizBanks;
 }
