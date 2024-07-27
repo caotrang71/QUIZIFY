@@ -33,63 +33,53 @@
         <div class="p-4 pt-5">
             <h1>Quizify</h1>
             <ul class="list-unstyled components mb-5">
+<!--                <li class="active">-->
+<!--                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>-->
+<!--                    <ul class="collapse list-unstyled" id="homeSubmenu">-->
+<!--                        <li>-->
+<!--                            <a href="#">Home 1</a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="#">Home 2</a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="#">Home 3</a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </li>-->
                 <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li>
-                            <a href="#">Home 1</a>
-                        </li>
-                        <li>
-                            <a href="#">Home 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Home 3</a>
-                        </li>
-                    </ul>
+                    <a th:href="@{/userHome}"><span class="mr-2"><i class="fa-solid fa-house"></i></span>Home</a>
                 </li>
                 <li>
-                    <a th:href="@{/quiz-banks/quiz-banks-list}">My Library</a>
+                    <a th:href="@{/quiz-banks/quiz-banks-list}"><span class="mr-2"><i class="fa-solid fa-book"></i></span>My Library</a>
                 </li>
                 <li>
-                    <a th:href="@{/show/favorite_quiz_banks}">Favorite Quiz Bank</a>
+                    <a th:href="@{/show/favorite_quiz_banks}"><span class="mr-2"><i class="fa-solid fa-heart"></i></span>Favorite Quiz Bank</a>
                 </li>
-                <li>
-                    <a th:href="@{/quiz-banks/quiz-banks-list}">Quiz Banks</a>
-                </li>
-                <li>
-                    <a href="#">Recently</a>
-                </li>
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Notification</a>
+
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a href="#pageSubmenu"  data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <span class="mr-2"><i class="fa-solid fa-list-check"></i></span>Management</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                         <li>
-                            <a href="#">Page 1</a>
+                            <a th:href="@{/manage_account}">Account List</a>
                         </li>
                         <li>
-                            <a href="#">Page 2</a>
+                            <a th:href="@{/quiz-banks/quiz-banks-list}">Quiz Banks List</a>
                         </li>
-                        <li>
-                            <a href="#">Page 3</a>
+                        <li >
+                            <a th:href="@{/category}">Category List</a>
                         </li>
                     </ul>
                 </li>
-                <li>
-                    <a th:href="@{/profile/{id}(id=${session.user.id})}">My Profile</a>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
-                </li>
+
+
                 <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
-                    <a th:href="@{/manage_account}">Manager Account</a>
+                    <a th:href="@{/show/statistics}"><span class="mr-2"><i class="fa-solid fa-chart-line"></i></span>Dashboard</a>
                 </li>
-                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
-                    <a th:href="@{/category}">Category List</a>
-                </li>
-                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
-                    <a th:href="@{/show/statistics}">statistics</a>
+
+                <li>
+                    <a th:href="@{/}">About</a>
                 </li>
             </ul>
 
