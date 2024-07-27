@@ -31,11 +31,13 @@ public class FavoriteQuizBanksController {
         model.addAttribute("favorList", favorList);
         return "favorite_quiz_banks";
     }
+
     @DeleteMapping("/delete/favorite_quiz_banks/{id}")
     @ResponseBody
     public void deleteFavoriteQuizBanks(@PathVariable long id){
         favoriteQuizBanksService.deleteFavoriteQuizBanks(id);
     }
+
     @PostMapping("/add/favorite_quiz_bank")
     public String addFavoriteQuizBanks(@RequestParam long quizBankId, HttpSession session,
                                      RedirectAttributes redirectAttributes){
@@ -43,6 +45,6 @@ public class FavoriteQuizBanksController {
         User user = (User) session.getAttribute("user");
         favoriteQuizBanksService.addFavoriteQuizBanks(quizBank,user);
         redirectAttributes.addFlashAttribute("mess", "add favorite quiz bank success");
-        return "";
+        return "redirect:/quiz-banks/quiz-bank-detail/"+quizBankId;
     }
 }

@@ -148,7 +148,16 @@
                     <div class="card-body">
                         <h2 class="card-title" th:text="${quizBank.bankName}"></h2>
                         <p class="card-text" th:text="${quizBank.description}"></p>
-                        <!--                    <p class="card-text" th:text="${quizBank.subcategory.getSubcategoryName()}">Topic: </p>-->
+<!--                        add favorite quiz banks-->
+                        <form th:action="@{/add/favorite_quiz_bank}" method="post">
+                            <input type="hidden" name="quizBankId" th:value="${quizBank.id}">
+                            <button th:disabled="${exitFavoriteQuizBanks}" type="submit" class="button-no-border">
+                                <i class="fa fa-heart" aria-hidden="true"></i>
+                            </button>
+                            <div th:if="${mess != null}">
+                                <p style="color: green" th:text="${mess}"></p>
+                            </div>
+                        </form>
                     </div>
                     <div class="card-footer row d-flex ml-0 mr-0">
                         <div class="total col-md">
@@ -169,7 +178,7 @@
                             <div class="star">
                                 <div class="view-user-voted">
                                     <i class="fa fa-users"  aria-hidden="true"></i>
-                                    <span th:text="${votes.size()}"></span> voted users
+                                    <span th:text="${votes.size()}"></span> users voted
                                 </div>
                             </div>
                         </div>
@@ -356,7 +365,7 @@
                                             </div>
                                             <p th:text="${comments.comment}"></p>
                                             <div class="dropdown">
-                                                <button th:hidden="${session.user.id != comments.user.id && session.user.getRole().id != 1 && session.user.getRole().id !=2}"
+                                                <button th:hidden="${session.user.id != comments.user.id}"
                                                         onclick="toggleDropdown(this)" class="dropdown-btn">
                                                     ...
                                                 </button>

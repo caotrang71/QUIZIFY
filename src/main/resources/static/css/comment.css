@@ -79,3 +79,11 @@ label {
 .show {
     display: block;
 }
+/*bỏ bo viền button*/
+.button-no-border {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    outline: none; /* Để bỏ viền khi nút được chọn */
+}

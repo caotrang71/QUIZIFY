@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface FavoriteQuizBanksRepository extends JpaRepository<FavoriteQuizBanks, Long> {
     List<FavoriteQuizBanks> findByUser(User user);
+    boolean existsByQuizBank_Id(Long quizBank_id);
 }

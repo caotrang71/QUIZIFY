@@ -54,6 +54,8 @@ public class QuizBankController {
     private QuizBankRepository quizBankRepository;
     @Autowired
     private ExcelService excelService;
+    @Autowired
+    private FavoriteQuizBanksRepository favoriteQuizBanksRepository;
 
 
     //view list of quiz banks by subcategory
@@ -102,7 +104,10 @@ public class QuizBankController {
         //List comments
         List<Comments> commentsList = commentsService.getAllCommentByQuizBanksID(id);
         model.addAttribute("commentsList", commentsList);
+        //list favorite
+        boolean exitFavoriteQuizBanks = favoriteQuizBanksRepository.existsByQuizBank_Id(id);
 
+        model.addAttribute("exitFavoriteQuizBanks", exitFavoriteQuizBanks);
         model.addAttribute("quizBank", quizBank);
         model.addAttribute("questions", questions);
         model.addAttribute("questionChoicesMap", questionChoicesMap);
