@@ -157,7 +157,7 @@
                     <i class="fa fa-eye"></i>
                     </a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a th:href="@{/show//update/category/{id}(id=${listCate.id})}" >
+                    <a th:href="@{/show/update/category/{id}(id=${listCate.id})}" >
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </a>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -187,16 +187,16 @@
             })
                 .then(response=>{
                     if (response.ok){
-                        alert('account delete  successfully.');
+                        alert('Category delete  successfully.');
 
                         location.reload();
                     }else{
-                        alert('failed  to delete account!');
+                        alert('failed  to delete Category!');
                     }
                 })
                 .catch(error=> {
                     console.error('Error:' ,error);
-                    alert('failed to delete user')
+                    alert('failed to delete Category')
                 })
         }
     }

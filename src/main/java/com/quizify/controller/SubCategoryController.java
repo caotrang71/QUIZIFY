@@ -95,9 +95,16 @@ public class SubCategoryController {
     @PostMapping("/create/subCategory")
     public String createSubCategory(@ModelAttribute Subcategory subcategory,
                                     RedirectAttributes redirectAttributes){
-        subcategoryRepository.save(subcategory);
-        redirectAttributes.addFlashAttribute("message","create subcategory successfully");
-        return "redirect:/category";
+
+        boolean subCategoryExist =subcategoryRepository.existsBySubcategoryNameIgnoreCase(subcategory.getSubcategoryName());
+        if (subCategoryExist) {
+            redirectAttributes.addFlashAttribute("message", "Subcategory already exists!");
+            return "redirect:/show/create/subCategory";
+        }else {
+            subcategoryRepository.save(subcategory);
+            redirectAttributes.addFlashAttribute("message","create subcategory successfully");
+            return "redirect:/category";
+        }
     }
 
 

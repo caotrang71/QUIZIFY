@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface OTPRepository extends JpaRepository<OTP,Integer> {
     Optional<OTP> findFirstByEmail(String email);
+    Optional<OTP> findTopByEmailOrderByExpriTimeDesc(String email);
 }

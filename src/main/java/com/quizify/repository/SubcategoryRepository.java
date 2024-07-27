@@ -11,4 +11,5 @@ import java.util.List;
 public interface SubcategoryRepository extends JpaRepository<Subcategory, Integer> {
     List<Subcategory> getSubcategoriesByCategory(Category category);
     List<Subcategory> getSubcategoriesByCategoryId(int categoryID);
+    boolean existsBySubcategoryNameIgnoreCase(String subCategoryName);
 }

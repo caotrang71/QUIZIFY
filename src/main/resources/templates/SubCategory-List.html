@@ -157,7 +157,7 @@
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     </a>
                     &nbsp;&nbsp;
-                    <a href="#">
+                    <a th:href="@{/quiz-banks/quiz-banks-list/{id}(id=${listSubCate.id})}">
                     <i class="fa fa-eye"></i>
                     </a>
                     &nbsp;&nbsp;
@@ -187,16 +187,16 @@
             })
                 .then(response=>{
                     if (response.ok){
-                        alert('account delete  successfully.');
+                        alert('SubCategory delete  successfully.');
 
                         location.reload();
                     }else{
-                        alert('failed  to delete account!');
+                        alert('failed  to delete SubCategory!');
                     }
                 })
                 .catch(error=> {
                     console.error('Error:' ,error);
-                    alert('failed to delete user')
+                    alert('failed to delete SubCategory')
                 })
         }
     }

@@ -55,6 +55,14 @@ public class QuizBankController {
     @Autowired
     private ExcelService excelService;
 
+
+    //view list of quiz banks by subcategory
+    @GetMapping("/quiz-banks-list/{id}")
+    public String showQuizBanksList(@PathVariable long id ,Model model){
+        List<QuizBank> quizBankList = quizBankRepository.findBySubcategoryId(id);
+        model.addAttribute("quizBanksList", quizBankList);
+        return "quiz-bank-list";
+    }
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
     public String quizBankList(Model model, @Param("keyword") String keyword) {

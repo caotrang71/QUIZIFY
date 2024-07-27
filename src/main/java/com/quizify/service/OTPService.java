@@ -30,16 +30,16 @@ public class OTPService {
     }
 
     public Optional<OTP> getObjectOTP(String email) {
-        return otpRepository.findFirstByEmail(email);
+        return otpRepository.findTopByEmailOrderByExpriTimeDesc(email);
     }
     public void deleteOTP(String email) {
-        Optional<OTP> otp = otpRepository.findFirstByEmail(email);
+        Optional<OTP> otp = otpRepository.findTopByEmailOrderByExpriTimeDesc(email);
         if (otp.isPresent()) {
             otpRepository.delete(otp.get());
         }
     }
     public boolean isValidOTP(String email, String otp) {
-        Optional<OTP> otpEntity = otpRepository.findFirstByEmail(email);
+        Optional<OTP> otpEntity = otpRepository.findTopByEmailOrderByExpriTimeDesc(email);
         if (otpEntity == null) {
             return false;
         }

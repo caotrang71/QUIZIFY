@@ -17,19 +17,13 @@ import java.util.List;
 
 @Repository
 public interface QuizBankRepository extends JpaRepository<QuizBank, Long> {
-//    void saveQuizBank(QuizBank quizBank);
- //   List<QuizBank> getQuizBanksListWithQuestions();
+    List<QuizBank> findBySubcategoryId(long subCategoryId);
 
     QuizBank getQuizBankById(long id);
     void deleteQuizBanksById(long id);
-//    Page<QuizBank> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
-//    List<Question> getQuestions(QuizBank quizBank);
 
     List<QuizBank> getQuizBanksBySubcategory(Subcategory subcategory);
 
-//    List<QuizBank> searchQuizBank(String keyword);
-//    @Query("SELECT q FROM QuizBank q WHERE q.bankName LIKE %:keyword%")
-//    Page<QuizBank> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
     List<QuizBank> findByBankNameContainingIgnoreCase(String bankName);
     List<QuizBank> findAllByOrderByBankNameAsc();
     List<QuizBank> findAllByOrderByBankNameDesc();

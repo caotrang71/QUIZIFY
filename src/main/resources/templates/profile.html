@@ -23,20 +23,23 @@
                 </div>
                 <form th:action="@{/update_profile}" th:method="post" th:object="${user}" >
                 <div class="row mt-2">
-                    <div class="col-md-6"><label class="labels">Name</label><input type="text" class="form-control boderbox" placeholder="Full Name" th:value="${user.get().getFullName()}" name="fullName" ></div>
-                    <br><br>
-                    <div class="col-md-6"><label for="gender" class="labels">Gender</label>
-                        <select class="form-control boderbox" id="gender" name="gender">
-                            <option th:selected="${user.get().isGender() == true  }"  >Male</option>
-                            <option th:selected="${user.get().isGender() == false  }"  >Female</option>
+                    <div class="col-md-6">
+                        <label class="labels">Name</label>
+                        <input id="fullName" type="text" class="form-control boderbox" placeholder="Full Name" th:value="${user.get().getFullName()}" name="fullName">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="gender" class="labels">Gender</label>
+                        <select id="gender" class="form-control boderbox" name="gender">
+                            <option th:selected="${user.get().isGender() == true}">Male</option>
+                            <option th:selected="${user.get().isGender() == false}">Female</option>
                         </select>
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12"><label class="labels"></label><input type="hidden" class="form-control" placeholder="user id" th:value="${user.get().id}" name="id" readonly></div>
-                    <div class="col-md-12 mb-3"><label class="labels">BirthDate</label><input type="date" class="form-control boderbox" placeholder="dd/mm/yyyy " th:value="${user.get().getBirthdate()}" name="birthdate"></div>
+                    <div class="col-md-12 mb-3"><label class="labels">BirthDate</label><input type="date" id="birthdate" class="form-control boderbox" placeholder="dd/mm/yyyy " th:value="${user.get().getBirthdate()}" name="birthdate"></div>
                     <div class="col-md-12 mb-3"><label class="labels">Email</label><input type="text" class="form-control boderbox" placeholder="Email" th:value="${user.get().getEmail()}" name="email" readonly></div>
-                    <div class="col-md-12 mb-3"><label class="labels">Userame</label><input type="text" class="form-control boderbox" placeholder="username" th:value="${user.get().getUsername()}" name="username"></div>
+                    <div class="col-md-12 mb-3"><label class="labels">Userame</label><input type="text" id="username" class="form-control boderbox" placeholder="username" th:value="${user.get().getUsername()}" name="username"></div>
                     <div class="col-md-12 mb-3"><label class="labels">Status</label><input type="text" class="form-control boderbox" placeholder="status" th:value="${user.get().getStatus() == true ? 'Actice' : 'Inactive' }" name="status" readonly></div>
 
                 </div>
@@ -44,7 +47,7 @@
                     <div class="col-md-6 mt-6 text-center"><a class="btn btn-primary profile-button boderbox" th:href="@{/change_pass/{username}(username=${user.get().getEmail()})}" >Change Password</a></div>
                     <div class="col-md-6 mt-6 text-center"><button class="btn btn-primary profile-button boderbox" name="Save" type="submit">Save Profile</button></div>
                 </div>
-                <div class="row mt-2" th:if="${mess != null}">
+                <div style="text-align: center" class="row mt-2" th:if="${mess != null}">
                     <p style="color: green" th:text="${mess}"></p>
                 </div>
 
@@ -54,5 +57,35 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const saveButton = document.querySelector('button[name="Save"]');
+        const formElements = document.querySelectorAll('#fullName, #gender, #birthdate, #username'); // Các trường cần theo dõi
+        const originalValues = {};
+
+        // Lưu giá trị ban đầu của các trường
+        formElements.forEach(element => {
+            originalValues[element.id] = element.value;
+            element.addEventListener('input', checkChanges);
+            element.addEventListener('change', checkChanges); // Thêm event listener cho select
+        });
+
+        function checkChanges() {
+            let hasChanges = false;
+            formElements.forEach(element => {
+                if (element.value !== originalValues[element.id]) {
+                    hasChanges = true;
+                }
+            });
+
+            saveButton.disabled = !hasChanges;
+        }
+
+        // Khởi tạo trạng thái ban đầu của nút Save
+        saveButton.disabled = true;
+    });
+</script>
+
 </body>
 </html>
