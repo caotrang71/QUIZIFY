@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -156,8 +157,16 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") User user
-            ,RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
+    public String register(@Valid @ModelAttribute("user") User user
+                            ,RedirectAttributes redirectAttributes) throws UnsupportedEncodingException
+    {
+        //kiểm tra fullname có đúng độ dài không
+        String regexFullName = "^.{2,50}$";
+        String inputFullName = user.getFullName();
+
+        Pattern patternFullName = Pattern.compile(regexFullName);
+        Matcher matcherFullName = patternFullName.matcher(inputFullName);
+
         //kiểm tra mật khẩu có đúng độ dài chữ số không
         String regexPass = "^[a-zA-Z0-9][a-zA-Z0-9\\-_@&]{6,14}[a-zA-Z0-9]$";
         String inputPass = user.getPassword();
@@ -171,6 +180,10 @@ public class UserController {
 
         Pattern patternEmail = Pattern.compile(regexEmail);
         Matcher matcherEmail = patternEmail.matcher(inputEmail);
+        if (!matcherFullName.matches()){
+            redirectAttributes.addFlashAttribute("message", "Your full name must be between 2 and 50 charactersters.");
+            return "redirect:/show_page_login";
+        }
         if (!matcherEmail.matches()){
             redirectAttributes.addFlashAttribute("message", "Your email must end in .com and contain only numbers and letters.");
             return "redirect:/show_page_login";
@@ -207,7 +220,7 @@ public class UserController {
     @PostMapping("/verifyOTP")
     public String verifyOTP(@RequestParam String email, @RequestParam String pass,
                             @RequestParam String fullname, @RequestParam String otp,
-                            Model model,RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
+                            RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
         Optional<OTP> otpObjectOptional = otpService.getObjectOTP(email);
         //kiem tra otp ton tai hay khong
         if (otpObjectOptional.isEmpty()) {
