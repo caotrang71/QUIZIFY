@@ -97,7 +97,7 @@ public class QuizBankController {
     }
 
     @PostMapping("/created")
-    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result, @RequestParam("questionImage") List<MultipartFile> questionImages, Model model) {
+    public String createQuizBank(@ModelAttribute QuizBank quizBank, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "create-quiz-bank";
         }
@@ -109,24 +109,24 @@ public class QuizBankController {
 
         boolean tontai = true;
 
-        if(questionImages != null && !questionImages.isEmpty()) {
-            tontai = true;
-        }
+//        if(questionImages != null && !questionImages.isEmpty()) {
+//            tontai = true;
+//        }
         System.out.println("File anh ton tai " + tontai);
 
         for (int i = 0; i < quizBank.getQuestions().size(); i++) {
             Question question = quizBank.getQuestions().get(i);
-            MultipartFile imageFile = questionImages.get(i);
+//            MultipartFile imageFile = questionImages.get(i);
 
-            if (!imageFile.isEmpty()) {
-                try {
-                    String fileName = fileStorageService.storeFile(imageFile);
-                    question.setImage(fileName);
-                } catch (RuntimeException e) {
-                    model.addAttribute("error", "File upload failed: " + e.getMessage());
-                    return "create-quiz-bank";
-                }
-            }
+//            if (!imageFile.isEmpty()) {
+//                try {
+//                    String fileName = fileStorageService.storeFile(imageFile);
+//                    question.setImage(fileName);
+//                } catch (RuntimeException e) {
+//                    model.addAttribute("error", "File upload failed: " + e.getMessage());
+//                    return "create-quiz-bank";
+//                }
+//            }
 
             for (QuestionChoice choice : question.getQuestionChoices()) {
                 choice.setQuestion(question);
