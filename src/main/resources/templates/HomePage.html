@@ -145,13 +145,13 @@
             <a href="#"><i class="fas fa-bell" id="closeIcon"></i></a>
         </div>
             <ul>
-                <li th:each=" notification : ${notifications} "
-                    th:hidden="${notification.receivedBy != session.user.id && session.user.getRole().id != 1 && session.user.getRole().id != 2}"
+                <li th:each=" notification : ${notifications}"
+                    th:hidden="${notification.receivedBy != session.user.id}"
                     class="notification-item" th:classappend="${notification.read == false} ? 'new' ">
                     <a th:href="@{${notification.link}}" class="title" th:text="${notification.title}"
                        th:onclick = " 'markAsReadLink('+${notification.notificationId}+')'"></a>
                     <div class="content" th:text="${notification.content}"></div>
-                    <button onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
+                    <button th:hidden="${notification.receivedBy != session.user.id}" onclick="toggleDropdown(this)" class="dropdown-btn">...</button>
                     <div class="dropdown-content">
                         <a th:hidden="${notification.read == true}" href="#" th:onclick = " 'markAsRead('+${notification.notificationId}+')' ">make as read</a>
                         <a th:hidden="${notification.read == false}" href="#" th:onclick = " 'markAsNew('+${notification.notificationId}+')' ">mark as unread</a>

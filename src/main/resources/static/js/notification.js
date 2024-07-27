@@ -100,7 +100,7 @@ function markAsNew(notificationId) {
     })
         .then(response => {
             if (response.ok){
-                alert('make as new success');
+                alert('make as unread success');
                 location.reload();
             }else {
                 return response.text().then(text => { throw new Error(text) });
@@ -108,7 +108,7 @@ function markAsNew(notificationId) {
         })
         .catch(error=> {
             console.error('Error:' ,error);
-            alert('failed to make as read')
+            alert('failed to make as unread')
         })
 }
 
