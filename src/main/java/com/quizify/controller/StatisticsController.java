@@ -72,8 +72,8 @@ public class StatisticsController {
         List<User> userList = userRepository.findAll();
         List<Test> testList = testRepository.findAll();
 
-        String totalUser = "total: "+userList.size()+" people have used quizify";
-        String totaTakeQuiz = "total: "+testList.size()+" people have taken quizify";
+        String totalUser = "Total: "+userList.size()+" people have used Quizify";
+        String totaTakeQuiz = "Total: "+testList.size()+" people have taken Quizify";
         model.addAttribute("totalUser", totalUser);
         model.addAttribute("totalTakeQuiz", totaTakeQuiz);
 
