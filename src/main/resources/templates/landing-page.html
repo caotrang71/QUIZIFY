@@ -47,9 +47,9 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
 
-                    <li class="nav-item" th:if="${roles.type_of_role == 'admin'}" >
-                        <a class="nav-link link text-black display-4" href="http://localhost:8080/manage-account">manage-account</a>
-                    </li>
+<!--                    <li class="nav-item" th:if="${roles.type_of_role == 'admin'}" >-->
+<!--                        <a class="nav-link link text-black display-4">manage-account</a>-->
+<!--                    </li>-->
 
                     <li class="nav-item">
                     <a class="nav-link link text-black display-4" href="#">About</a>
@@ -63,7 +63,7 @@
                     </li></ul>
 
                 <div class="navbar-buttons mbr-section-btn">
-                    <a class="btn btn-primary display-4" href="login.html">Join Now</a>
+                    <a class="btn btn-primary display-4" th:href="@{/show_page_login}">Join Now</a>
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
                 </h1>
 
                 <p class="mbr-fonts-style mbr-text mbr-white mb-4 display-7">Embark on a journey of knowledge with Quizify - where learning meets fun in the smartest way possible!</p>
-                <div class="mbr-section-btn"><a class="btn btn-white-outline display-7" href="#">Start Learning</a></div>
+                <div class="mbr-section-btn"><a class="btn btn-white-outline display-7" th:href="@{/show_page_login}">Start Learning</a></div>
             </div>
         </div>
     </div>
