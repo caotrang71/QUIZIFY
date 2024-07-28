@@ -20,11 +20,13 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <link rel="stylesheet" th:href="@{/css/star.css}">
     <link rel="stylesheet" th:href="@{/css/notification.css}">
     <script th:src="@{/js/notification.js}"></script>
 
     <script th:src="@{/js/comment.js}"></script>
+    <script th:src="@{/js/star.js}"></script>
+
 </head>
 <body>
 
@@ -148,7 +150,19 @@
                 <td th:text="${quizBank.subcategory.getSubcategoryName()}"></td>
                 <td th:text="${quizBank.createdBy.fullName}"></td>
                 <td>
-
+                    <div class="col-md">
+                        <div class="star">
+                            <!--                            <h7 th:text="${averageStar}"></h7>-->
+                            <div class="rating-box">
+                                <span th:text="${averageStar[quizBank.id]}"></span>
+                                <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar[quizBank.id] >= 1} ? 'active' "></span>
+                                <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar[quizBank.id] >= 2} ? 'active' "></span>
+                                <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar[quizBank.id] >= 3} ? 'active' "></span>
+                                <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar[quizBank.id] >= 4} ? 'active' "></span>
+                                <span class="fa fa-star" aria-hidden="true" th:classappend=" ${averageStar[quizBank.id] >= 5} ? 'active' "></span>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
             </tbody>
