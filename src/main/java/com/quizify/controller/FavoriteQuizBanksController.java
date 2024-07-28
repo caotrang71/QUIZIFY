@@ -44,7 +44,7 @@ public class FavoriteQuizBanksController {
         QuizBank quizBank = quizBankRepository.findById(quizBankId).orElse(null);
         User user = (User) session.getAttribute("user");
         favoriteQuizBanksService.addFavoriteQuizBanks(quizBank,user);
-        redirectAttributes.addFlashAttribute("mess", "add favorite quiz bank success");
+        redirectAttributes.addFlashAttribute("mess", "Add favorite quiz bank successfully!");
         return "redirect:/quiz-banks/quiz-bank-detail/"+quizBankId;
     }
 }

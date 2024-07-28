@@ -11,7 +11,8 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pretty-checkbox/3.0.3/pretty-checkbox.min.css" integrity="sha512-kz4Ae66pquz4nVE5ytJyKfPDkQyHSggaDtT1v8oLfOd8bB+ZgZXNLaxex99MNu4fdCsWmi58mhLtfGk5RgfcOw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link th:href="@{/side/css/style.css}" rel="stylesheet">
     <link th:href="@{/side/css/input-field.css}" rel="stylesheet">
     <link th:href="@{/side/css/update.css}" rel="stylesheet">
@@ -20,6 +21,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/css/iziModal.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izimodal/1.6.1/js/iziModal.min.js"></script>
+
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -30,40 +32,42 @@
         <div class="p-4 pt-5">
             <h1>Quizify</h1>
             <ul class="list-unstyled components mb-5">
-                <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                <li>
+                    <a th:href="@{/userHome}"><span class="mr-2"><i class="fa-solid fa-house"></i></span>Home</a>
                 </li>
                 <li>
-                    <a href="#">My Library</a>
+                    <a th:href="@{/quiz-banks/library}"><span class="mr-2"><i class="fa-solid fa-book"></i></span>My Library</a>
                 </li>
                 <li>
-                    <a href="#">Favorite Quiz Bank</a>
+                    <a th:href="@{/show/favorite_quiz_banks}"><span class="mr-2"><i class="fa-solid fa-heart"></i></span>Favorite Quiz Bank</a>
                 </li>
                 <li>
-                    <a href="#">Recently</a>
+                    <a th:href="@{/tests/my-practice}"><span class="mr-2"><i class="fa-solid fa-feather"></i></span>My Practice</a>
                 </li>
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Notification</a>
+
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a href="#pageSubmenu"  data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <span class="mr-2"><i class="fa-solid fa-list-check"></i></span>Management</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                         <li>
-                            <a href="#">Page 1</a>
+                            <a th:href="@{/manage_account}">Account List</a>
                         </li>
                         <li>
-                            <a href="#">Page 2</a>
+                            <a th:href="@{/quiz-banks/quiz-banks-list}">Quiz Banks List</a>
                         </li>
-                        <li>
-                            <a href="#">Page 3</a>
+                        <li >
+                            <a th:href="@{/category}">Category List</a>
                         </li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#">My Profile</a>
+
+
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a th:href="@{/show/statistics}"><span class="mr-2"><i class="fa-solid fa-chart-line"></i></span>Dashboard</a>
                 </li>
+
                 <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
+                    <a th:href="@{/}"><span class="mr-2"><i class="fa-solid fa-circle-info"></i></span>About</a>
                 </li>
             </ul>
 
@@ -81,6 +85,7 @@
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
+
                 <button type="button" id="sidebarCollapse" class="btn btn-primary me-3">
                     <i class="fa fa-bars"></i>
                     <span class="sr-only">Toggle Menu</span>
@@ -88,19 +93,22 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="font-size: 16px">
+                    <ul class="nav navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link" th:href="@{/userHome}">
+                                <span class="mr-2"><i class="fa-solid fa-house"></i></span>
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Notification</a>
+                        <li class="nav-item active">
+                            <a class="nav-link" id="notificationButton" href="#" type="button"><i class="fa-solid fa-bell"></i></a>
                         </li>
                         <li class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="link" data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false" >
                                 <span th:text="${session.user.fullName}"></span>
-                                <span><i class="fa-solid fa-user"></i></span>
+                                <span class="ml-1"><i class="fa-solid fa-user"></i></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item dropdown-item-custom" th:href="@{/profile/{id}(id=${session.user.id})}">My Profile <i class="fa-solid fa-user-pen"></i></a>
@@ -110,6 +118,7 @@
                                 </form>
                             </div>
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -134,12 +143,31 @@
                     </th:block>
                 </select>
 
+
                 <div class="card sticky-top p-0 mt-4" style="font-weight: 500">
                     <div class="card-body row d-flex justify-content-between align-items-center">
                         <div class="col-sm text-left">
                             Total Questions: <span id="total">0</span>
+
                         </div>
                         <div class="col-sm text-right">
+
+                            <div class="d-inline">
+                                <div class="pretty p-default p-switch">
+                                    <input type="radio" th:field="*{status}" value="true" />
+                                    <div class="state p-success">
+                                        <label>Public</label>
+                                    </div>
+                                </div>
+
+                                <div class="pretty p-default p-switch p-fill">
+                                    <input type="radio" th:field="*{status}"  value="false"/>
+                                    <div class="state p-success">
+                                        <label>Private</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <button type="button" class="btn btn-sm btn-success add-question"><i class="fa fa-plus"></i> Add Question</button>
                             <button type="button" class="btn btn-sm btn-primary" id="importFile"><i class="fa fa-upload"></i></button>
                             <button type="submit" class="btn btn-sm btn-success" id="btnSave">Save</button>

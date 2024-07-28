@@ -23,6 +23,7 @@ public interface QuizBankRepository extends JpaRepository<QuizBank, Long> {
     void deleteQuizBanksById(long id);
 
     List<QuizBank> getQuizBanksBySubcategory(Subcategory subcategory);
+    List<QuizBank> getQuizBanksByCreatedBy(User user);
 
     List<QuizBank> findByBankNameContainingIgnoreCase(String bankName);
     List<QuizBank> findAllByOrderByBankNameAsc();

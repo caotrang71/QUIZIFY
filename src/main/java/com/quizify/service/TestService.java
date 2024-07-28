@@ -34,6 +34,14 @@ public class TestService {
         return this.testRepository.getTestById(id);
     }
 
+    public List<Test> getTestsByCreatedBy(User user) {
+        return this.testRepository.getTestsByCreatedBy(user);
+    }
+
+//    public List<QuizBank> getRecentQuiz(User user) {
+//
+//    }
+
     public Test createTest(Long userId,Long quizBankId, String title, int numberOfQuestions, Integer timeLimit, boolean shuffleQuestions, boolean shuffleChoices) throws Exception {
         QuizBank quizBank = quizBankRepository.getQuizBankById(quizBankId);
         if (quizBank == null) {

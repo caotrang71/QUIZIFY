@@ -34,8 +34,9 @@ public class TestController {
     private TestHistoryService testHistoryService;
 
     @GetMapping("/my-practice")
-    public String myPractice(Model model) {
-        List<Test> tests = testService.getAllTests();
+    public String myPractice(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        List<Test> tests = testService.getTestsByCreatedBy(user);
         model.addAttribute("tests", tests);
         return "my-practice";
     }

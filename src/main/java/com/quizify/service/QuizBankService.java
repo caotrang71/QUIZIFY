@@ -40,16 +40,22 @@ public class QuizBankService {
         return quizBankRepository.findAll();
     }
 
+    public List<QuizBank> getQuizBanksByCreatedBy(User user) {
+        return quizBankRepository.getQuizBanksByCreatedBy(user);
+    }
+
     @Transactional
     public QuizBank createQuizBank(QuizBank quizBank, User user) {
         // Create and save the new QuizBank
         QuizBank newQuizBank = new QuizBank();
         newQuizBank.setBankName(quizBank.getBankName());
         newQuizBank.setDescription(quizBank.getDescription());
-        newQuizBank.setStatus(true);
+        newQuizBank.setStatus(quizBank.isStatus());
         newQuizBank.setCreatedAt(LocalDateTime.now());
         newQuizBank.setModifiedAt(LocalDateTime.now());
         newQuizBank.setCreatedBy(user);
+
+        System.out.println("User la: " +user.getId());
         newQuizBank.setSubcategory(quizBank.getSubcategory());// Ensure this user ID exists in your database
             quizBankRepository.save(newQuizBank);
 
@@ -89,6 +95,7 @@ public QuizBank updateQuizBank(QuizBank quizBank) {
     existingQuizBank.setDescription(quizBank.getDescription());
     existingQuizBank.setSubcategory(quizBank.getSubcategory());
     existingQuizBank.setModifiedAt(LocalDateTime.now());
+    existingQuizBank.setStatus(quizBank.isStatus());
 
     existingQuizBank = quizBankRepository.save(existingQuizBank);
     List<Question> existingQuestions = questionRepository.getQuestionsByQuizBank(existingQuizBank);
@@ -151,26 +158,21 @@ public QuizBank updateQuizBank(QuizBank quizBank) {
 }
 
 
-    public QuizBank saveQuizBank(QuizBank quizBank) {
-        quizBank.setCreatedAt(LocalDateTime.now());
-        quizBankRepository.save(quizBank);
-
-
-        for (Question question : quizBank.getQuestions()) {
-            question.setQuizBank(quizBank);
-            question = questionRepository.save(question);
-
-            for (QuestionChoice choice : question.getQuestionChoices()) {
-                choice.setQuestion(question);
-                questionChoiceRepository.save(choice);
-            }
-        }
-        return quizBank;
-    }
-
 
     public void deleteQuizBankById(Long id) {
         this.quizBankRepository.deleteById(id);
+    }
+
+
+    public List<QuizBank> getPublicQuizBanks(){
+        List<QuizBank> quizBanks = new ArrayList<>();
+        for(QuizBank quizBank : getAllQuizBanks()) {
+            if (quizBank.isStatus()) {
+                quizBanks.add(quizBank);
+            }
+        }
+        System.out.println(quizBanks);
+        return quizBanks;
     }
 
 
@@ -182,7 +184,7 @@ public QuizBank updateQuizBank(QuizBank quizBank) {
 
         List<QuizBank> filteredQuizBanks = new ArrayList<>();
 
-        for (QuizBank quizBank : getAllQuizBanks()) {
+        for (QuizBank quizBank : getPublicQuizBanks()) {
 
             String bankName = quizBank.getBankName().toLowerCase().replaceAll("\\s+", "");
 

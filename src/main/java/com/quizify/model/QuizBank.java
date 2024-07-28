@@ -31,7 +31,7 @@ public class QuizBank {
     private LocalDateTime modifiedAt;
 
     @Column(name = "status")
-    private Boolean status;
+    private boolean status;
 
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
@@ -49,4 +49,5 @@ public class QuizBank {
 
     @OneToMany(mappedBy = "quizBank", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FavoriteQuizBanks> favoriteQuizBanks;
+
 }

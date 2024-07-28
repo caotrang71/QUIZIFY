@@ -1,7 +1,7 @@
               <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Sidebar 01</title>
+    <title>Home</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" th:href="@{/images/g3a7adc2b05c8e7af06ebbaaae14c-h_lwi1zswa.png}" type="image/x-icon">
@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/side/css/style.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -33,28 +33,17 @@
         <div class="p-4 pt-5">
             <h1>Quizify</h1>
             <ul class="list-unstyled components mb-5">
-<!--                <li class="active">-->
-<!--                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>-->
-<!--                    <ul class="collapse list-unstyled" id="homeSubmenu">-->
-<!--                        <li>-->
-<!--                            <a href="#">Home 1</a>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <a href="#">Home 2</a>-->
-<!--                        </li>-->
-<!--                        <li>-->
-<!--                            <a href="#">Home 3</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </li>-->
                 <li class="active">
                     <a th:href="@{/userHome}"><span class="mr-2"><i class="fa-solid fa-house"></i></span>Home</a>
                 </li>
                 <li>
-                    <a th:href="@{/quiz-banks/quiz-banks-list}"><span class="mr-2"><i class="fa-solid fa-book"></i></span>My Library</a>
+                    <a th:href="@{/quiz-banks/library}"><span class="mr-2"><i class="fa-solid fa-book"></i></span>My Library</a>
                 </li>
                 <li>
                     <a th:href="@{/show/favorite_quiz_banks}"><span class="mr-2"><i class="fa-solid fa-heart"></i></span>Favorite Quiz Bank</a>
+                </li>
+                <li>
+                    <a th:href="@{/tests/my-practice}"><span class="mr-2"><i class="fa-solid fa-feather"></i></span>My Practice</a>
                 </li>
 
                 <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
@@ -79,7 +68,7 @@
                 </li>
 
                 <li>
-                    <a th:href="@{/}">About</a>
+                    <a th:href="@{/}"><span class="mr-2"><i class="fa-solid fa-circle-info"></i></span>About</a>
                 </li>
             </ul>
 
@@ -106,19 +95,21 @@
                     <i class="fa fa-bars"></i>
                 </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="font-size: 16px">
                     <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" th:href="@{/userHome}">Home</a>
-                        </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="notificationButton" href="#" type="button">Notification</a>
+                            <a class="nav-link" th:href="@{/userHome}">
+                                <span class="mr-2"><i class="fa-solid fa-house"></i></span>
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" id="notificationButton" href="#" type="button"><i class="fa-solid fa-bell"></i></a>
                         </li>
                         <li class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="link" data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false" >
                                 <span th:text="${session.user.fullName}"></span>
-                                <span><i class="fa-solid fa-user"></i></span>
+                                <span class="ml-1"><i class="fa-solid fa-user"></i></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item dropdown-item-custom" th:href="@{/profile/{id}(id=${session.user.id})}">My Profile <i class="fa-solid fa-user-pen"></i></a>
@@ -134,9 +125,35 @@
             </div>
         </nav>
 
-        <h2 class="mb-4" th:text="'Hi, '+ ${session.user.fullName}+'!'"></h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <h2 class="mb-4" th:text="'Hi '+ ${session.user.fullName}+ ', itz time to practice!'"></h2>
+
+        <a th:href="@{/quiz-banks/create-quiz-bank}" class="btn btn-primary btn-sm mb-3"> Add Quiz </a>
+
+        <table border="1" class="table table-striped table-responsive-md" id="example">
+            <thead>
+            <tr>
+                <th>Quiz Name</th>
+                <th>About</th>
+                <th>Created By</th>
+                <th>Upvote</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="quizBank : ${quizBanks}">
+                <td >
+                    <a style="color: #d3761c" th:href="@{/quiz-banks/quiz-bank-detail/{id} (id=${quizBank.id})}">
+                        <span th:text="${quizBank.bankName}"></span>
+                    </a>
+                </td>
+                <td th:text="${quizBank.subcategory.getSubcategoryName()}"></td>
+                <td th:text="${quizBank.createdBy.fullName}"></td>
+                <td>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
 
 <!--   notification-->
@@ -166,8 +183,13 @@
 
 
 </div>
-
-<script th:src="@{/side/js/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    new DataTable('#example');
+</script>
 <script th:src="@{/side/js/popper.js}"></script>
 <script th:src="@{/side/js/bootstrap.min.js}"></script>
 <script th:src="@{/side/js/main.js}"></script>

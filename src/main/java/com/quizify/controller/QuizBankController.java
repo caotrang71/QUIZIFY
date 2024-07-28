@@ -63,17 +63,27 @@ public class QuizBankController {
     //view list of quiz banks
     @GetMapping("/quiz-banks-list")
     public String quizBankList(Model model, @Param("keyword") String keyword) {
+        String titlePage = "Quiz Bank List";
         List<QuizBank> quizBanksList = quizBankService.getAllQuizBanks();
-        if (keyword != null && !keyword.isEmpty()) {
-            quizBanksList = this.quizBankService.searchQuizBank(keyword);
-            model.addAttribute("keyword", keyword);
-        }
+        model.addAttribute("titlePage", titlePage);
+        model.addAttribute("quizBanksList", quizBanksList);
+        return "quiz-bank-list";
+    }
+
+    //view list of quiz banks of user
+    @GetMapping("/library")
+    public String viewLibrary(Model model, HttpSession session, @Param("keyword") String keyword) {
+        String titlePage = "My Library";
+        User user = (User) session.getAttribute("user");
+        List<QuizBank> quizBanksList = quizBankService.getQuizBanksByCreatedBy(user);
+        model.addAttribute("titlePage", titlePage);
         model.addAttribute("quizBanksList", quizBanksList);
         return "quiz-bank-list";
     }
 
     @GetMapping("/quiz-bank-detail/{id}")
     public String getDetailQuizBank(@PathVariable(value="id") long id, Model model,  HttpSession session){
+
         QuizBank quizBank = quizBankService.getQuizBankById(id);
         List<Question> questions = questionService.getQuestionsByQuizBank(quizBank);
         Map<Question, List<QuestionChoice>> questionChoicesMap = new HashMap<>();
@@ -112,7 +122,9 @@ public class QuizBankController {
     //form to create quiz bank
     @GetMapping("/create-quiz-bank")
     public String createQuizBank(Model model) {
-        model.addAttribute("quizBank", new QuizBank());
+        QuizBank quizBank = new QuizBank();
+        quizBank.setStatus(true);
+        model.addAttribute("quizBank", quizBank);
         return "create-quiz-bank";
     }
 
@@ -181,8 +193,8 @@ public class QuizBankController {
 
 
         model.addAttribute("success", true);
-//        return "redirect:/quiz-banks/quiz-bank-detail/" + newQuizBank.getId();
-        return "redirect:/quiz-banks/quiz-banks-list";
+        return "redirect:/quiz-banks/quiz-bank-detail/" + newQuizBank.getId();
+
     }
 
     @ModelAttribute("categoryList")

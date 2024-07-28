@@ -16,6 +16,10 @@ public class NotificationsService {
         return notificationsRepsitory.findAll();
     }
 
+    public List<Notifications> getNotificationsByReceiver(User user) {
+        return notificationsRepsitory.getNotificationsByReceivedBy(user);
+    }
+
     public void saveNotification(String title,String content,User createdBy,long receivedBy,String link,boolean read){
         Notifications notifi = new Notifications();
         notifi.setTitle(title);

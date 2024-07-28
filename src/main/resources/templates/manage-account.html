@@ -32,51 +32,42 @@
         <div class="p-4 pt-5">
             <h1>Quizify</h1>
             <ul class="list-unstyled components mb-5">
-                <li class="active">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
-                    <!--                    <ul class="collapse list-unstyled" id="homeSubmenu">-->
-                    <!--                        <li>-->
-                    <!--                            <a href="#">Home 1</a>-->
-                    <!--                        </li>-->
-                    <!--                        <li>-->
-                    <!--                            <a href="#">Home 2</a>-->
-                    <!--                        </li>-->
-                    <!--                        <li>-->
-                    <!--                            <a href="#">Home 3</a>-->
-                    <!--                        </li>-->
-                    <!--                    </ul>-->
+                <li>
+                    <a th:href="@{/userHome}"><span class="mr-2"><i class="fa-solid fa-house"></i></span>Home</a>
                 </li>
                 <li>
-                    <a href="#">My Library</a>
+                    <a th:href="@{/quiz-banks/library}"><span class="mr-2"><i class="fa-solid fa-book"></i></span>My Library</a>
                 </li>
                 <li>
-                    <a href="#">Favorite Quiz Bank</a>
+                    <a th:href="@{/show/favorite_quiz_banks}"><span class="mr-2"><i class="fa-solid fa-heart"></i></span>Favorite Quiz Bank</a>
                 </li>
                 <li>
-                    <a href="#">Recently</a>
+                    <a th:href="@{/tests/my-practice}"><span class="mr-2"><i class="fa-solid fa-feather"></i></span>My Practice</a>
                 </li>
-                <li>
-                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Notification</a>
+
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a href="#pageSubmenu"  data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <span class="mr-2"><i class="fa-solid fa-list-check"></i></span>Management</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
-                        <li>
-                            <a href="#">Page 1</a>
+                        <li class="active">
+                            <a th:href="@{/manage_account}">Account List</a>
                         </li>
                         <li>
-                            <a href="#">Page 2</a>
+                            <a th:href="@{/quiz-banks/quiz-banks-list}">Quiz Banks List</a>
                         </li>
-                        <li>
-                            <a href="#">Page 3</a>
+                        <li >
+                            <a th:href="@{/category}">Category List</a>
                         </li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#">My Profile</a>
+
+
+                <li th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}">
+                    <a th:href="@{/show/statistics}"><span class="mr-2"><i class="fa-solid fa-chart-line"></i></span>Dashboard</a>
                 </li>
+
                 <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
+                    <a th:href="@{/}"><span class="mr-2"><i class="fa-solid fa-circle-info"></i></span>About</a>
                 </li>
             </ul>
 
@@ -94,6 +85,7 @@
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
+
                 <button type="button" id="sidebarCollapse" class="btn btn-primary me-3">
                     <i class="fa fa-bars"></i>
                     <span class="sr-only">Toggle Menu</span>
@@ -101,25 +93,22 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!--                    <form class="d-flex ms-auto my-2 my-lg-0 w-50">-->
-                    <!--                        <div class="input-group w-100">-->
-                    <!--                            <input type="text" name="keyword" class="form-control" placeholder="Search" aria-label="Search">-->
-                    <!--                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-search"></i></button>-->
-                    <!--                        </div>-->
-                    <!--                    </form>-->
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="font-size: 16px">
+                    <ul class="nav navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link" th:href="@{/userHome}">
+                                <span class="mr-2"><i class="fa-solid fa-house"></i></span>
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Notification</a>
+                        <li class="nav-item active">
+                            <a class="nav-link" id="notificationButton" href="#" type="button"><i class="fa-solid fa-bell"></i></a>
                         </li>
                         <li class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="link" data-toggle="dropdown"
                                aria-haspopup="true" aria-expanded="false" >
                                 <span th:text="${session.user.fullName}"></span>
-                                <span><i class="fa-solid fa-user"></i></span>
+                                <span class="ml-1"><i class="fa-solid fa-user"></i></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item dropdown-item-custom" th:href="@{/profile/{id}(id=${session.user.id})}">My Profile <i class="fa-solid fa-user-pen"></i></a>
@@ -129,6 +118,7 @@
                                 </form>
                             </div>
                         </li>
+
                     </ul>
                 </div>
             </div>
