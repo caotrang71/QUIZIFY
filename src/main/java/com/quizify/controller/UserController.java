@@ -175,7 +175,7 @@ public class UserController {
         Matcher matcherPass = patternPass.matcher(inputPass);
 
         //kiểm tra email có đúng format không
-        String regexEmail = "^[a-zA-Z0-9]+@gmail\\.com$";
+        String regexEmail = "^[a-zA-Z0-9]+@(gmail\\.com|fpt\\.edu\\.vn)$";
         String inputEmail =  user.getEmail();
 
         Pattern patternEmail = Pattern.compile(regexEmail);
@@ -185,7 +185,7 @@ public class UserController {
             return "redirect:/show_page_login";
         }
         if (!matcherEmail.matches()){
-            redirectAttributes.addFlashAttribute("message", "Your email must end in .com and contain only numbers and letters.");
+            redirectAttributes.addFlashAttribute("message", "Your email should end in .com and contain only numbers and letters.");
             return "redirect:/show_page_login";
         }else if(!matcherPass.matches()){
             redirectAttributes.addFlashAttribute("message", "You must enter a password of 8-16 characters including letters, numbers," +

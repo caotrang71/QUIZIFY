@@ -359,6 +359,12 @@ public class QuizBankController {
         }
     }
 
+    @GetMapping("/subcategory/quizBankList/{id}")
+    public String showListQuizBanks(@PathVariable long id, Model model){
+        List<QuizBank> quizBanks = quizBankRepository.findBySubcategoryId(id);
+        model.addAttribute("quizBanksList", quizBanks);
+        return "quiz-bank-list";
+    }
 
 }
 

@@ -152,11 +152,11 @@
                     <form th:action="@{/changeRole/{id}(id=${user.id})}" th:method="post" >
                         <!--                    th:disabled="${user.role_id != 1}"-->
 
-                        <select name="roleID" th:disabled="${user.email == session.user.email || user.getRole().id == session.user.getRole().id}">
+                        <select name="roleID" th:disabled="${user.id == session.user.id || user.getRole().id == session.user.getRole().id || session.user.getRole().id != 1 }">
                             <option value="2" th:selected="${user.getRole().id ==2}">Staff</option>
                             <option value="3" th:selected="${user.getRole().id ==3}">User</option>
                         </select>
-                        <button type="submit" th:hidden="${user.email == session.user.email || user.getRole().id == session.user.getRole().id}">
+                        <button type="submit" th:hidden="${user.id == session.user.id || user.getRole().id == session.user.getRole().id || session.user.getRole().id != 1 }">
                             <i class="fa fa-pencil"></i>
                         </button>
 
