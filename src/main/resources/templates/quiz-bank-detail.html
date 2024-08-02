@@ -217,7 +217,7 @@
 <!--                </div>-->
 
             <div class="row sticky-top bg-light pb-3" >
-                <div class="col-sm-5" th:if="${session.user.id == quizBank.createdBy || session.user.role.id == 1 || session.user.role.id == 2}">
+                <div class="col-sm-5" th:if="${session.user.id == quizBank.createdBy.id || session.user.role.id == 1 || session.user.role.id == 2}">
                     <a th:href="@{/quiz-banks/update-quiz-bank/{id} (id=${quizBank.id})}" class="w-100 border-bottom border-5 btn btn-primary mt-3 d-flex justify-content-between align-items-center">
                         <span><i class="fa-solid fa-pen-to-square"></i></span>
                         <span style="font-weight : 500">Update Quiz Bank</span>

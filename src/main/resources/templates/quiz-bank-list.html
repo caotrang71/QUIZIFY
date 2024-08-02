@@ -154,7 +154,7 @@
                     <a href="#" class="delete-quiz" th:data-id="${quizBank.id}">
                         <i class="fa fa-trash-o"></i>
                     </a>
-                    <a th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2}" th:href="@{/quiz-banks/update-quiz-bank/{id} (id=${quizBank.id})}">
+                    <a th:if="${session.user.getRole().id ==1 || session.user.getRole().id==2 || session.user.id == quizBank.createdBy.id}" th:href="@{/quiz-banks/update-quiz-bank/{id} (id=${quizBank.id})}">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a>
                 </td>
