@@ -91,7 +91,7 @@ public class AccountController {
         Pattern patternPass = Pattern.compile(regexPass);
         Matcher matcherPass = patternPass.matcher(inputPass);
         //kiểm tra email có đúng format không
-        String regexEmail = "^[a-zA-Z0-9]+@gmail\\.com$";
+        String regexEmail = "^[a-zA-Z0-9]+@(gmail\\.com|fpt\\.edu\\.vn)$";
         String inputEmail =  email;
 
         Pattern patternEmail = Pattern.compile(regexEmail);

@@ -170,7 +170,7 @@
                     <i class="fa fa-eye"></i>
                     </a>
                     &nbsp;
-                    <button th:onclick=" 'deleteAccount(' +${user.id}+')' " th:hidden="${user.email == session.user.email || user.getRole().id == session.user.getRole().id}">
+                    <button th:onclick=" 'deleteAccount(' +${user.id}+')' " th:hidden="${user.email == session.user.email || user.getRole().id == session.user.getRole().id || session.user.getRole().id!= 1}">
                         <i class="fa fa-trash"></i>
                     </button>
                     &nbsp;
