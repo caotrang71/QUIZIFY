@@ -25,7 +25,7 @@ public class VoteService {
             return 0.0;
         }
         double average = (sum / votes.size());
-        BigDecimal bd = new BigDecimal(average).setScale(1, RoundingMode.DOWN);
+        BigDecimal bd = new BigDecimal(average).setScale(1, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 
